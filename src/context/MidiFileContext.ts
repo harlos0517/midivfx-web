@@ -9,6 +9,7 @@ interface MidiFileContextProps {
   setMidiData: (data: MidiData | null) => void
   playback: Playback | null
   config: Config
+  setConfig: (config: Config) => void
 }
 
 const MidiFileContext = createContext<MidiFileContextProps>({
@@ -16,6 +17,7 @@ const MidiFileContext = createContext<MidiFileContextProps>({
   setMidiData: () => {},
   playback: null,
   config: exampleConfig,
+  setConfig: () => {},
 })
 
 export default MidiFileContext

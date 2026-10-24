@@ -82,8 +82,8 @@ export const defaultStyleConfig: StyleRuntime = {
 
 export const defaultConfig: Config = {
   playback: {
-    startPadding: 3000000,
-    endPadding: 3000000,
+    startPadding: 3000,
+    endPadding: 3000,
     startTime: 0,
     audioOffset: 0,
   },
@@ -101,7 +101,7 @@ export const defaultConfig: Config = {
   display: {
     width: 1920,
     height: 1080,
-    speed: 0.02,
+    speed: 1,
     beat: false,
   },
   styles: [{
@@ -117,17 +117,10 @@ export const defaultConfig: Config = {
   }],
 }
 
-export const parseStyle = (style: StyleConfig): StyleRuntime => ({
-  ...defaultStyleConfig,
-  ...style,
-})
-
-export const ALL_CHANNELS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-
 export const exampleConfig: Config = {
   playback: {
-    startPadding: 1000000,
-    endPadding: 3000000,
+    startPadding: 1000,
+    endPadding: 3000,
     startTime: 0,
     audioOffset: 0,
   },
@@ -145,7 +138,7 @@ export const exampleConfig: Config = {
   display: {
     width: 1920,
     height: 1080,
-    speed: 0.001,
+    speed: 1,
     beat: false,
   },
   styles: [

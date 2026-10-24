@@ -2,58 +2,49 @@ import { NumberInput, Stack } from '@mantine/core'
 import { useContext } from 'react'
 
 import MidiFileContext from '@/context/MidiFileContext'
-import useConfig from '@/hooks/useConfig'
+import usePlaybackConfig from '@/hooks/usePlaybackConfig'
 
 const PlaybackConfigPanel = () => {
   const { playback } = useContext(MidiFileContext)
   const duration = playback?.duration ?? 0
 
-  const [startPaddingValue, setStartPaddingValue] = useConfig(
-    c => c.playback.startPadding,
-    (c, v) => { c.playback.startPadding = v },
-  )
-  const [endPaddingValue, setEndPaddingValue] = useConfig(
-    c => c.playback.endPadding,
-    (c, v) => { c.playback.endPadding = v },
-  )
-  const [audioOffsetValue, setAudioOffsetValue] = useConfig(
-    c => c.playback.audioOffset,
-    (c, v) => { c.playback.audioOffset = v },
-  )
-  const [startTimeValue, setStartTimeValue] = useConfig(
-    c => c.playback.startTime,
-    (c, v) => { c.playback.startTime = v },
-  )
-  const [endTimeValue, setEndTimeValue] = useConfig(
-    c => c.playback.endTime || duration,
-    (c, v) => { c.playback.endTime = v ?? duration },
-  )
+  const [startPadding, setStartPadding] = usePlaybackConfig('startPadding')
+  const [endPadding, setEndPadding] = usePlaybackConfig('endPadding')
+  const [audioOffset, setAudioOffset] = usePlaybackConfig('audioOffset')
+  const [startTime, setStartTime] = usePlaybackConfig('startTime')
+  const [endTime, setEndTime] = usePlaybackConfig('endTime')
 
   return <Stack p="md" h="100%" style={{ overflowY: 'auto' }}>
     <NumberInput
       label="Start Padding"
-      value={startPaddingValue}
-      onChange={v => setStartPaddingValue(Number(v))}
+      value={startPadding}
+      onChange={v => setStartPadding(Number(v))}
     />
     <NumberInput
       label="End Padding"
-      value={endPaddingValue}
-      onChange={v => setEndPaddingValue(Number(v))}
+      value={endPadding}
+      onChange={v => setEndPadding(Number(v))}
     />
     <NumberInput
       label="Audio Offset"
-      value={audioOffsetValue}
-      onChange={v => setAudioOffsetValue(Number(v))}
+      value={audioOffset}
+      onChange={v => setAudioOffset(Number(v))}
     />
     <NumberInput
       label="Start Time"
-      value={startTimeValue}
-      onChange={v => setStartTimeValue(Number(v))}
+      value={startTime}
+      onChange={v => setStartTime(Number(v))}
     />
     <NumberInput
       label="End Time"
-      value={endTimeValue}
-      onChange={v => setEndTimeValue(Number(v))}
+      value={endTime || duration}
+      min={0}
+      max={duration}
+      onChange={v => {
+        const isValid = v !== null && v !== undefined && !isNaN(Number(v))
+        const newEndTime =  isValid ? Number(v) : duration
+        setEndTime(newEndTime)
+      }}
     />
   </Stack>
 

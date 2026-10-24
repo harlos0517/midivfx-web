@@ -1,28 +1,22 @@
 import { Select, Stack, Switch } from '@mantine/core'
 
-import useConfig from '@/hooks/useConfig'
+import useExportConfig from '@/hooks/useExportConfig'
 
 const ExportConfigPanel = () => {
-  const [fpsValue, setFpsValue] = useConfig(
-    c => c.export.fps,
-    (c, v) => { c.export.fps = v },
-  )
-  const [alphaValue, setAlphaValue] = useConfig(
-    c => c.export.alpha,
-    (c, v) => { c.export.alpha = v },
-  )
+  const [fps, setFps] = useExportConfig('fps')
+  const [alpha, setAlpha] = useExportConfig('alpha')
 
   return <Stack p="md" h="100%" style={{ overflowY: 'auto' }}>
     <Select
       label="FPS"
-      value={fpsValue.toString()}
-      onChange={v => setFpsValue(Number(v))}
+      value={fps.toString()}
+      onChange={v => setFps(Number(v))}
       data={['15', '24', '30', '60']}
     />
     <Switch
       label="Alpha Channel"
-      checked={alphaValue}
-      onChange={e => setAlphaValue(e.currentTarget.checked)}
+      checked={alpha}
+      onChange={e => setAlpha(e.currentTarget.checked)}
     />
   </Stack>
 
