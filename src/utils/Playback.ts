@@ -10,7 +10,7 @@ export default class Playback {
 
   loadAudio(src: string) {
     this.audio?.unload()
-    this.audio = new Howl({ src: [src] })
+    this.audio = new Howl({ src: [src], format: ['mp3', 'wav', 'ogg'] })
     this.audio.on('end', () => this.pause())
   }
 

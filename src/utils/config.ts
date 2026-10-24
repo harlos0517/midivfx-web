@@ -1,6 +1,3 @@
-
-export type PlaybackMode = 'preview' | 'live' | 'export'
-
 /** `fill`, `decay`, or a MIDI CC number such as `CC9`. */
 export type NoteMode = 'fill' | 'decay' | `CC${number}`
 

@@ -86,7 +86,7 @@ export interface MidiData {
 }
 
 
-export const parseMidiFile = (fileBuffer: Buffer): MidiData => {
+export const parseMidiFile = (fileBuffer: Uint8Array): MidiData => {
   const midi = parseMidi(fileBuffer)
 
   const tpq = midi.header.ticksPerBeat || 480

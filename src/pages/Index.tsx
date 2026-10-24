@@ -1,5 +1,4 @@
 import { Box } from '@mantine/core'
-import { Buffer } from 'buffer'
 import { useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
@@ -7,25 +6,18 @@ import MidiFileContext from '@/context/MidiFileContext'
 import MainPanel from '@/panels/MainPanel'
 import { exampleConfig } from '@/utils/config'
 import type { MidiData } from '@/utils/midi'
-import { parseMidiFile } from '@/utils/midi'
 import Playback from '@/utils/Playback'
 import { DockviewReact, themeDark } from 'dockview-react'
 
+import ImportPanel from '@/panels/ImportPanel'
+import PlaybackConfigPanel from '@/panels/PlaybackConfigPanel'
 import 'dockview-react/dist/styles/dockview.css'
 
 const Index = () => {
   const [midiData, setMidiData] = useState<MidiData | null>(null)
   const playback = useMemo(() => new Playback(), [])
-  playback.loadAudio('/nine_point_eight-orchestra-v2.4.mp3')
 
   useEffect(() => () => playback.dispose(), [playback])
-
-  useEffect(() => {
-    const data = fetch('/nine_point_eight-orchestra-v2.4.mid')
-    data.then(response => response.arrayBuffer())
-      .then(buffer => setMidiData(parseMidiFile(Buffer.from(buffer))))
-  }, [])
-
 
   useHotkeys('space', e => {
     e.preventDefault()
@@ -52,19 +44,26 @@ const Index = () => {
     playback?.seek(Math.min((playback?.currentTime ?? 0) + 1000, playback?.duration ?? 0))
   })
 
-  return <MidiFileContext.Provider value={{ midiData, playback, config: exampleConfig }}>
+  return <MidiFileContext.Provider
+    value={{ midiData, setMidiData, playback, config: exampleConfig }}
+  >
     <Box h="100dvh" style={{ overflow: 'hidden' }}>
       <DockviewReact
         theme={themeDark}
         components={{
           main: MainPanel,
-          import: () => <div>Import</div>,
-          settings: () => <div>Settings</div>,
+          playback: PlaybackConfigPanel,
+          import: ImportPanel,
         }}
         onReady={event => {
+          event.api.addPanel({ id: 'Main', component: 'main' })
           event.api.addPanel({
-            id: 'main',
-            component: 'main',
+            id: 'Import', component: 'import',
+            position: { referencePanel: 'Main', direction: 'below' },
+          })
+          event.api.addPanel({
+            id: 'Playback', component: 'playback',
+            position: { referencePanel: 'Import', direction: 'right' },
           })
         }}
       />

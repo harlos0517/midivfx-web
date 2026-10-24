@@ -6,12 +6,14 @@ import Playback from '@/utils/Playback'
 
 interface MidiFileContextProps {
   midiData: MidiData | null
+  setMidiData: (data: MidiData | null) => void
   playback: Playback | null
   config: Config
 }
 
 const MidiFileContext = createContext<MidiFileContextProps>({
   midiData: null,
+  setMidiData: () => {},
   playback: null,
   config: exampleConfig,
 })
