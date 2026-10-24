@@ -4,7 +4,7 @@ import { useContext, useState } from 'react'
 import MidiFileContext from '@/context/MidiFileContext'
 import { parseMidiFile } from '@/utils/midi'
 
-const ImportPanel = () => {
+const ImportConfigPanel = () => {
   const context = useContext(MidiFileContext)
 
   const [midiFile, setMidiFile] = useState<File | null>(null)
@@ -44,4 +44,4 @@ const ImportPanel = () => {
   </Stack>
 }
 
-export default ImportPanel
+export default ImportConfigPanel

@@ -6,15 +6,15 @@ export interface PlaybackConfig {
   startPadding: number
   /** Extra time after last note (us). */
   endPadding: number
+  startTime: number
+  /** Defaults to full length. */
+  endTime?: number
   /** Audio delay relative to visual (us); positive = audio starts later. */
   audioOffset: number
 }
 
 export interface ExportConfig {
   fps: number
-  startTime: number
-  /** Defaults to full length. */
-  endTime?: number
   alpha: boolean
 }
 
@@ -84,11 +84,11 @@ export const defaultConfig: Config = {
   playback: {
     startPadding: 3000000,
     endPadding: 3000000,
+    startTime: 0,
     audioOffset: 0,
   },
   export: {
     fps: 60,
-    startTime: 0,
     alpha: true,
   },
   camera: {
@@ -128,11 +128,11 @@ export const exampleConfig: Config = {
   playback: {
     startPadding: 1000000,
     endPadding: 3000000,
+    startTime: 0,
     audioOffset: 0,
   },
   export: {
     fps: 60,
-    startTime: 0,
     alpha: true,
   },
   camera: {

@@ -1,16 +1,18 @@
 import { Box } from '@mantine/core'
+import { DockviewReact, themeDark } from 'dockview-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import MidiFileContext from '@/context/MidiFileContext'
-import MainPanel from '@/panels/MainPanel'
 import { exampleConfig } from '@/utils/config'
 import type { MidiData } from '@/utils/midi'
 import Playback from '@/utils/Playback'
-import { DockviewReact, themeDark } from 'dockview-react'
 
-import ImportPanel from '@/panels/ImportPanel'
+import ExportConfigPanel from '@/panels/ExportConfigPanel'
+import ImportConfigPanel from '@/panels/ImportConfigPanel'
+import MainPanel from '@/panels/MainPanel'
 import PlaybackConfigPanel from '@/panels/PlaybackConfigPanel'
+
 import 'dockview-react/dist/styles/dockview.css'
 
 const Index = () => {
@@ -53,7 +55,8 @@ const Index = () => {
         components={{
           main: MainPanel,
           playback: PlaybackConfigPanel,
-          import: ImportPanel,
+          import: ImportConfigPanel,
+          export: ExportConfigPanel,
         }}
         onReady={event => {
           event.api.addPanel({ id: 'Main', component: 'main' })
@@ -64,6 +67,10 @@ const Index = () => {
           event.api.addPanel({
             id: 'Playback', component: 'playback',
             position: { referencePanel: 'Import', direction: 'right' },
+          })
+          event.api.addPanel({
+            id: 'Export', component: 'export',
+            position: { referencePanel: 'Import', direction: 'below' },
           })
         }}
       />
