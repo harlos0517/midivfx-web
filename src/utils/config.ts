@@ -29,20 +29,21 @@ export interface CameraConfig {
 export interface DisplayConfig {
   width: number
   height: number
-  /** Pixels per microsecond. */
+  /** Pixels per millisecond. */
   speed: number
   beat: boolean
 }
 
 export interface Remap {
-  mapStartPitch: number
-  mapEndPitch: number
+  originalPitch?: string // range notation
+  mappedPitch: [number, number]
   color: string
 }
 
 export interface StyleRuntime {
-  track: number[] | string // 1-based track numbers, all if empty, track if string
-  channel: number[] // 1-based channel numbers, all if empt
+  isRegex: boolean
+  track?: string // 1-based track numbers, range notation or regex
+  channel?: string // 1-based channel numbers, range notation
   mode: NoteMode
   velocity: boolean
   color: string
@@ -55,7 +56,10 @@ export interface StyleRuntime {
   remaps: Remap[]
 }
 
-export type StyleConfig = Partial<StyleRuntime>
+export type StyleConfig = Partial<StyleRuntime> & {
+  id: string
+  order: number
+}
 
 export interface Config {
   playback: PlaybackConfig
@@ -65,10 +69,9 @@ export interface Config {
   styles: StyleConfig[]
 }
 
-export const defaultStyleConfig: StyleRuntime = {
-  track: [],
-  channel: [],
+export const defaultStyleConfig: Omit<StyleRuntime, 'id' | 'order'> = {
   mode: 'fill',
+  isRegex: false,
   velocity: false,
   color: '#ffffff',
   gap: 0.1,
@@ -105,6 +108,8 @@ export const defaultConfig: Config = {
     beat: false,
   },
   styles: [{
+    id: 'default',
+    order: 1,
     mode: 'fill',
     velocity: false,
     color: '#ffffff',
@@ -158,55 +163,55 @@ export const exampleConfig: Config = {
     { track: 'contrabass', z: 0.23, color: '#220044' },
     {
       track: 'glockenspiel',
-      mode: 'decay',
+      mode: 'decay' as const,
       z: 0.01,
       color: '#ffffff',
       decayRate: 0.4,
     },
     {
       track: 'chimes',
-      mode: 'decay',
+      mode: 'decay' as const,
       z: 0.02,
       color: '#aaaaaa',
       decayRate: 0.2,
     },
     {
       track: 'cymbal',
-      mode: 'decay',
+      mode: 'decay' as const,
       z: 0.03,
       color: '#ffff00',
       decayRate: 0.25,
       remaps: [
-        { mapStartPitch: 124, mapEndPitch: 127, color: '#ffff00' },
+        { mappedPitch: [124, 127] as [number, number], color: '#ffff00' },
       ],
     },
     {
       track: 'bass drum',
-      mode: 'decay',
+      mode: 'decay' as const,
       z: 0.04,
       color: '#444444',
       decayRate: 0.75,
       remaps: [
-        { mapStartPitch: 0, mapEndPitch: 5, color: '#444444' },
+        { mappedPitch: [0, 5] as [number, number], color: '#444444' },
       ],
     },
     {
       track: 'snare drum',
-      mode: 'decay',
+      mode: 'decay' as const,
       z: 0.05,
       color: '#888888',
       decayRate: 0.9,
       remaps: [
-        { mapStartPitch: 6, mapEndPitch: 12, color: '#888888' },
+        { mappedPitch: [6, 12] as [number, number], color: '#888888' },
       ],
     },
     {
       track: 'timpani',
-      mode: 'decay',
+      mode: 'decay' as const,
       z: 0.06,
       color: '#884400',
       decayRate: 0.25,
       remaps: [],
     },
-  ],
+  ].map((s, i) => ({ id: window.crypto.randomUUID(), order: i, ...s })),
 }

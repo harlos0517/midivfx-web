@@ -6,6 +6,7 @@ import DecayNotes from '@/components/DecayNotes'
 import MidiFileContext from '@/context/MidiFileContext'
 import { defaultStyleConfig, type StyleRuntime } from '@/utils/config'
 import type { MidiChannelEventData, TrackData } from '@/utils/midi'
+import { parseRange } from '@/utils/range'
 
 const SPEED = 0.02
 
@@ -29,21 +30,23 @@ type NoteChannelProps = {
 }
 
 const NoteChannel = ({ notes, trackName, trackNum, channel }: NoteChannelProps) => {
-  const { config } = useContext(MidiFileContext)
+  const { config, midiData } = useContext(MidiFileContext)
   const { styles } = config
+  const trackLength = midiData?.tracks.length || 0
 
   const style: StyleRuntime = useMemo(() => {
     let currentStyle = defaultStyleConfig
     for (const s of styles) {
-      const trackNameMatches = trackName
-        && typeof s.track === 'string' && RegExp(s.track, 'i').test(trackName)
-      const trackNumberMatches = !s.track || (Array.isArray(s.track) && s.track.includes(trackNum))
-      const channelMatches = !s.channel || s.channel.includes(channel)
+      const trackNameMatches = trackName && s.isRegex
+        && (!s.track || RegExp(s.track, 'i').test(trackName))
+      const trackNumberMatches = !s.isRegex
+        && (!s.track || parseRange(s.track, 1, trackLength).includes(trackNum))
+      const channelMatches = !s.channel || parseRange(s.channel, 1, 16).includes(channel)
       if (!((trackNameMatches || trackNumberMatches) && channelMatches)) continue
       currentStyle = { ...currentStyle, ...s }
     }
     return currentStyle
-  }, [channel, styles, trackName, trackNum])
+  }, [styles, trackName, trackLength, trackNum, channel])
 
   return <DecayNotes notes={notes} style={style} />
 }
@@ -58,7 +61,7 @@ const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {
   })
 
   return <group ref={groupRef}>
-    {tracks.map((track, i) => <NoteTrack key={i} track={track} trackNum={i} />)}
+    {tracks.map((track, i) => <NoteTrack key={i} track={track} trackNum={i + 1} />)}
   </group>
 }
 

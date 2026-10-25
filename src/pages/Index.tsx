@@ -15,12 +15,13 @@ import type { MidiData } from '@/utils/midi'
 import Playback from '@/utils/Playback'
 
 import CameraConfigPanel from '@/panels/CameraConfigPanel'
+import DisplayConfigPanel from '@/panels/DisplayConfigPanel'
 import ExportConfigPanel from '@/panels/ExportConfigPanel'
 import ImportConfigPanel from '@/panels/ImportConfigPanel'
 import MainPanel from '@/panels/MainPanel'
 import PlaybackConfigPanel from '@/panels/PlaybackConfigPanel'
+import StylesConfigPanel from '@/panels/StylesConfigPanel'
 
-import DisplayConfigPanel from '@/panels/DisplayConfigPanel'
 import 'dockview-react/dist/styles/dockview.css'
 
 const Index = () => {
@@ -38,11 +39,16 @@ const Index = () => {
     export: ExportConfigPanel,
     camera: CameraConfigPanel,
     display: DisplayConfigPanel,
+    styles: StylesConfigPanel,
   }), [])
 
   const loadDefaultLayout = useCallback(() => {
     if (!api) return
     api.addPanel({ id: 'Main', component: 'main' })
+    api.addPanel({
+      id: 'Styles', component: 'styles',
+      position: { referencePanel: 'Main', direction: 'right' },
+    })
     api.addPanel({
       id: 'Import', component: 'import',
       position: { referencePanel: 'Main', direction: 'below' },
@@ -68,16 +74,17 @@ const Index = () => {
   useEffect(() => {
     if (!api) return
 
-    const mySerializedLayout = localStorage.getItem('layout')
-    if (mySerializedLayout) {
-      try {
-        const layout = JSON.parse(mySerializedLayout)
-        api.fromJSON(layout)
-      } catch(err) {
-        console.error(err)
-        loadDefaultLayout()
-      }
-    } else loadDefaultLayout()
+    // const mySerializedLayout = localStorage.getItem('layout')
+    // if (mySerializedLayout) {
+    //   try {
+    //     const layout = JSON.parse(mySerializedLayout)
+    //     api.fromJSON(layout)
+    //   } catch(err) {
+    //     console.error(err)
+    //     loadDefaultLayout()
+    //   }
+    // } else loadDefaultLayout()
+    loadDefaultLayout()
 
     const disposable = api.onDidLayoutChange(() => {
       const layout: SerializedDockview = api.toJSON()
