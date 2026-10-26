@@ -14,9 +14,9 @@ const MainPanel = () => {
 
   return <Box ref={panelRef} h="100%" pos="relative" style={{ overflow: 'hidden' }}>
     <Box
-      w={width} h={height} bg="black"
+      bg="black"
       pos="absolute" top="50%" left="50%"
-      style={{ transform: `translate(-50%, -50%) scale(${scale})` }}
+      style={{ width, height, transform: `translate(-50%, -50%) scale(${scale})` }}
     >
       <Canvas
         dpr={1}
