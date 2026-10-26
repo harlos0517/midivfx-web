@@ -1,16 +1,14 @@
 import { Box } from '@mantine/core'
 import { useElementSize } from '@mantine/hooks'
 import { Canvas } from '@react-three/fiber'
-import { useContext } from 'react'
 
 import CameraControls from '@/components/CameraControls'
 import CanvasRenderer from '@/components/CanvasRenderer'
-import MidiFileContext from '@/context/MidiFileContext'
+import useConfigStore from '@/store/configStore'
 
 const MainPanel = () => {
-  const { config } = useContext(MidiFileContext)
-
-  const { width, height } = config.display
+  const width = useConfigStore(s => s.config.display.width)
+  const height = useConfigStore(s => s.config.display.height)
   const { ref: panelRef, width: panelWidth, height: panelHeight } = useElementSize()
   const scale = panelWidth && panelHeight ? Math.min(panelWidth / width, panelHeight / height) : 0
 

@@ -1,15 +1,14 @@
 import { Box } from '@mantine/core'
-import { useContext } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 
 import StyleConfigBox from '@/components/StyleConfigBox'
-import MidiFileContext from '@/context/MidiFileContext'
+import useConfigStore from '@/store/configStore'
 
 const StylesConfigPanel = () => {
-  const { config } = useContext(MidiFileContext)
-  const { styles } = config
+  const ids = useConfigStore(useShallow(s => s.config.styles.map(style => style.id)))
 
   return <Box p="md" h="100%" style={{ overflowY: 'auto' }}>
-    {styles.map(s => <StyleConfigBox key={s.id || ''} id={s.id || ''} />)}
+    {ids.map(id => <StyleConfigBox key={id} id={id} />)}
   </Box>
 }
 

@@ -4,6 +4,7 @@ import type { Group } from 'three'
 
 import DecayNotes from '@/components/DecayNotes'
 import MidiFileContext from '@/context/MidiFileContext'
+import useConfigStore from '@/store/configStore'
 import { defaultStyleConfig, type StyleRuntime } from '@/utils/config'
 import type { MidiChannelEventData, TrackData } from '@/utils/midi'
 import { parseRange } from '@/utils/range'
@@ -30,8 +31,8 @@ type NoteChannelProps = {
 }
 
 const NoteChannel = ({ notes, trackName, trackNum, channel }: NoteChannelProps) => {
-  const { config, midiData } = useContext(MidiFileContext)
-  const { styles } = config
+  const { midiData } = useContext(MidiFileContext)
+  const styles = useConfigStore(s => s.config.styles)
   const trackLength = midiData?.tracks.length || 0
 
   const style: StyleRuntime = useMemo(() => {

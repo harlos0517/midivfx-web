@@ -1,20 +1,17 @@
-import { useContext } from 'react'
-
-import MidiFileContext from '@/context/MidiFileContext'
+import useConfigStore from '@/store/configStore'
 import { type Config } from '@/utils/config'
 
 type PlaybackConfig = Config['playback']
 
 const usePlaybackConfig = <T extends keyof PlaybackConfig>(key: T) => {
-  const { config, setConfig } = useContext(MidiFileContext)
-
-  const value: PlaybackConfig[T] = config.playback[key]
+  const value = useConfigStore(s => s.config.playback[key])
+  const setConfig = useConfigStore(s => s.setConfig)
 
   const updateValue = (newValue: PlaybackConfig[T]) => {
-    setConfig({
-      ...config,
-      playback: { ...config.playback, [key]: newValue },
-    })
+    setConfig(c => ({
+      ...c,
+      playback: { ...c.playback, [key]: newValue },
+    }))
   }
 
   return [value, updateValue] as const

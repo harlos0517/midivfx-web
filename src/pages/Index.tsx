@@ -10,7 +10,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import MidiFileContext from '@/context/MidiFileContext'
-import { exampleConfig } from '@/utils/config'
 import type { MidiData } from '@/utils/midi'
 import Playback from '@/utils/Playback'
 
@@ -27,7 +26,6 @@ import 'dockview-react/dist/styles/dockview.css'
 const Index = () => {
   const [midiData, setMidiData] = useState<MidiData | null>(null)
   const playback = useMemo(() => new Playback(), [])
-  const [config, setConfig] = useState(exampleConfig)
 
   useEffect(() => () => playback.dispose(), [playback])
 
@@ -128,7 +126,7 @@ const Index = () => {
   })
 
   return <MidiFileContext.Provider
-    value={{ midiData, setMidiData, playback, config, setConfig }}
+    value={{ midiData, setMidiData, playback }}
   >
     <Box h="100dvh" style={{ overflow: 'hidden' }}>
       <DockviewReact
