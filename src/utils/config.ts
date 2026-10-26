@@ -71,7 +71,7 @@ export interface Config {
 
 export const defaultStyleConfig: Omit<StyleRuntime, 'id' | 'order'> = {
   mode: 'fill',
-  isRegex: false,
+  isRegex: true,
   velocity: false,
   color: '#ffffff',
   gap: 0.1,
@@ -213,5 +213,5 @@ export const exampleConfig: Config = {
       decayRate: 0.25,
       remaps: [],
     },
-  ].map((s, i) => ({ id: window.crypto.randomUUID(), order: i, ...s })),
+  ].map((s, i) => ({ ...defaultStyleConfig, id: window.crypto.randomUUID(), order: i, ...s })),
 }

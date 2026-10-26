@@ -16,3 +16,20 @@ export const parseRange = (value: string, min: number, max: number): number[] =>
   return [...new Set(result.filter(n => n >= min && n <= max))]
 }
 
+export const rangeText = (arr: number[]) => {
+  const sorted = [...new Set(arr)].sort((a, b) => a - b)
+  const parts: string[] = []
+
+  let i = 0
+  while (i < sorted.length) {
+    const start = sorted[i] as number
+    let end = start
+
+    while (i + 1 < sorted.length && sorted[i + 1] === end + 1) end = sorted[++i] as number
+
+    parts.push(end > start ? `${start}-${end}` : `${start}`)
+    i++
+  }
+
+  return parts.join(',')
+}
