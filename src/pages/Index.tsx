@@ -74,8 +74,8 @@ const Index = () => {
       position: { referencePanel: 'Import', direction: 'below' },
     })
 
-    api.getPanel('Tracks')?.api.setSize({ width: 320 })
-    api.getPanel('Styles')?.api.setSize({ width: 320 })
+    api.getPanel('Tracks')?.api.setSize({ width: 330 })
+    api.getPanel('Styles')?.api.setSize({ width: 330 })
   }
 
   useEffect(() => {
