@@ -5,7 +5,6 @@ import { useShallow } from 'zustand/react/shallow'
 
 import StyleConfigBox from '@/components/StyleConfigBox'
 import useConfigStore from '@/store/configStore'
-import { defaultStyleConfig } from '@/utils/config'
 import { PlusIcon } from '@phosphor-icons/react'
 
 const StylesConfigPanel = () => {
@@ -33,7 +32,6 @@ const StylesConfigPanel = () => {
           setConfig(c => ({
             ...c,
             styles: [...c.styles, {
-              ...defaultStyleConfig,
               id: window.crypto.randomUUID(),
               order: c.styles[c.styles.length - 1]!.order + 1,
             }],

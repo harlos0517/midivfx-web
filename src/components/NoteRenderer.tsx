@@ -1,13 +1,12 @@
 import { useFrame } from '@react-three/fiber'
-import { useContext, useMemo, useRef } from 'react'
+import { useContext, useRef } from 'react'
 import type { Group } from 'three'
 
 import DecayNotes from '@/components/DecayNotes'
 import MidiFileContext from '@/context/MidiFileContext'
-import useConfigStore from '@/store/configStore'
-import { defaultStyleConfig, type StyleRuntime } from '@/utils/config'
+import useStyle from '@/hooks/useStyle'
+import { type StyleRuntime } from '@/utils/config'
 import type { MidiChannelEventData, TrackData } from '@/utils/midi'
-import { parseRange } from '@/utils/range'
 
 const SPEED = 0.02
 
@@ -31,24 +30,7 @@ type NoteChannelProps = {
 }
 
 const NoteChannel = ({ notes, trackName, trackNum, channel }: NoteChannelProps) => {
-  const { midiData } = useContext(MidiFileContext)
-  const styles = useConfigStore(s => s.config.styles)
-  const trackLength = midiData?.tracks.length || 0
-
-  const style: StyleRuntime = useMemo(() => {
-    let currentStyle = defaultStyleConfig
-    for (const s of styles) {
-      const trackNameMatches = trackName && s.isRegex
-        && (!s.track || RegExp(s.track, 'i').test(trackName))
-      const trackNumberMatches = !s.isRegex
-        && (!s.track || parseRange(s.track, 1, trackLength).includes(trackNum))
-      const channelMatches = !s.channel || parseRange(s.channel, 1, 16).includes(channel)
-      if (!((trackNameMatches || trackNumberMatches) && channelMatches)) continue
-      currentStyle = { ...currentStyle, ...s }
-    }
-    return currentStyle
-  }, [styles, trackName, trackLength, trackNum, channel])
-
+  const style: StyleRuntime = useStyle(trackName || '', trackNum, channel)
   return <DecayNotes notes={notes} style={style} />
 }
 

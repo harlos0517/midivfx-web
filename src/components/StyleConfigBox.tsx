@@ -5,12 +5,9 @@ import {
   ColorInput,
   Divider,
   Group,
-  NumberInput,
   SegmentedControl,
-  Slider,
   Space,
   Stack,
-  Switch,
   Text,
   TextInput,
 } from '@mantine/core'
@@ -24,14 +21,17 @@ import {
   DotsSixVerticalIcon,
   HammerIcon,
   PaintBucketIcon,
+  PaletteIcon,
+  PianoKeysIcon,
   PlusIcon,
+  RectangleIcon,
   TildeIcon,
   TrashSimpleIcon,
 } from '@phosphor-icons/react'
-import { useState } from 'react'
 
+import OverridableInput from '@/components/OverridableInput'
 import useStyleConfig from '@/hooks/useStyleConfig'
-import type { NoteMode, Remap } from '@/utils/config'
+import type { Remap } from '@/utils/config'
 import { parseRange, rangeText } from '@/utils/range'
 
 const groupProps = {
@@ -99,20 +99,10 @@ const StyleConfigBox = ({ id }: { id: string }) => {
   const [isRegex, setIsRegex] = useStyleConfig(id, 'isRegex')
   const [track, setTrack] = useStyleConfig(id, 'track')
   const [channel, setChannel] = useStyleConfig(id, 'channel')
-  const [mode, setMode] = useStyleConfig(id, 'mode')
-  const [velocity, setVelocity] = useStyleConfig(id, 'velocity')
-  const [color, setColor] = useStyleConfig(id, 'color')
-  const [gap, setGap] = useStyleConfig(id, 'gap')
-  const [radius, setRadius] = useStyleConfig(id, 'radius')
-  const [z, setZ] = useStyleConfig(id, 'z')
-  const [decayRate, setDecayRate] = useStyleConfig(id, 'decayRate')
-  const [showPedal, setShowPedal] = useStyleConfig(id, 'showPedal')
-  const [pedalColor, setPedalColor] = useStyleConfig(id, 'pedalColor')
-  const [remaps, setRemaps] = useStyleConfig(id, 'remaps')
+  const [mode] = useStyleConfig(id, 'mode', true)
+  const [showPedal] = useStyleConfig(id, 'showPedal', true)
 
-  const [cc, setCC] = useState<number>(
-    parseInt((mode as string)?.match(/CC(\d+)/)?.[1] || '0', 10) || 0,
-  )
+  const [remaps, setRemaps] = useStyleConfig(id, 'remaps')
 
   const { ref, handleRef, isDragging } = useSortable({ id, index: order || 0 })
 
@@ -164,112 +154,131 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             setChannel(text)
           }}
         />
-        <ColorInput
-          w={135}
-          value={color || '#ffffff'}
-          onChange={setColor}
+      </Group>
+      <Group {...groupProps}>
+        <OverridableInput
+          id={id}
+          styleKey="color"
+          label={<PaletteIcon size={20} />}
+          inputType="color"
+          wrapperProps={{ w: 180, flex: 1 }}
+          overridable
         />
-        <Switch
-          labelPosition="left"
+        <OverridableInput
+          id={id}
+          styleKey="velocity"
           label={<HammerIcon size={24} />}
-          checked={velocity}
-          onChange={e => setVelocity(e.currentTarget.checked)}
-          styles={{ body: { display: 'flex', alignItems: 'center' } }}
+          inputType="switch"
+          inputProps={{
+            styles: { body: { display: 'flex', alignItems: 'center' } },
+          }}
+          overridable
         />
       </Group>
       <Group {...groupProps}>
-        <SegmentedControl
-          bd="#444444 1px solid"
+        <OverridableInput
+          id={id}
+          label={<RectangleIcon size={20} />}
+          styleKey="mode"
+          inputType="segmented"
+          inputProps={{
+            bd: '#444444 1px solid',
+          }}
           data={[
             { value: 'fill', label: <PaintBucketIcon size={20} /> },
             { value: 'decay', label: <ArrowBendDownRightIcon size={20} /> },
             { value: 'CC', label: <ClosedCaptioningIcon size={20} /> },
           ]}
-          styles={{
-            label: {},
-          }}
-          value={mode?.startsWith('CC') ? 'CC' : (mode || 'fill')}
-          onChange={v => {
-            if (v === 'CC') setMode(`CC${cc}` as NoteMode)
-            else setMode(v as NoteMode)
-          }}
+          overridable
         />
-        {mode?.startsWith('CC') ? <NumberInput
-          flex={1}
-          value={cc}
-          min={0}
-          max={127}
-          step={1}
-          onChange={v => {
-            const newCC = typeof v === 'string' ? parseInt(v, 10) : v
-            setCC(newCC || 0)
-            setMode(`CC${newCC}`)
+        {mode === 'CC' ? <OverridableInput
+          id={id}
+          label="CC"
+          styleKey="cc"
+          inputType="number"
+          wrapperProps={{ flex: 1 }}
+          inputProps={{ min: 0, max: 127, step: 1 }}
+          overridable
+        /> : mode === 'decay' ? <OverridableInput
+          id={id}
+          label={<ArrowBendDownRightIcon size={20} />}
+          styleKey="decayRate"
+          inputType="slider"
+          wrapperProps={{ flex: 1 }}
+          inputProps={{
+            min: 0, max: 1, step: 0.01,
+            marks: [
+              { value: 0, label: '0' },
+              { value: 0.5, label: '0.5' },
+              { value: 1, label: '1' },
+            ],
           }}
-        /> : mode === 'decay' ? <Slider
-          flex={1}
-          value={decayRate || 0}
-          min={0}
-          max={1}
-          step={0.01}
-          marks={[
-            { value: 0, label: '0' },
-            { value: 0.5, label: '0.5' },
-            { value: 1, label: '1' },
-          ]}
-          onChange={setDecayRate}
+          overridable
         /> : <Space flex={1}/>}
-        <Switch
-          label="ped."
-          labelPosition="left"
-          checked={showPedal}
-          onChange={e => setShowPedal(e.currentTarget.checked)}
-        />
-        {showPedal ? (
-          <ColorInput
-            w={135}
-            value={pedalColor || '#444444'}
-            onChange={setPedalColor}
-          />
-        ) : <Space w={135} />}
       </Group>
       <Group {...groupProps}>
-        <ArrowsInLineVerticalIcon size={24} />
-        <Slider
-          flex={1}
-          value={gap || 0}
-          min={0}
-          max={1}
-          step={0.01}
-          marks={[
-            { value: 0, label: '0' },
-            { value: 0.5, label: '0.5' },
-            { value: 1, label: '1' },
-          ]}
-          onChange={setGap}
+        <OverridableInput
+          id={id}
+          styleKey="showPedal"
+          label={<PianoKeysIcon size={20} />}
+          inputType="switch"
+          overridable
         />
-        <AngleIcon size={24} />
-        <Slider
-          flex={1}
-          value={radius || 0}
-          min={0}
-          max={0.5}
-          step={0.01}
-          marks={[{ value: 0, label: '0' }, { value: 0.5, label: '0.5' }]}
-          onChange={setRadius}
+        {showPedal ? <OverridableInput
+          id={id}
+          styleKey="pedalColor"
+          label={<PaletteIcon size={20} />}
+          inputType="color"
+          wrapperProps={{ w: 180 }}
+          overridable
+        /> : <Space w={180} />}
+      </Group>
+      <Group {...groupProps}>
+        <OverridableInput
+          id={id}
+          label={<ArrowsInLineVerticalIcon size={24} />}
+          styleKey="gap"
+          inputType="slider"
+          wrapperProps={{ flex: 1 }}
+          inputProps={{
+            min: 0, max: 1, step: 0.01,
+            marks: [
+              { value: 0, label: '0' },
+              { value: 0.5, label: '0.5' },
+              { value: 1, label: '1' },
+            ],
+          }}
+          overridable
         />
-        <CopySimpleIcon size={24} />
-        <Slider
-          flex={1}
-          min={-10}
-          max={10}
-          value={z || 0}
-          step={0.1}
-          marks={[
-            { value: -100, label: '-10' },
-            { value: 0, label: '0' },
-            { value: 10, label: '10' },
-          ]}
-          onChange={v => setZ(Number(v))}
+        <OverridableInput
+          id={id}
+          label={<AngleIcon size={24} />}
+          styleKey="radius"
+          inputType="slider"
+          wrapperProps={{ flex: 1 }}
+          inputProps={{
+            min: 0, max: 0.5, step: 0.01,
+            marks: [{ value: 0, label: '0' }, { value: 0.5, label: '0.5' }],
+          }}
+          overridable
+        />
+      </Group>
+      <Group {...groupProps}>
+        <OverridableInput
+          id={id}
+          label={<CopySimpleIcon size={24} />}
+          styleKey="z"
+          inputType="slider"
+          wrapperProps={{ flex: 1 }}
+          inputProps={{
+            min: -10, max: 10, step: 0.1,
+            marks: [
+              { value: -10, label: '-10' },
+              { value: 0, label: '0' },
+              { value: 10, label: '10' },
+            ],
+          }}
+          overridable
         />
       </Group>
       <Group {...groupProps}>

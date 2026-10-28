@@ -1,5 +1,5 @@
 /** `fill`, `decay`, or a MIDI CC number such as `CC9`. */
-export type NoteMode = 'fill' | 'decay' | `CC${number}`
+export type NoteMode = 'fill' | 'decay' | 'CC'
 
 export interface PlaybackConfig {
   /** Extra time before first note (us). */
@@ -42,9 +42,8 @@ export interface Remap {
 
 export interface StyleRuntime {
   isRegex: boolean
-  track?: string // 1-based track numbers, range notation or regex
-  channel?: string // 1-based channel numbers, range notation
   mode: NoteMode
+  cc: number
   velocity: boolean
   color: string
   gap: number
@@ -59,6 +58,8 @@ export interface StyleRuntime {
 export type StyleConfig = Partial<StyleRuntime> & {
   id: string
   order: number
+  track?: string // 1-based track numbers, range notation or regex
+  channel?: string // 1-based channel numbers, range notation
 }
 
 export interface Config {
@@ -71,6 +72,7 @@ export interface Config {
 
 export const defaultStyleConfig: Omit<StyleRuntime, 'id' | 'order'> = {
   mode: 'fill',
+  cc: 2,
   isRegex: true,
   velocity: false,
   color: '#ffffff',
@@ -213,5 +215,5 @@ export const exampleConfig: Config = {
       decayRate: 0.25,
       remaps: [],
     },
-  ].map((s, i) => ({ ...defaultStyleConfig, id: window.crypto.randomUUID(), order: i, ...s })),
+  ].map((s, i) => ({ id: window.crypto.randomUUID(), order: i, ...s })),
 }

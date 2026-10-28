@@ -20,6 +20,7 @@ import ImportConfigPanel from '@/panels/ImportConfigPanel'
 import MainPanel from '@/panels/MainPanel'
 import PlaybackConfigPanel from '@/panels/PlaybackConfigPanel'
 import StylesConfigPanel from '@/panels/StylesConfigPanel'
+import TracksPanel from '@/panels/TracksPanel'
 
 import 'dockview-react/dist/styles/dockview.css'
 
@@ -38,11 +39,17 @@ const Index = () => {
     camera: CameraConfigPanel,
     display: DisplayConfigPanel,
     styles: StylesConfigPanel,
+    tracks: TracksPanel,
   }), [])
 
   const loadDefaultLayout = useCallback(() => {
     if (!api) return
     api.addPanel({ id: 'Main', component: 'main' })
+    api.addPanel({
+      id: 'Tracks', component: 'tracks',
+      position: { referencePanel: 'Main', direction: 'left' },
+      minimumWidth: 200,
+    })
     api.addPanel({
       id: 'Styles', component: 'styles',
       position: { referencePanel: 'Main', direction: 'right' },
@@ -67,6 +74,8 @@ const Index = () => {
       id: 'Export', component: 'export',
       position: { referencePanel: 'Import', direction: 'below' },
     })
+
+    api.getPanel('Tracks')?.api.setSize({ width: 320 })
   }, [api])
 
   useEffect(() => {
