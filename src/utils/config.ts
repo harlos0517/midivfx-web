@@ -70,7 +70,7 @@ export interface Config {
   styles: StyleConfig[]
 }
 
-export const defaultStyleConfig: Omit<StyleRuntime, 'id' | 'order'> = {
+export const defaultStyleRuntime: Omit<StyleRuntime, 'id' | 'order'> = {
   mode: 'fill',
   cc: 2,
   isRegex: true,
@@ -82,6 +82,12 @@ export const defaultStyleConfig: Omit<StyleRuntime, 'id' | 'order'> = {
   decayRate: 0.0,
   showPedal: true,
   pedalColor: '#444444',
+  remaps: [],
+}
+
+export const defaultStylConfig = {
+  mode: 'fill' as const,
+  isRegex: true,
   remaps: [],
 }
 
@@ -149,7 +155,7 @@ export const exampleConfig: Config = {
     beat: false,
   },
   styles: [
-    { ...defaultStyleConfig },
+    { ...defaultStyleRuntime },
     { track: 'piccolo', z: 0.60, color: '#ff4444' },
     { track: 'flute', z: 0.61, color: '#ff0000' },
     { track: 'oboe', z: 0.62, color: '#ff6600' },
@@ -215,5 +221,5 @@ export const exampleConfig: Config = {
       decayRate: 0.25,
       remaps: [],
     },
-  ].map((s, i) => ({ id: window.crypto.randomUUID(), order: i, ...s })),
+  ].map((s, i) => ({ ...defaultStylConfig, id: window.crypto.randomUUID(), order: i, ...s })),
 }

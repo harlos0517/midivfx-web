@@ -2,7 +2,7 @@ import { useContext, useMemo } from 'react'
 
 import MidiFileContext from '@/context/MidiFileContext'
 import useConfigStore from '@/store/configStore'
-import { type StyleRuntime, defaultStyleConfig } from '@/utils/config'
+import { type StyleRuntime, defaultStyleRuntime } from '@/utils/config'
 import { parseRange } from '@/utils/range'
 
 const useStyle = (trackName: string, trackNum: number, channel: number) => {
@@ -11,7 +11,7 @@ const useStyle = (trackName: string, trackNum: number, channel: number) => {
   const trackLength = midiData?.tracks.length || 0
 
   const style: StyleRuntime = useMemo(() => {
-    let currentStyle = defaultStyleConfig
+    let currentStyle = defaultStyleRuntime
     for (const s of styles) {
       const trackNameMatches = trackName && s.isRegex
         && (!s.track || RegExp(s.track, 'i').test(trackName))

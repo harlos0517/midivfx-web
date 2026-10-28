@@ -17,7 +17,7 @@ import {
 import { useEffect, useRef, type ReactNode } from 'react'
 
 import useStyleConfig from '@/hooks/useStyleConfig'
-import { defaultStyleConfig, type StyleConfig } from '@/utils/config'
+import { defaultStyleRuntime, type StyleConfig } from '@/utils/config'
 
 interface CommonProps {
   label?: ReactNode
@@ -42,7 +42,7 @@ type OverridableInputProps = CommonProps & (
 const OverridableInput = (props: OverridableInputProps) => {
   const { label: icon, wrapperProps = {}, id, styleKey, overridable = false } = props
 
-  const defaultValue = defaultStyleConfig[styleKey]
+  const defaultValue = defaultStyleRuntime[styleKey]
   const [value, setValue, clearValue] = useStyleConfig(id, styleKey, overridable)
   const overrideValue = useRef<string | number | boolean>(value ?? defaultValue)
   const isOverride = overridable ? value !== undefined : true
