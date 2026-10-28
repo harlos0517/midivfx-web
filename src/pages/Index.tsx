@@ -6,7 +6,7 @@ import {
   type DockviewReadyEvent,
   type SerializedDockview,
 } from 'dockview-react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import MidiFileContext from '@/context/MidiFileContext'
@@ -28,8 +28,6 @@ const Index = () => {
   const [midiData, setMidiData] = useState<MidiData | null>(null)
   const playback = useMemo(() => new Playback(), [])
 
-  useEffect(() => () => playback.dispose(), [playback])
-
   const [api, setApi] = useState<DockviewApi>()
   const components = useMemo(() => ({
     main: MainPanel,
@@ -42,7 +40,7 @@ const Index = () => {
     tracks: TracksPanel,
   }), [])
 
-  const loadDefaultLayout = useCallback(() => {
+  const loadDefaultLayout = (api: DockviewApi) => {
     if (!api) return
     api.addPanel({ id: 'Main', component: 'main' })
     api.addPanel({
@@ -53,6 +51,7 @@ const Index = () => {
     api.addPanel({
       id: 'Styles', component: 'styles',
       position: { referencePanel: 'Main', direction: 'right' },
+      minimumWidth: 320,
     })
     api.addPanel({
       id: 'Import', component: 'import',
@@ -76,10 +75,22 @@ const Index = () => {
     })
 
     api.getPanel('Tracks')?.api.setSize({ width: 320 })
-  }, [api])
+    api.getPanel('Styles')?.api.setSize({ width: 320 })
+  }
 
   useEffect(() => {
     if (!api) return
+
+    const disposable = api.onDidLayoutChange(() => {
+      const layout: SerializedDockview = api.toJSON()
+      localStorage.setItem('layout', JSON.stringify(layout))
+    })
+
+    return () => disposable.dispose()
+  }, [api])
+
+  const onReady = (event: DockviewReadyEvent) => {
+    setApi(event.api)
 
     // const mySerializedLayout = localStorage.getItem('layout')
     // if (mySerializedLayout) {
@@ -91,18 +102,7 @@ const Index = () => {
     //     loadDefaultLayout()
     //   }
     // } else loadDefaultLayout()
-    loadDefaultLayout()
-
-    const disposable = api.onDidLayoutChange(() => {
-      const layout: SerializedDockview = api.toJSON()
-      localStorage.setItem('layout', JSON.stringify(layout))
-    })
-
-    return () => disposable.dispose()
-  }, [api, loadDefaultLayout])
-
-  const onReady = (event: DockviewReadyEvent) => {
-    setApi(event.api)
+    loadDefaultLayout(event.api)
   }
 
   useEffect(() => () => {

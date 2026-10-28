@@ -52,7 +52,7 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     <Collapse expanded={expanded}>
       <Group justify="space-between" gap="8 0" mb="xs">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(ch =>
-          <ChannelBox trackName={trackName} i={i} channel={ch} width={chWidth} />,
+          <ChannelBox key={ch} trackName={trackName} i={i} channel={ch} width={chWidth} />,
         )}
       </Group>
     </Collapse>
