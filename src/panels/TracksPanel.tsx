@@ -1,11 +1,13 @@
 import { ActionIcon, Box, Center, Collapse, Group, Stack, Text } from '@mantine/core'
 import { useDisclosure, useElementSize } from '@mantine/hooks'
-import { CaretDownIcon } from '@phosphor-icons/react'
+import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react'
 import { useContext } from 'react'
 
 import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
 import { getTextColor } from '@/utils/colors'
+
+import classes from './TracksPanel.module.sass'
 
 interface ChannelBoxProps {
   trackName: string
@@ -47,7 +49,16 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     <Group wrap="nowrap">
       <Text>{i}</Text>
       <Text flex={1}>{trackName.replace(/\u00AD/g, '')}</Text>
-      <ActionIcon onClick={toggle} variant="subtle"><CaretDownIcon size={24}/></ActionIcon>
+      <ActionIcon
+        className={classes['collapse-icon']}
+        onClick={toggle}
+        style={{ borderColor: getTextColor(style.color) }}
+      >
+        {expanded
+          ? <CaretUpIcon size={24} color={getTextColor(style.color)} />
+          : <CaretDownIcon size={24} color={getTextColor(style.color)} />
+        }
+      </ActionIcon>
     </Group>
     <Collapse expanded={expanded}>
       <Group justify="space-between" gap="8 0" mb="xs">
