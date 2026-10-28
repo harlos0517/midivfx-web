@@ -13,17 +13,16 @@ interface ChannelBoxProps {
   trackName: string
   i: number
   channel: number
-  width: number | string
 }
 
-const ChannelBox = ({ trackName, i, channel, width }: ChannelBoxProps) => {
+const ChannelBox = ({ trackName, i, channel }: ChannelBoxProps) => {
   const style = useStyle(trackName, i, channel)
   const textColor = getTextColor(style.color)
-  return <Center w={width}><Center
+  return <Center
     w="2rem" h="2rem" bdrs="sm" bd={`solid 1px ${textColor}`}
     bg={style.color}
     c={textColor}
-  >{channel}</Center></Center>
+  >{channel}</Center>
 }
 
 interface TrackInfoProps {
@@ -34,10 +33,11 @@ interface TrackInfoProps {
 const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
   const style = useStyle(trackName, i, 1)
   const { ref, width } = useElementSize()
-  const chWidth =
-    width > 260 ? '12.5%' :
-      width > 150 ? '25%' :
-        width > 100 ? '50%' : '100%'
+  const cols = width > 500 ? 16 : width > 250 ? 8 : 4
+  const rows = 16 / cols
+
+  const channels = Array.from(Array<number>(rows))
+    .map((_, r) => Array.from(Array<number>(cols)).map((_, c) => r * cols + c + 1))
 
   const [expanded, { toggle }] = useDisclosure(false)
 
@@ -61,11 +61,11 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
       </ActionIcon>
     </Group>
     <Collapse expanded={expanded}>
-      <Group justify="space-between" gap="8 0" mb="xs">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map(ch =>
-          <ChannelBox key={ch} trackName={trackName} i={i} channel={ch} width={chWidth} />,
-        )}
-      </Group>
+      <Stack gap={8}>
+        {channels.map(row => <Group gap={8} wrap="nowrap" justify="space-between">
+          {row.map(ch => <ChannelBox key={ch} trackName={trackName} i={i} channel={ch} />)}
+        </Group>)}
+      </Stack>
     </Collapse>
   </Stack>
 }

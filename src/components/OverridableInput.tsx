@@ -24,7 +24,6 @@ interface CommonProps {
   wrapperProps?: MantineStyleProps
   id: string
   styleKey: Exclude<keyof StyleConfig, 'id' | 'order' | 'track' | 'channel' | 'isRegex' | 'remaps'>
-  overridable?: boolean
 }
 
 type OverridableInputProps = CommonProps & (
@@ -40,12 +39,17 @@ type OverridableInputProps = CommonProps & (
 )
 
 const OverridableInput = (props: OverridableInputProps) => {
-  const { label: icon, wrapperProps = {}, id, styleKey, overridable = false } = props
+  const {
+    label: icon,
+    wrapperProps = {},
+    id,
+    styleKey,
+  } = props
 
   const defaultValue = defaultStyleRuntime[styleKey]
-  const [value, setValue, clearValue] = useStyleConfig(id, styleKey, overridable)
+  const [value, setValue, clearValue] = useStyleConfig(id, styleKey, true)
   const overrideValue = useRef<string | number | boolean>(value ?? defaultValue)
-  const isOverride = overridable ? value !== undefined : true
+  const isOverride = value !== undefined
 
   useEffect(() => {
     if (value !== undefined) overrideValue.current = value
