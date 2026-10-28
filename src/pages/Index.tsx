@@ -92,17 +92,17 @@ const Index = () => {
   const onReady = (event: DockviewReadyEvent) => {
     setApi(event.api)
 
-    // const mySerializedLayout = localStorage.getItem('layout')
-    // if (mySerializedLayout) {
-    //   try {
-    //     const layout = JSON.parse(mySerializedLayout)
-    //     api.fromJSON(layout)
-    //   } catch(err) {
-    //     console.error(err)
-    //     loadDefaultLayout()
-    //   }
-    // } else loadDefaultLayout()
-    loadDefaultLayout(event.api)
+    const mySerializedLayout = localStorage.getItem('layout')
+    if (mySerializedLayout) {
+      try {
+        const layout = JSON.parse(mySerializedLayout)
+        event.api.fromJSON(layout)
+      } catch(err) {
+        console.error(err)
+        loadDefaultLayout(event.api)
+      }
+    } else loadDefaultLayout(event.api)
+    // loadDefaultLayout(event.api)
   }
 
   useEffect(() => () => {
