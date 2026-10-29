@@ -11,6 +11,5 @@ export default defineConfig({
   },
   build: {
     outDir: './docs',
-    copyPublicDir: false,
   },
 })
