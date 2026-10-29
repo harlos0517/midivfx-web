@@ -5,15 +5,16 @@ import type Playback from '@/utils/Playback'
 /** Blank time added before and after the song when files are loaded (ms). */
 export const DEFAULT_PADDING = 3000
 
-export const getMidiDuration = (midiData: MidiData | null) =>
-  Math.max(
-    0,
-    ...(midiData?.tracks ?? []).flatMap(
-      track => track.channels.flatMap(
-        ch => ch.map(e => e.endEvent?.time ?? e.time),
-      ),
-    ),
-  )
+/** End of the last MIDI event (ms). */
+export const getMidiDuration = (midiData: MidiData | null) => {
+  // A loop: spreading every event into Math.max overflows the call stack on large files
+  let end = 0
+  for (const track of midiData?.tracks ?? []) {
+    for (const channel of track.channels)
+      for (const e of channel) end = Math.max(end, e.endEvent?.time ?? e.time)
+  }
+  return end
+}
 
 /** End of whichever is longer: the last MIDI note or the (offset) audio (ms). */
 export const getLength = (midiData: MidiData | null, playback: Playback | null) =>
