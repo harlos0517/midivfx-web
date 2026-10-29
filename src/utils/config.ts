@@ -1,4 +1,4 @@
-/** `fill`, `decay`, or a MIDI CC number such as `CC9`. */
+/** `fill`: solid, `decay`: fades over time, `CC`: opacity follows the `cc` controller. */
 export type NoteMode = 'fill' | 'decay' | 'CC'
 
 export interface PlaybackConfig {
@@ -69,7 +69,7 @@ export interface Config {
 
 export const defaultStyleRuntime: Omit<StyleRuntime, 'id' | 'order'> = {
   mode: 'fill',
-  cc: 2,
+  cc: 11,
   isRegex: true,
   velocity: false,
   color: '#ffffff',
