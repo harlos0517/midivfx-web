@@ -17,7 +17,7 @@ const NoteTrack = ({ track, trackNum }: { track: TrackData, trackNum: number }) 
       notes={ch}
       trackName={track.name}
       trackNum={trackNum}
-      channel={i}
+      channel={i + 1}
     />)}
   </group>
 }
