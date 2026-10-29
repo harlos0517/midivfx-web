@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { exampleConfig, type Config } from '@/utils/config'
+import { defaultConfig, type Config } from '@/utils/config'
 
 interface ConfigStore {
   config: Config
@@ -8,10 +8,20 @@ interface ConfigStore {
 }
 
 const useConfigStore = create<ConfigStore>(set => ({
-  config: exampleConfig,
-  setConfig: update => set(state => ({
-    config: typeof update === 'function' ? update(state.config) : update,
-  })),
+  config: (() => {
+    try {
+      const saved = localStorage.getItem('config')
+      if (saved) return { ...defaultConfig, ...JSON.parse(saved) }
+    } catch {
+      // corrupted JSON or storage unavailable: fall back to defaults
+    }
+    return defaultConfig
+  })(),
+  setConfig: update => set(state => {
+    const newConfig = typeof update === 'function' ? update(state.config) : update
+    localStorage.setItem('config', JSON.stringify(newConfig))
+    return { config: newConfig }
+  }),
 }))
 
 export default useConfigStore

@@ -25,6 +25,7 @@ import {
   CopySimpleIcon,
   DotsSixVerticalIcon,
   HammerIcon,
+  LockIcon,
   PaintBucketIcon,
   PaletteIcon,
   PianoKeysIcon,
@@ -119,7 +120,11 @@ const StyleConfigBox = ({ id }: { id: string }) => {
 
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const { ref, handleRef, isDragging } = useSortable({ id, index: order || 0 })
+  const { ref, handleRef, isDragging } = useSortable({
+    id,
+    index: order || 0,
+    disabled: id === 'default',
+  })
 
   const copy = () => {
     setConfig(c => {
@@ -129,7 +134,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
         id: window.crypto.randomUUID(),
         order: c.styles[c.styles.length - 1]!.order + 1,
       }
-      c.styles.splice(i, 0, newStyle)
+      c.styles.splice(i + 1, 0, newStyle)
       return ({
         ...c,
         styles: [...c.styles],
@@ -148,17 +153,27 @@ const StyleConfigBox = ({ id }: { id: string }) => {
     })
   }
 
-  return <Box ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
+  return <Box ref={ref}
+    style={{ opacity: isDragging ? 0.5 : 1 }}
+    data-no-dnd={String(id === 'default')}
+  >
     <Stack gap="xs">
       <Group {...groupProps} gap="4px">
-        <ActionIcon
-          size="lg"
-          ref={handleRef}
-          variant="subtle"
-          style={{ cursor: 'grab', touchAction: 'none' }}
-        >
-          <DotsSixVerticalIcon size={20} color="gray" />
-        </ActionIcon>
+        {id === 'default'
+          ? <ActionIcon
+            size="lg"
+            variant="subtle"
+            disabled
+          ><LockIcon size={20} /></ActionIcon>
+          : <ActionIcon
+            size="lg"
+            ref={handleRef}
+            variant="subtle"
+            style={{ cursor: 'grab', touchAction: 'none' }}
+          >
+            <DotsSixVerticalIcon size={20} color="gray" />
+          </ActionIcon>
+        }
         <ActionIcon
           size="lg"
           variant="subtle"
@@ -180,8 +195,9 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           size="lg"
           variant="subtle"
           onClick={deleteStyle}
+          disabled={id === 'default'}
         >
-          <TrashIcon size={20} color="red" />
+          <TrashIcon size={20} color={id === 'default' ? 'gray' : 'red'} />
         </ActionIcon>
         <Group {...groupProps} px={4} h={32}
           gap={4} flex={1} bdrs={4}

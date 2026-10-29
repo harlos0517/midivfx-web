@@ -49,14 +49,14 @@ const OverridableInput = (props: OverridableInputProps) => {
   const defaultValue = defaultStyleRuntime[styleKey]
   const [value, setValue, clearValue] = useStyleConfig(id, styleKey, true)
   const overrideValue = useRef<string | number | boolean>(value ?? defaultValue)
-  const isOverride = value !== undefined
+  const isOverride = value !== undefined || id === 'default'
 
   useEffect(() => {
     if (value !== undefined) overrideValue.current = value
   }, [value])
 
   const triggerOverride = () => {
-    if (isOverride) clearValue()
+    if (isOverride && id !== 'default') clearValue()
     else setValue(overrideValue.current)
   }
 
