@@ -130,9 +130,11 @@ const ccTexture = ({ times, values }: ControllerTrack) => {
 interface NotesProps {
   style: StyleRuntime
   notes: MidiChannelEventData[]
+  /** End of the song (ms), where a pedal that is never released stops holding notes. */
+  songEnd: number
 }
 
-const Notes = ({ notes, style }: NotesProps) => {
+const Notes = ({ notes, style, songEnd }: NotesProps) => {
   const {
     mode, cc, velocity, color, z, decayRate, gap, radius, remaps, showPedal, pedalColor,
   } = style
@@ -143,7 +145,7 @@ const Notes = ({ notes, style }: NotesProps) => {
     const findRemap = remapMatcher(remaps)
     const toColor = (c: string) => new ThreeColor(new Color(c).hex())
     const baseColor = toColor(color)
-    const heldUntil = showPedal ? sustainEnd(notes) : null
+    const heldUntil = showPedal ? sustainEnd(notes, songEnd) : null
     const ccTrack = getControllerTrack(mode === 'CC' ? notes : [], cc)
 
     const material = new ShaderMaterial({
@@ -181,7 +183,7 @@ const Notes = ({ notes, style }: NotesProps) => {
       const h = Math.max(0, top - bottom - gap)
 
       const offTime = note.endEvent?.time ?? note.time
-      const endTime = heldUntil ? heldUntil(note.noteNumber, offTime) : offTime
+      const endTime = heldUntil ? heldUntil(note.noteNumber, note.time, offTime) : offTime
       const x = note.time * timeScale
       const w = (endTime - note.time) * timeScale
       splits[i] = endTime > note.time ? (offTime - note.time) / (endTime - note.time) : 1
@@ -198,7 +200,7 @@ const Notes = ({ notes, style }: NotesProps) => {
     return mesh
   }, [
     notes, mode, cc, velocity, color, decayRate, gap, radius, remaps, showPedal, pedalColor,
-    timeScale,
+    timeScale, songEnd,
   ])
 
   useEffect(() => () => {
