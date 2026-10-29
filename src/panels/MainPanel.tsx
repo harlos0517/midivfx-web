@@ -22,7 +22,7 @@ const MainPanel = () => {
       <Canvas
         dpr={1}
         resize={{ offsetSize: true }}
-        camera={{ fov: 75, near: 0.1, far: 2000, position: [0, 64, 100] }}
+        camera={{ fov: 75, near: 0.1, far: 2000 }}
       >
         <RendererBridge />
         <CameraControls />
