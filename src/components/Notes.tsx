@@ -11,8 +11,9 @@ import {
 } from 'three'
 
 import useTimeScale from '@/hooks/useTimeScale'
-import type { StyleRuntime } from '@/utils/config'
+import type { Remap, StyleRuntime } from '@/utils/config'
 import type { MidiChannelEventData } from '@/utils/midi'
+import { parseRange } from '@/utils/range'
 
 /** `decayRate` is the fraction of opacity lost per this many ms, independent of the speed. */
 const DECAY_MS = 25
@@ -21,25 +22,28 @@ const DECAY_MS = 25
 // so every note of a channel shares one draw call
 const vertexShader = /* glsl */ `
   attribute float aAlpha;
+  attribute vec3 aColor;
   varying vec2 vUv;
   varying vec2 vSize;
   varying float vAlpha;
+  varying vec3 vColor;
 
   void main() {
     vUv = uv;
     vAlpha = aAlpha;
+    vColor = aColor;
     vSize = vec2(length(instanceMatrix[0].xyz), length(instanceMatrix[1].xyz));
     gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
   }
 `
 
 const fragmentShader = /* glsl */ `
-  uniform vec3 uColor;
   uniform float uDecayPerUnit;
   uniform float uRadius;
   varying vec2 vUv;
   varying vec2 vSize;
   varying float vAlpha;
+  varying vec3 vColor;
 
   void main() {
     // Rounded-rectangle distance in world units, centered on the note
@@ -52,11 +56,22 @@ const fragmentShader = /* glsl */ `
 
     float decay = pow(uDecayPerUnit, vUv.x * vSize.x);
 
-    gl_FragColor = vec4(uColor, vAlpha * decay * edge);
+    gl_FragColor = vec4(vColor, vAlpha * decay * edge);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
   }
 `
+
+type NoteOn = Extract<MidiChannelEventData, { type: 'noteOn' }>
+
+/** First remap whose `originalPitch` matches; an empty `originalPitch` matches every pitch. */
+const remapMatcher = (remaps: Remap[]) => {
+  const matchers = remaps.map(remap => ({
+    remap,
+    pitches: remap.originalPitch?.trim() ? new Set(parseRange(remap.originalPitch, 0, 127)) : null,
+  }))
+  return (pitch: number) => matchers.find(m => !m.pitches || m.pitches.has(pitch))?.remap
+}
 
 interface NotesProps {
   style: StyleRuntime
@@ -64,17 +79,19 @@ interface NotesProps {
 }
 
 const Notes = ({ notes, style }: NotesProps) => {
-  const { mode, velocity, color, z, decayRate, gap, radius } = style
+  const { mode, velocity, color, z, decayRate, gap, radius, remaps } = style
   const timeScale = useTimeScale()
 
   const mesh = useMemo(() => {
-    const noteOns = notes.filter(note => note.type === 'noteOn')
+    const noteOns = notes.filter((note): note is NoteOn => note.type === 'noteOn')
+    const findRemap = remapMatcher(remaps)
+    const toColor = (c: string) => new ThreeColor(new Color(c).hex())
+    const baseColor = toColor(color)
 
     const material = new ShaderMaterial({
       vertexShader,
       fragmentShader,
       uniforms: {
-        uColor: { value: new ThreeColor(new Color(color).hex()) },
         uDecayPerUnit: {
           value: mode === 'decay' ? Math.pow(1 - decayRate, 1 / (DECAY_MS * timeScale)) : 1,
         },
@@ -88,24 +105,31 @@ const Notes = ({ notes, style }: NotesProps) => {
 
     const geometry = new PlaneGeometry(1, 1)
     const alphas = new Float32Array(noteOns.length)
+    const colors = new Float32Array(noteOns.length * 3)
     const mesh = new InstancedMesh(geometry, material, noteOns.length)
     const matrix = new Matrix4()
-    // `gap` is the empty space between adjacent pitches, in pitch units
-    const h = Math.max(0, 1 - gap)
     noteOns.forEach((note, i) => {
+      // A remapped note covers the whole mapped pitch range as one band
+      const remap = findRemap(note.noteNumber)
+      const bottom = remap ? Math.min(...remap.mappedPitch) : note.noteNumber
+      const top = (remap ? Math.max(...remap.mappedPitch) : note.noteNumber) + 1
+      // `gap` is the empty space between adjacent pitches, in pitch units
+      const h = Math.max(0, top - bottom - gap)
+
       const time = note.endEvent ? note.endEvent.time - note.time : 0
       const x = note.time * timeScale
-      const y = note.type === 'noteOn' ? note.noteNumber : 0
       const w = time * timeScale
-      matrix.makeScale(w, h, 1).setPosition(x + w / 2, y + 0.5, 0)
+      matrix.makeScale(w, h, 1).setPosition(x + w / 2, (bottom + top) / 2, 0)
       mesh.setMatrixAt(i, matrix)
-      alphas[i] = velocity && note.type === 'noteOn' ? note.velocity / 127 : 1
+      alphas[i] = velocity ? note.velocity / 127 : 1
+      ;(remap ? toColor(remap.color) : baseColor).toArray(colors, i * 3)
     })
     geometry.setAttribute('aAlpha', new InstancedBufferAttribute(alphas, 1))
+    geometry.setAttribute('aColor', new InstancedBufferAttribute(colors, 3))
     mesh.instanceMatrix.needsUpdate = true
     mesh.computeBoundingSphere()
     return mesh
-  }, [notes, mode, velocity, color, decayRate, gap, radius, timeScale])
+  }, [notes, mode, velocity, color, decayRate, gap, radius, remaps, timeScale])
 
   useEffect(() => () => {
     mesh.geometry.dispose()
