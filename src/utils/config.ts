@@ -29,7 +29,7 @@ export interface CameraConfig {
 export interface DisplayConfig {
   width: number
   height: number
-  /** Pixels per millisecond. */
+  /** Time-axis scale; 1 = 0.02 world units per ms. */
   speed: number
   beat: boolean
 }
