@@ -2,10 +2,12 @@ import { useFrame } from '@react-three/fiber'
 import { useContext, useRef } from 'react'
 import type { Group } from 'three'
 
+import BeatLines from '@/components/BeatLines'
 import Notes from '@/components/Notes'
 import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
 import useTimeScale from '@/hooks/useTimeScale'
+import useConfigStore from '@/store/configStore'
 import { type StyleRuntime } from '@/utils/config'
 import type { MidiChannelEventData, TrackData } from '@/utils/midi'
 
@@ -37,6 +39,7 @@ const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {
   const groupRef = useRef<Group>(null!)
   const { playback } = useContext(MidiFileContext)
   const timeScale = useTimeScale()
+  const showBeats = useConfigStore(s => s.config.display.beat)
 
   useFrame(() => {
     if (playback)
@@ -44,6 +47,7 @@ const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {
   })
 
   return <group ref={groupRef}>
+    {showBeats && <BeatLines />}
     {tracks.map((track, i) => <NoteTrack key={i} track={track} trackNum={i + 1} />)}
   </group>
 }
