@@ -21,6 +21,7 @@ export interface CameraConfig {
   z: number
   targetX: number
   targetY: number
+  targetZ: number
 }
 
 export interface DisplayConfig {
@@ -104,6 +105,7 @@ export const defaultConfig: Config = {
     z: 100.0,
     targetX: 0.0,
     targetY: 64.0,
+    targetZ: 0.0,
   },
   display: {
     width: 1920,

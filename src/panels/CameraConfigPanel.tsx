@@ -9,6 +9,7 @@ const CameraConfigPanel = () => {
   const [z, setZ] = useCameraConfig('z')
   const [targetX, setTargetX] = useCameraConfig('targetX')
   const [targetY, setTargetY] = useCameraConfig('targetY')
+  const [targetZ, setTargetZ] = useCameraConfig('targetZ')
 
   return <PanelWrapper>
     <NumberInput
@@ -35,6 +36,11 @@ const CameraConfigPanel = () => {
       label="Camera Target Y"
       value={targetY}
       onChange={v => setTargetY(Number(v))}
+    />
+    <NumberInput
+      label="Camera Target Z"
+      value={targetZ}
+      onChange={v => setTargetZ(Number(v))}
     />
   </PanelWrapper>
 }
