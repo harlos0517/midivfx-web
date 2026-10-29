@@ -397,7 +397,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           </Stack>}
         </Stack>
       </Collapse>
-      <Divider mb="md"/>
+      <Divider/>
     </Stack>
   </Box>
 }

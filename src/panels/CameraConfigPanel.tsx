@@ -1,5 +1,7 @@
+import { NumberInput } from '@mantine/core'
+
+import PanelWrapper from '@/components/PanelWrapper'
 import useCameraConfig from '@/hooks/useCameraConfig'
-import { NumberInput, Stack } from '@mantine/core'
 
 const CameraConfigPanel = () => {
   const [x, setX] = useCameraConfig('x')
@@ -8,7 +10,7 @@ const CameraConfigPanel = () => {
   const [targetX, setTargetX] = useCameraConfig('targetX')
   const [targetY, setTargetY] = useCameraConfig('targetY')
 
-  return <Stack p="md" h="100%" style={{ overflowY: 'auto' }}>
+  return <PanelWrapper>
     <NumberInput
       label="Camera X"
       value={x}
@@ -34,7 +36,7 @@ const CameraConfigPanel = () => {
       value={targetY}
       onChange={v => setTargetY(Number(v))}
     />
-  </Stack>
+  </PanelWrapper>
 }
 
 export default CameraConfigPanel

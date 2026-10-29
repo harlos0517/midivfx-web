@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber'
 
 import CameraControls from '@/components/CameraControls'
 import CanvasRenderer from '@/components/CanvasRenderer'
+import RendererBridge from '@/components/RendererBridge'
 import useConfigStore from '@/store/configStore'
 
 const MainPanel = () => {
@@ -23,6 +24,7 @@ const MainPanel = () => {
         resize={{ offsetSize: true }}
         camera={{ fov: 75, near: 0.1, far: 2000, position: [0, 64, 100] }}
       >
+        <RendererBridge />
         <CameraControls />
         <CanvasRenderer />
       </Canvas>

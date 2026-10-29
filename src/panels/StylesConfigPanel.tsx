@@ -1,11 +1,12 @@
 import { move } from '@dnd-kit/helpers'
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react'
-import { ActionIcon, Box } from '@mantine/core'
+import { ActionIcon } from '@mantine/core'
+import { PlusIcon } from '@phosphor-icons/react'
 import { useShallow } from 'zustand/react/shallow'
 
+import PanelWrapper from '@/components/PanelWrapper'
 import StyleConfigBox from '@/components/StyleConfigBox'
 import useConfigStore from '@/store/configStore'
-import { PlusIcon } from '@phosphor-icons/react'
 
 const StylesConfigPanel = () => {
   const ids = useConfigStore(useShallow(s => s.config.styles.map(style => style.id)))
@@ -23,7 +24,7 @@ const StylesConfigPanel = () => {
   }
 
   return <DragDropProvider onDragEnd={onDragEnd}>
-    <Box p="md" h="100%" style={{ overflowY: 'auto' }}>
+    <PanelWrapper>
       {ids.map(id => <StyleConfigBox key={id} id={id} />)}
       <ActionIcon
         w="100%"
@@ -40,7 +41,7 @@ const StylesConfigPanel = () => {
       >
         <PlusIcon size={24} />
       </ActionIcon>
-    </Box>
+    </PanelWrapper>
   </DragDropProvider>
 }
 

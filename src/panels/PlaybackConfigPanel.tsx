@@ -1,6 +1,7 @@
-import { NumberInput, Stack } from '@mantine/core'
+import { NumberInput } from '@mantine/core'
 import { useContext } from 'react'
 
+import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import usePlaybackConfig from '@/hooks/usePlaybackConfig'
 
@@ -14,7 +15,7 @@ const PlaybackConfigPanel = () => {
   const [startTime, setStartTime] = usePlaybackConfig('startTime')
   const [endTime, setEndTime] = usePlaybackConfig('endTime')
 
-  return <Stack p="md" h="100%" style={{ overflowY: 'auto' }}>
+  return <PanelWrapper>
     <NumberInput
       label="Start Padding"
       value={startPadding}
@@ -46,7 +47,7 @@ const PlaybackConfigPanel = () => {
         setEndTime(newEndTime)
       }}
     />
-  </Stack>
+  </PanelWrapper>
 
 }
 

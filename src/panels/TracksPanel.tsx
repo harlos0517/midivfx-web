@@ -1,8 +1,9 @@
-import { ActionIcon, Box, Center, Collapse, Group, Stack, Text } from '@mantine/core'
+import { ActionIcon, Center, Collapse, Group, Stack, Text } from '@mantine/core'
 import { useDisclosure, useElementSize } from '@mantine/hooks'
 import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react'
 import { useContext } from 'react'
 
+import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
 import { getTextColor } from '@/utils/colors'
@@ -44,7 +45,7 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
   return  <Stack ref={ref}
     bg={style.color}
     c={getTextColor(style.color)}
-    bdrs="sm" m="sm" p="sm"
+    bdrs="sm" p="xs"
   >
     <Group wrap="nowrap">
       <Text>{i}</Text>
@@ -74,9 +75,9 @@ const TracksPanel = () => {
   const { midiData } = useContext(MidiFileContext)
   const tracks = midiData?.tracks
 
-  return <Box p="md" h="100%" style={{ overflowY: 'auto' }}>
+  return <PanelWrapper>
     {tracks?.map((t, i) => <TrackInfo key={i} trackName={t.name || ''} i={i} />)}
-  </Box>
+  </PanelWrapper>
 }
 
 export default TracksPanel

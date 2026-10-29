@@ -1,6 +1,7 @@
-import { FileInput, Stack } from '@mantine/core'
+import { FileInput } from '@mantine/core'
 import { useContext, useState } from 'react'
 
+import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import { parseMidiFile } from '@/utils/midi'
 
@@ -26,7 +27,7 @@ const ImportConfigPanel = () => {
     context.playback?.loadAudio(audioUrl)
   }
 
-  return <Stack p="md" h="100%" style={{ overflowY: 'auto' }}>
+  return <PanelWrapper>
     <FileInput
       label="Import MIDI File"
       placeholder="Choose a MIDI file"
@@ -41,7 +42,7 @@ const ImportConfigPanel = () => {
       value={audioFile}
       onChange={onAudioFileChange}
     />
-  </Stack>
+  </PanelWrapper>
 }
 
 export default ImportConfigPanel

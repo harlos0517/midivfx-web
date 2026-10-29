@@ -5,11 +5,13 @@ export default class Playback {
   private startedAt: number = 0
   private audio: Howl | null = null
   public playing: boolean = false
+  public audioSrc: string | null = null
 
   static now = () => performance.now()
 
   loadAudio(src: string) {
     this.audio?.unload()
+    this.audioSrc = src
     this.audio = new Howl({ src: [src], format: ['mp3', 'wav', 'ogg'] })
     this.audio.on('end', () => this.pause())
   }

@@ -1,5 +1,7 @@
+import { NumberInput, Switch } from '@mantine/core'
+
+import PanelWrapper from '@/components/PanelWrapper'
 import useDisplayConfig from '@/hooks/useDisplayConfig'
-import { NumberInput, Stack, Switch } from '@mantine/core'
 
 const DisplayConfigPanel = () => {
   const [width, setWidth] = useDisplayConfig('width')
@@ -7,7 +9,7 @@ const DisplayConfigPanel = () => {
   const [speed, setSpeed] = useDisplayConfig('speed')
   const [beat, setBeat] = useDisplayConfig('beat')
 
-  return <Stack p="md" h="100%" style={{ overflowY: 'auto' }}>
+  return <PanelWrapper>
     <NumberInput
       label="Display Width"
       value={width}
@@ -28,7 +30,7 @@ const DisplayConfigPanel = () => {
       checked={beat}
       onChange={e => setBeat(e.currentTarget.checked)}
     />
-  </Stack>
+  </PanelWrapper>
 }
 
 export default DisplayConfigPanel
