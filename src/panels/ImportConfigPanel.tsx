@@ -4,6 +4,7 @@ import { useContext, useState } from 'react'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import { parseMidiFile } from '@/utils/midi'
+import { resetPlaybackRange } from '@/utils/timeline'
 
 const ImportConfigPanel = () => {
   const context = useContext(MidiFileContext)
@@ -17,14 +18,16 @@ const ImportConfigPanel = () => {
     setMidiFile(file)
     const midiData = parseMidiFile(new Uint8Array(await file.arrayBuffer()))
     context.setMidiData(midiData)
+    resetPlaybackRange(midiData, context.playback)
   }
 
-  const onAudioFileChange = (file: File | null) => {
-    if (!file) return
+  const onAudioFileChange = async(file: File | null) => {
+    if (!file || !context.playback) return
 
     setaudioFile(file)
     const audioUrl = URL.createObjectURL(file)
-    context.playback?.loadAudio(audioUrl)
+    await context.playback.loadAudio(audioUrl)
+    resetPlaybackRange(context.midiData, context.playback)
   }
 
   return <PanelWrapper>
