@@ -76,7 +76,7 @@ const TracksPanel = () => {
   const tracks = midiData?.tracks
 
   return <PanelWrapper>
-    {tracks?.map((t, i) => <TrackInfo key={i} trackName={t.name || ''} i={i} />)}
+    {tracks?.map((t, i) => <TrackInfo key={i} trackName={t.name || ''} i={i + 1} />)}
   </PanelWrapper>
 }
 
