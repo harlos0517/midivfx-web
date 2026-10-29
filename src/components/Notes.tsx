@@ -104,13 +104,16 @@ const fragmentShader = /* glsl */ `
 
 type NoteOn = Extract<MidiChannelEventData, { type: 'noteOn' }>
 
-/** First remap whose `originalPitch` matches; an empty `originalPitch` matches every pitch. */
+/**
+ * Last remap whose `originalPitch` matches, so later remaps override earlier ones like styles do.
+ * An empty `originalPitch` matches every pitch.
+ */
 const remapMatcher = (remaps: Remap[]) => {
   const matchers = remaps.map(remap => ({
     remap,
     pitches: remap.originalPitch?.trim() ? new Set(parseRange(remap.originalPitch, 0, 127)) : null,
   }))
-  return (pitch: number) => matchers.find(m => !m.pitches || m.pitches.has(pitch))?.remap
+  return (pitch: number) => matchers.findLast(m => !m.pitches || m.pitches.has(pitch))?.remap
 }
 
 /** Packs (time, value / 127) pairs into a float texture for lookup in the shader. */
