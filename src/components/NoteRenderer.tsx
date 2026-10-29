@@ -2,7 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import { useContext, useRef } from 'react'
 import type { Group } from 'three'
 
-import DecayNotes from '@/components/DecayNotes'
+import Notes from '@/components/Notes'
 import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
 import useTimeScale from '@/hooks/useTimeScale'
@@ -30,7 +30,7 @@ type NoteChannelProps = {
 
 const NoteChannel = ({ notes, trackName, trackNum, channel }: NoteChannelProps) => {
   const style: StyleRuntime = useStyle(trackName || '', trackNum, channel)
-  return <DecayNotes notes={notes} style={style} />
+  return <Notes notes={notes} style={style} />
 }
 
 const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {
