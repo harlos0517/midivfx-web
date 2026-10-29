@@ -108,7 +108,7 @@ export const defaultConfig: Config = {
     y: 64.0,
     z: 100.0,
     targetX: 0.0,
-    targetY: 0.0,
+    targetY: 64.0,
   },
   display: {
     width: 1920,
