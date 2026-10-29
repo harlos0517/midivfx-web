@@ -1,9 +1,11 @@
 import { Box } from '@mantine/core'
 import {
   DockviewApi,
+  DockviewDefaultTab,
   DockviewReact,
   themeDark,
   type DockviewReadyEvent,
+  type IDockviewPanelHeaderProps,
   type SerializedDockview,
 } from 'dockview-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -23,6 +25,9 @@ import StylesConfigPanel from '@/panels/StylesConfigPanel'
 import TracksPanel from '@/panels/TracksPanel'
 
 import 'dockview-react/dist/styles/dockview.css'
+
+const NonClosableTab = (props: IDockviewPanelHeaderProps) =>
+  <DockviewDefaultTab {...props} hideClose />
 
 const Index = () => {
   const [midiData, setMidiData] = useState<MidiData | null>(null)
@@ -141,6 +146,7 @@ const Index = () => {
       <DockviewReact
         theme={themeDark}
         components={components}
+        defaultTabComponent={NonClosableTab}
         onReady={onReady}
       />
     </Box>
