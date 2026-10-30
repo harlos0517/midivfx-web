@@ -2,14 +2,11 @@
 export type NoteMode = 'fill' | 'decay' | 'CC'
 
 export interface PlaybackConfig {
-  /** Extra time before first note (us). */
-  startPadding: number
-  /** Extra time after last note (us). */
-  endPadding: number
+  /** Start of playback and export (ms); negative = blank time before the song. */
   startTime: number
-  /** Defaults to full length. */
+  /** End of playback and export (ms); past the song = blank time after it. Defaults to length. */
   endTime?: number
-  /** Audio delay relative to visual (us); positive = audio starts later. */
+  /** Audio delay relative to visual (ms); positive = audio starts later. */
   audioOffset: number
 }
 
@@ -95,9 +92,7 @@ export const defaultStyleConfig = {
 
 export const defaultConfig: Config = {
   playback: {
-    startPadding: 3000,
-    endPadding: 3000,
-    startTime: 0,
+    startTime: -3000,
     audioOffset: 0,
   },
   export: {

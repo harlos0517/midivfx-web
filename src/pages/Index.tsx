@@ -12,8 +12,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import MidiFileContext from '@/context/MidiFileContext'
+import useConfigStore from '@/store/configStore'
 import type { MidiData } from '@/utils/midi'
 import Playback from '@/utils/Playback'
+import { getLength } from '@/utils/timeline'
 
 import CameraConfigPanel from '@/panels/CameraConfigPanel'
 import DisplayConfigPanel from '@/panels/DisplayConfigPanel'
@@ -31,7 +33,12 @@ const NonClosableTab = (props: IDockviewPanelHeaderProps) =>
 
 const Index = () => {
   const [midiData, setMidiData] = useState<MidiData | null>(null)
-  const playback = useMemo(() => new Playback(), [])
+  const playback = useMemo(() => {
+    const playback = new Playback()
+    playback.seek(useConfigStore.getState().config.playback.startTime)
+    return playback
+  }, [])
+  const { startTime, endTime, audioOffset } = useConfigStore(s => s.config.playback)
 
   const [api, setApi] = useState<DockviewApi>()
   const components = useMemo(() => ({
@@ -114,30 +121,50 @@ const Index = () => {
     playback.dispose()
   }, [playback])
 
+  useEffect(() => {
+    playback.setAudioOffset(audioOffset)
+  }, [playback, audioOffset])
+
+  useEffect(() => {
+    playback.setRange(startTime, endTime ?? getLength(midiData, playback))
+  }, [playback, startTime, endTime, midiData])
+
+  const length = () => getLength(midiData, playback)
+
   useHotkeys('space', e => {
     e.preventDefault()
-    playback?.togglePlay()
+    playback.togglePlay()
   })
 
   useHotkeys('home', e => {
     e.preventDefault()
-    playback?.seek(0)
+    playback.seek(Math.min(0, startTime))
   })
 
   useHotkeys('end', e => {
     e.preventDefault()
-    playback?.seek(playback?.duration ?? 0)
+    playback.seek(Math.max(length(), endTime ?? length()))
   })
 
   useHotkeys('ArrowLeft', e => {
     e.preventDefault()
-    playback?.seek(Math.max((playback?.currentTime ?? 0) - 1000, 0))
+    playback.seek(Math.max(playback.currentTime - 1000, Math.min(0, startTime)))
   })
 
   useHotkeys('ArrowRight', e => {
     e.preventDefault()
-    playback?.seek(Math.min((playback?.currentTime ?? 0) + 1000, playback?.duration ?? 0))
+    playback.seek(Math.min(playback.currentTime + 1000, Math.max(length(), endTime ?? length())))
   })
+
+  useHotkeys('[', e => {
+    e.preventDefault()
+    playback.seek(startTime)
+  }, { useKey: true })
+
+  useHotkeys(']', e => {
+    e.preventDefault()
+    playback.seek(endTime ?? length())
+  }, { useKey: true })
 
   return <MidiFileContext.Provider
     value={{ midiData, setMidiData, playback }}

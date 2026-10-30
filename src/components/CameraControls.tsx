@@ -5,11 +5,10 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 import useConfigStore from '@/store/configStore'
 import { type CameraConfig, defaultConfig } from '@/utils/config'
+import { roundTo } from '@/utils/round'
 
 /** Save the view at most this often while the camera moves; damping can glide for seconds. */
 const SAVE_INTERVAL_MS = 250
-
-const round = (v: number) => Math.round(v * 100) / 100
 
 const isSameView = (a: CameraConfig, b: CameraConfig) =>
   (Object.keys(a) as (keyof CameraConfig)[]).every(key => a[key] === b[key])
@@ -52,8 +51,8 @@ const CameraControls = () => {
       const { position: p } = camera
       const { target: t } = controls
       const view: CameraConfig = {
-        x: round(p.x), y: round(p.y), z: round(p.z),
-        targetX: round(t.x), targetY: round(t.y), targetZ: round(t.z),
+        x: roundTo(p.x, 2), y: roundTo(p.y, 2), z: roundTo(p.z, 2),
+        targetX: roundTo(t.x, 2), targetY: roundTo(t.y, 2), targetZ: roundTo(t.z, 2),
       }
       savedRef.current = view
       setConfig(c => isSameView(c.camera, view) ? c : { ...c, camera: view })

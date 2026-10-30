@@ -4,28 +4,18 @@ import { useContext } from 'react'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import usePlaybackConfig from '@/hooks/usePlaybackConfig'
+import { roundTo } from '@/utils/round'
+import { getLength } from '@/utils/timeline'
 
 const PlaybackConfigPanel = () => {
-  const { playback } = useContext(MidiFileContext)
-  const duration = playback?.duration ?? 0
+  const { midiData, playback } = useContext(MidiFileContext)
+  const length = getLength(midiData, playback)
 
-  const [startPadding, setStartPadding] = usePlaybackConfig('startPadding')
-  const [endPadding, setEndPadding] = usePlaybackConfig('endPadding')
   const [audioOffset, setAudioOffset] = usePlaybackConfig('audioOffset')
   const [startTime, setStartTime] = usePlaybackConfig('startTime')
   const [endTime, setEndTime] = usePlaybackConfig('endTime')
 
   return <PanelWrapper>
-    <NumberInput
-      label="Start Padding"
-      value={startPadding}
-      onChange={v => setStartPadding(Number(v))}
-    />
-    <NumberInput
-      label="End Padding"
-      value={endPadding}
-      onChange={v => setEndPadding(Number(v))}
-    />
     <NumberInput
       label="Audio Offset"
       value={audioOffset}
@@ -38,13 +28,10 @@ const PlaybackConfigPanel = () => {
     />
     <NumberInput
       label="End Time"
-      value={endTime || duration}
-      min={0}
-      max={duration}
+      value={endTime ?? length}
       onChange={v => {
-        const isValid = v !== null && v !== undefined && !isNaN(Number(v))
-        const newEndTime =  isValid ? Number(v) : duration
-        setEndTime(newEndTime)
+        const isValid = v !== '' && !isNaN(Number(v))
+        setEndTime(isValid ? roundTo(Number(v), 0) : length)
       }}
     />
   </PanelWrapper>
