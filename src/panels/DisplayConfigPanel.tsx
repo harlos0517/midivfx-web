@@ -6,7 +6,7 @@ import useDisplayConfig from '@/hooks/useDisplayConfig'
 const DisplayConfigPanel = () => {
   const [width, setWidth] = useDisplayConfig('width')
   const [height, setHeight] = useDisplayConfig('height')
-  const [speed, setSpeed] = useDisplayConfig('speed')
+  const [unitsPerSecond, setUnitsPerSecond] = useDisplayConfig('unitsPerSecond')
   const [beat, setBeat] = useDisplayConfig('beat')
 
   return <PanelWrapper>
@@ -21,9 +21,11 @@ const DisplayConfigPanel = () => {
       onChange={v => setHeight(Number(v))}
     />
     <NumberInput
-      label="Display Speed"
-      value={speed}
-      onChange={v => setSpeed(Number(v))}
+      label="Speed (units/s)"
+      description="1 unit = height of one pitch"
+      value={unitsPerSecond}
+      min={0.1}
+      onChange={v => setUnitsPerSecond(Number(v))}
     />
     <Switch
       label="Beat"

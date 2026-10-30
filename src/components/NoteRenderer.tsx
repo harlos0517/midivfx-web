@@ -5,10 +5,9 @@ import type { Group } from 'three'
 import DecayNotes from '@/components/DecayNotes'
 import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
+import useTimeScale from '@/hooks/useTimeScale'
 import { type StyleRuntime } from '@/utils/config'
 import type { MidiChannelEventData, TrackData } from '@/utils/midi'
-
-const SPEED = 0.02
 
 const NoteTrack = ({ track, trackNum }: { track: TrackData, trackNum: number }) => {
   return <group>
@@ -37,10 +36,11 @@ const NoteChannel = ({ notes, trackName, trackNum, channel }: NoteChannelProps) 
 const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {
   const groupRef = useRef<Group>(null!)
   const { playback } = useContext(MidiFileContext)
+  const timeScale = useTimeScale()
 
   useFrame(() => {
     if (playback)
-      groupRef.current.position.x = -playback.currentTime * SPEED
+      groupRef.current.position.x = -playback.currentTime * timeScale
   })
 
   return <group ref={groupRef}>

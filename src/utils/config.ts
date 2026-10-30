@@ -30,8 +30,8 @@ export interface CameraConfig {
 export interface DisplayConfig {
   width: number
   height: number
-  /** Pixels per millisecond. */
-  speed: number
+  /** Time-axis scale in world units per second; one pitch is 1 unit tall. */
+  unitsPerSecond: number
   beat: boolean
 }
 
@@ -115,7 +115,7 @@ export const defaultConfig: Config = {
   display: {
     width: 1920,
     height: 1080,
-    speed: 1,
+    unitsPerSecond: 20,
     beat: false,
   },
   styles: [{

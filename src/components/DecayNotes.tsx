@@ -9,14 +9,13 @@ import {
   Color as ThreeColor,
 } from 'three'
 
+import useTimeScale from '@/hooks/useTimeScale'
 import type { StyleRuntime } from '@/utils/config'
 import type { MidiChannelEventData } from '@/utils/midi'
 
-const SPEED = 0.02
 const RADIUS = 0.5
-const DECAY_SEG = 100
-const DECAY_UNIT = 1
-const DECAY_UNITS_PER_SEG = DECAY_SEG * SPEED / DECAY_UNIT
+/** `decayRate` is the fraction of opacity lost per this many ms, whatever `unitsPerSecond` is. */
+const DECAY_MS = 25
 
 // Unit quad stretched per instance via instanceMatrix; corners and decay are drawn in the shader
 // so every note of a channel shares one draw call
@@ -34,7 +33,6 @@ const vertexShader = /* glsl */ `
 const fragmentShader = /* glsl */ `
   uniform vec3 uColor;
   uniform float uDecayPerUnit;
-  uniform float uDecayUnit;
   uniform float uRadius;
   varying vec2 vUv;
   varying float vWidth;
@@ -48,7 +46,7 @@ const fragmentShader = /* glsl */ `
     float d = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
     float edge = clamp(0.5 - d / fwidth(d), 0.0, 1.0);
 
-    float decay = pow(uDecayPerUnit, vUv.x * vWidth / uDecayUnit);
+    float decay = pow(uDecayPerUnit, vUv.x * vWidth);
 
     gl_FragColor = vec4(uColor, decay * edge);
     #include <tonemapping_fragment>
@@ -63,6 +61,7 @@ interface NotesProps {
 
 const DecayNotes = ({ notes, style }: NotesProps) => {
   const { color, z, decayRate } = style
+  const timeScale = useTimeScale()
 
   const mesh = useMemo(() => {
     const noteOns = notes.filter(note => note.type === 'noteOn')
@@ -72,8 +71,7 @@ const DecayNotes = ({ notes, style }: NotesProps) => {
       fragmentShader,
       uniforms: {
         uColor: { value: new ThreeColor(new Color(color).hex()) },
-        uDecayPerUnit: { value: Math.pow(1 - decayRate, DECAY_UNITS_PER_SEG) },
-        uDecayUnit: { value: DECAY_UNIT },
+        uDecayPerUnit: { value: Math.pow(1 - decayRate, 1 / (DECAY_MS * timeScale)) },
         uRadius: { value: RADIUS },
       },
       side: DoubleSide,
@@ -86,16 +84,16 @@ const DecayNotes = ({ notes, style }: NotesProps) => {
     const matrix = new Matrix4()
     noteOns.forEach((note, i) => {
       const time = note.endEvent ? note.endEvent.time - note.time : 0
-      const x = note.time * SPEED
+      const x = note.time * timeScale
       const y = note.type === 'noteOn' ? note.noteNumber : 0
-      const w = time * SPEED
+      const w = time * timeScale
       matrix.makeScale(w, 1, 1).setPosition(x + w / 2, y + 0.5, 0)
       mesh.setMatrixAt(i, matrix)
     })
     mesh.instanceMatrix.needsUpdate = true
     mesh.computeBoundingSphere()
     return mesh
-  }, [notes, color, decayRate])
+  }, [notes, color, decayRate, timeScale])
 
   useEffect(() => () => {
     mesh.geometry.dispose()
