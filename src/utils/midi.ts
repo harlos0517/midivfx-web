@@ -79,8 +79,17 @@ export type TrackData = {
   channels: MidiChannelEventData[][]
 }
 
+/** Tempo in effect from `tick` on; `time` is that tick's time (ms). */
+export interface TempoChange {
+  tick: number
+  time: number
+  msPerTick: number
+}
+
 export interface MidiData {
   header: MidiHeader
+  /** Sorted by tick, one per tick, and always starting at tick 0. */
+  tempoMap: TempoChange[]
   metaEvents: MidiMetaEventData[]
   tracks: TrackData[]
 }
@@ -91,8 +100,8 @@ export const parseMidiFile = (fileBuffer: Uint8Array): MidiData => {
 
   const tpq = midi.header.ticksPerBeat || 480
   const tracksWithTicks = midi.tracks.map(setTicks)
-  const tempoChanges = getTempoChanges(tracksWithTicks)
-  const tracksWithTimings = tracksWithTicks.map(track => calcTimings(track, tempoChanges, tpq))
+  const tempoMap = getTempoMap(tracksWithTicks, tpq)
+  const tracksWithTimings = tracksWithTicks.map(track => calcTimings(track, tempoMap))
   const tracks = tracksWithTimings.map(track => ({
     name: track.find(event => event.type === 'trackName')?.text,
     channels: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(channel => {
@@ -110,6 +119,7 @@ export const parseMidiFile = (fileBuffer: Uint8Array): MidiData => {
 
   return {
     header: midi.header,
+    tempoMap,
     tracks,
     metaEvents,
   }
@@ -123,38 +133,45 @@ const setTicks = (events: MidiEvent[]): (MidiEvent & { tick: number })[] => {
   })
 }
 
-const getTempoChanges = (
-  events: Array<(MidiEvent & { tick: number })[]>,
-): (MidiSetTempoEvent & { tick: number })[] => {
-  const tempoChanges = events.flat()
-    .filter((event): event is Timed<MidiSetTempoEvent> => event.type === 'setTempo')
-  const sortedTempoChanges = tempoChanges.sort((a, b) => a.tick - b.tick)
-  return sortedTempoChanges
+const DEFAULT_BPM = 120
+
+/** Tempo changes from every track; the last one wins when several share a tick. */
+const getTempoMap = (
+  tracks: (MidiEvent & { tick: number })[][],
+  tpq: number,
+): TempoChange[] => {
+  const changes = tracks.flat()
+    .filter((event): event is MidiSetTempoEvent & { tick: number } => event.type === 'setTempo')
+    .sort((a, b) => a.tick - b.tick)
+
+  const tempoMap: TempoChange[] = [{ tick: 0, time: 0, msPerTick: 60000 / DEFAULT_BPM / tpq }]
+  for (const change of changes) {
+    const prev = tempoMap.at(-1)!
+    const msPerTick = change.microsecondsPerBeat / tpq / 1000
+    if (change.tick === prev.tick) prev.msPerTick = msPerTick
+    else tempoMap.push({ tick: change.tick, time: tickToTime(tempoMap, change.tick), msPerTick })
+  }
+  return tempoMap
+}
+
+/** Time (ms) of any tick, including ticks with no event on them. */
+export const tickToTime = (tempoMap: TempoChange[], tick: number) => {
+  // Binary search for the last tempo change at or before the tick
+  let lo = 0
+  let hi = tempoMap.length - 1
+  while (lo < hi) {
+    const mid = Math.ceil((lo + hi) / 2)
+    if (tempoMap[mid]!.tick <= tick) lo = mid
+    else hi = mid - 1
+  }
+  const tempo = tempoMap[lo]!
+  return tempo.time + (tick - tempo.tick) * tempo.msPerTick
 }
 
 const calcTimings = (
   events: (MidiEvent & { tick: number })[],
-  tempoChanges: (MidiSetTempoEvent & { tick: number })[],
-  tpq: number,
-): Timed<MidiEvent>[] => {
-  const DEFAULT_BPM = 120
-  const combined = [...tempoChanges, ...events].sort((a, b) => a.tick - b.tick)
-  const result: Timed<MidiEvent>[] = []
-
-  let tick = 0
-  let time = 0
-  let currentMsPerTick = 60000 / DEFAULT_BPM / tpq
-
-  for (const event of combined) {
-    time += (event.tick - tick) * currentMsPerTick
-    tick = event.tick
-    result.push({ ...event, time })
-    if ('microsecondsPerBeat' in event)
-      currentMsPerTick = event.microsecondsPerBeat / tpq / 1000
-  }
-
-  return result
-}
+  tempoMap: TempoChange[],
+): Timed<MidiEvent>[] => events.map(event => ({ ...event, time: tickToTime(tempoMap, event.tick) }))
 
 const calcLength = (events: Timed<MidiChannelEvent>[]): MidiChannelEventData[] =>
   events.map((e, i, events) => {
