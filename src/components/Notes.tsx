@@ -2,6 +2,7 @@ import Color from 'color'
 import { useEffect, useMemo } from 'react'
 import {
   DoubleSide,
+  InstancedBufferAttribute,
   InstancedMesh,
   Matrix4,
   PlaneGeometry,
@@ -19,11 +20,14 @@ const DECAY_MS = 25
 // Unit quad stretched per instance via instanceMatrix; corners and decay are drawn in the shader
 // so every note of a channel shares one draw call
 const vertexShader = /* glsl */ `
+  attribute float aAlpha;
   varying vec2 vUv;
   varying vec2 vSize;
+  varying float vAlpha;
 
   void main() {
     vUv = uv;
+    vAlpha = aAlpha;
     vSize = vec2(length(instanceMatrix[0].xyz), length(instanceMatrix[1].xyz));
     gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
   }
@@ -35,6 +39,7 @@ const fragmentShader = /* glsl */ `
   uniform float uRadius;
   varying vec2 vUv;
   varying vec2 vSize;
+  varying float vAlpha;
 
   void main() {
     // Rounded-rectangle distance in world units, centered on the note
@@ -47,7 +52,7 @@ const fragmentShader = /* glsl */ `
 
     float decay = pow(uDecayPerUnit, vUv.x * vSize.x);
 
-    gl_FragColor = vec4(uColor, decay * edge);
+    gl_FragColor = vec4(uColor, vAlpha * decay * edge);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
   }
@@ -59,7 +64,7 @@ interface NotesProps {
 }
 
 const Notes = ({ notes, style }: NotesProps) => {
-  const { mode, color, z, decayRate, gap, radius } = style
+  const { mode, velocity, color, z, decayRate, gap, radius } = style
   const timeScale = useTimeScale()
 
   const mesh = useMemo(() => {
@@ -81,7 +86,9 @@ const Notes = ({ notes, style }: NotesProps) => {
       depthTest: false,
     })
 
-    const mesh = new InstancedMesh(new PlaneGeometry(1, 1), material, noteOns.length)
+    const geometry = new PlaneGeometry(1, 1)
+    const alphas = new Float32Array(noteOns.length)
+    const mesh = new InstancedMesh(geometry, material, noteOns.length)
     const matrix = new Matrix4()
     // `gap` is the empty space between adjacent pitches, in pitch units
     const h = Math.max(0, 1 - gap)
@@ -92,11 +99,13 @@ const Notes = ({ notes, style }: NotesProps) => {
       const w = time * timeScale
       matrix.makeScale(w, h, 1).setPosition(x + w / 2, y + 0.5, 0)
       mesh.setMatrixAt(i, matrix)
+      alphas[i] = velocity && note.type === 'noteOn' ? note.velocity / 127 : 1
     })
+    geometry.setAttribute('aAlpha', new InstancedBufferAttribute(alphas, 1))
     mesh.instanceMatrix.needsUpdate = true
     mesh.computeBoundingSphere()
     return mesh
-  }, [notes, mode, color, decayRate, gap, radius, timeScale])
+  }, [notes, mode, velocity, color, decayRate, gap, radius, timeScale])
 
   useEffect(() => () => {
     mesh.geometry.dispose()
