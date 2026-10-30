@@ -58,8 +58,8 @@ interface NotesProps {
   notes: MidiChannelEventData[]
 }
 
-const DecayNotes = ({ notes, style }: NotesProps) => {
-  const { color, z, decayRate, gap, radius } = style
+const Notes = ({ notes, style }: NotesProps) => {
+  const { mode, color, z, decayRate, gap, radius } = style
   const timeScale = useTimeScale()
 
   const mesh = useMemo(() => {
@@ -70,7 +70,9 @@ const DecayNotes = ({ notes, style }: NotesProps) => {
       fragmentShader,
       uniforms: {
         uColor: { value: new ThreeColor(new Color(color).hex()) },
-        uDecayPerUnit: { value: Math.pow(1 - decayRate, 1 / (DECAY_MS * timeScale)) },
+        uDecayPerUnit: {
+          value: mode === 'decay' ? Math.pow(1 - decayRate, 1 / (DECAY_MS * timeScale)) : 1,
+        },
         uRadius: { value: radius },
       },
       side: DoubleSide,
@@ -94,7 +96,7 @@ const DecayNotes = ({ notes, style }: NotesProps) => {
     mesh.instanceMatrix.needsUpdate = true
     mesh.computeBoundingSphere()
     return mesh
-  }, [notes, color, decayRate, gap, radius, timeScale])
+  }, [notes, mode, color, decayRate, gap, radius, timeScale])
 
   useEffect(() => () => {
     mesh.geometry.dispose()
@@ -107,4 +109,4 @@ const DecayNotes = ({ notes, style }: NotesProps) => {
   return <primitive object={mesh} position-z={z} renderOrder={z} />
 }
 
-export default DecayNotes
+export default Notes
