@@ -78,7 +78,7 @@ const CameraControls = () => {
     setConfig(c => ({ ...c, camera: defaultConfig.camera }))
   }, { enabled: !exporting })
 
-  return <OrbitControls ref={controlsRef} makeDefault />
+  return <OrbitControls ref={controlsRef} makeDefault enabled={!exporting} />
 }
 
 export default CameraControls
