@@ -13,6 +13,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 
 import MidiFileContext from '@/context/MidiFileContext'
 import useConfigStore from '@/store/configStore'
+import { useIsExporting } from '@/store/exportStore'
 import type { MidiData } from '@/utils/midi'
 import Playback from '@/utils/Playback'
 import { getLength } from '@/utils/timeline'
@@ -131,40 +132,43 @@ const Index = () => {
 
   const length = () => getLength(midiData, playback)
 
+  // The export drives the playback clock itself, so the transport keys must leave it alone
+  const enabled = !useIsExporting()
+
   useHotkeys('space', e => {
     e.preventDefault()
     playback.togglePlay()
-  })
+  }, { enabled })
 
   useHotkeys('home', e => {
     e.preventDefault()
     playback.seek(Math.min(0, startTime))
-  })
+  }, { enabled })
 
   useHotkeys('end', e => {
     e.preventDefault()
     playback.seek(Math.max(length(), endTime ?? length()))
-  })
+  }, { enabled })
 
   useHotkeys('ArrowLeft', e => {
     e.preventDefault()
     playback.seek(Math.max(playback.currentTime - 1000, Math.min(0, startTime)))
-  })
+  }, { enabled })
 
   useHotkeys('ArrowRight', e => {
     e.preventDefault()
     playback.seek(Math.min(playback.currentTime + 1000, Math.max(length(), endTime ?? length())))
-  })
+  }, { enabled })
 
   useHotkeys('[', e => {
     e.preventDefault()
     playback.seek(startTime)
-  }, { useKey: true })
+  }, { useKey: true, enabled })
 
   useHotkeys(']', e => {
     e.preventDefault()
     playback.seek(endTime ?? length())
-  }, { useKey: true })
+  }, { useKey: true, enabled })
 
   return <MidiFileContext.Provider
     value={{ midiData, setMidiData, playback }}

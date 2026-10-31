@@ -4,6 +4,7 @@ import { type ComponentRef, useEffect, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import useConfigStore from '@/store/configStore'
+import { useIsExporting } from '@/store/exportStore'
 import { type CameraConfig, defaultConfig } from '@/utils/config'
 import { roundTo } from '@/utils/round'
 
@@ -70,10 +71,12 @@ const CameraControls = () => {
     }
   }, [camera, setConfig])
 
+  const exporting = useIsExporting()
+
   useHotkeys('r', e => {
     e.preventDefault()
     setConfig(c => ({ ...c, camera: defaultConfig.camera }))
-  })
+  }, { enabled: !exporting })
 
   return <OrbitControls ref={controlsRef} makeDefault />
 }
