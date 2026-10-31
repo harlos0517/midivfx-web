@@ -30,6 +30,11 @@ export interface DisplayConfig {
   /** Time-axis scale in world units per second; one pitch is 1 unit tall. */
   unitsPerSecond: number
   beat: boolean
+  bloom: boolean
+  bloomIntensity: number
+  /** Minimum luminance (0-1) that glows; note colors stop at 1, so at 1 nothing does. */
+  bloomThreshold: number
+  bloomRadius: number
 }
 
 export interface Remap {
@@ -97,7 +102,7 @@ export const defaultConfig: Config = {
   },
   export: {
     fps: 60,
-    alpha: true,
+    alpha: false,
   },
   camera: {
     x: 0.0,
@@ -112,6 +117,10 @@ export const defaultConfig: Config = {
     height: 1080,
     unitsPerSecond: 20,
     beat: false,
+    bloom: false,
+    bloomIntensity: 1,
+    bloomThreshold: 0,
+    bloomRadius: 0.85,
   },
   styles: [{
     id: 'default',

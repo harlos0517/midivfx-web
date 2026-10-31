@@ -2,6 +2,7 @@ import { useContext } from 'react'
 
 import CursorLine from '@/components/CursorLine'
 import NoteRenderer from '@/components/NoteRenderer'
+import PostEffects from '@/components/PostEffects'
 import MidiFileContext from '@/context/MidiFileContext'
 
 const CanvasRenderer = () => {
@@ -10,6 +11,7 @@ const CanvasRenderer = () => {
   return <>
     <NoteRenderer tracks={midiData?.tracks ?? []} />
     <CursorLine />
+    <PostEffects />
   </>
 }
 
