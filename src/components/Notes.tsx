@@ -13,7 +13,7 @@ import {
 } from 'three'
 
 import useTimeScale from '@/hooks/useTimeScale'
-import { toHex } from '@/utils/colors'
+import { fixColorHex } from '@/utils/colors'
 import { defaultStyleRuntime, type Remap, type StyleRuntime } from '@/utils/config'
 import { type ControllerTrack, getControllerTrack, sustainEnd } from '@/utils/controllers'
 import type { MidiChannelEventData } from '@/utils/midi'
@@ -147,7 +147,7 @@ const Notes = ({ notes, style, songEnd }: NotesProps) => {
     const noteOns = notes.filter((note): note is NoteOn => note.type === 'noteOn')
     const findRemap = remapMatcher(remaps)
     const toColor = (c: string, fallback = defaultStyleRuntime.color) =>
-      new ThreeColor(toHex(c, fallback))
+      new ThreeColor(fixColorHex(c, fallback))
     const baseColor = toColor(color)
     const heldUntil = showPedal ? sustainEnd(notes, songEnd) : null
     const ccTrack = getControllerTrack(mode === 'CC' ? notes : [], cc)

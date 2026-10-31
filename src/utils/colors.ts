@@ -1,7 +1,6 @@
 import Color from 'color'
 
-/** Hex form of `color`, or `fallback` for text that isn't a color yet, like a half-typed `#ff`. */
-export const toHex = (color: string, fallback: string) => {
+export const fixColorHex = (color: string, fallback: string) => {
   try {
     return new Color(color).hex()
   } catch {
