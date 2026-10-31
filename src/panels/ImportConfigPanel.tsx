@@ -11,22 +11,39 @@ const ImportConfigPanel = () => {
 
   const [midiFile, setMidiFile] = useState<File | null>(null)
   const [audioFile, setaudioFile] = useState<File | null>(null)
+  const [midiError, setMidiError] = useState<string | null>(null)
+  const [audioError, setAudioError] = useState<string | null>(null)
 
   const onMidiFileChange = async(file: File | null) => {
     if (!file) return
 
-    setMidiFile(file)
-    const midiData = parseMidiFile(new Uint8Array(await file.arrayBuffer()))
-    context.setMidiData(midiData)
-    resetPlaybackRange(midiData, context.playback)
+    try {
+      const midiData = parseMidiFile(new Uint8Array(await file.arrayBuffer()))
+      setMidiFile(file)
+      setMidiError(null)
+      context.setMidiData(midiData)
+      resetPlaybackRange(midiData, context.playback)
+    } catch(err) {
+      // The previous file stays loaded
+      console.error(err)
+      setMidiError(`Could not read ${file.name}.`)
+    }
   }
 
   const onAudioFileChange = async(file: File | null) => {
     if (!file || !context.playback) return
 
     setaudioFile(file)
+    setAudioError(null)
     const audioUrl = URL.createObjectURL(file)
-    await context.playback.loadAudio(audioUrl)
+    try {
+      await context.playback.loadAudio(audioUrl)
+    } catch(err) {
+      console.error(err)
+      URL.revokeObjectURL(audioUrl)
+      setaudioFile(null)
+      setAudioError(`Could not read ${file.name}.`)
+    }
     resetPlaybackRange(context.midiData, context.playback)
   }
 
@@ -37,6 +54,7 @@ const ImportConfigPanel = () => {
       accept=".mid,.midi"
       value={midiFile}
       onChange={onMidiFileChange}
+      error={midiError}
     />
     <FileInput
       label="Import Audio File"
@@ -44,6 +62,7 @@ const ImportConfigPanel = () => {
       accept=".mp3,.wav,.ogg"
       value={audioFile}
       onChange={onAudioFileChange}
+      error={audioError}
     />
   </PanelWrapper>
 }
