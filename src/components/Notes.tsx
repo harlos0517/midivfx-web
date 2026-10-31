@@ -1,4 +1,3 @@
-import Color from 'color'
 import { useEffect, useMemo } from 'react'
 import {
   DataTexture,
@@ -14,7 +13,8 @@ import {
 } from 'three'
 
 import useTimeScale from '@/hooks/useTimeScale'
-import type { Remap, StyleRuntime } from '@/utils/config'
+import { fixColorHex } from '@/utils/colors'
+import { defaultStyleRuntime, type Remap, type StyleRuntime } from '@/utils/config'
 import { type ControllerTrack, getControllerTrack, sustainEnd } from '@/utils/controllers'
 import type { MidiChannelEventData } from '@/utils/midi'
 import { parseRange } from '@/utils/range'
@@ -146,7 +146,8 @@ const Notes = ({ notes, style, songEnd }: NotesProps) => {
   const mesh = useMemo(() => {
     const noteOns = notes.filter((note): note is NoteOn => note.type === 'noteOn')
     const findRemap = remapMatcher(remaps)
-    const toColor = (c: string) => new ThreeColor(new Color(c).hex())
+    const toColor = (c: string, fallback = defaultStyleRuntime.color) =>
+      new ThreeColor(fixColorHex(c, fallback))
     const baseColor = toColor(color)
     const heldUntil = showPedal ? sustainEnd(notes, songEnd) : null
     const ccTrack = getControllerTrack(mode === 'CC' ? notes : [], cc)
@@ -159,7 +160,7 @@ const Notes = ({ notes, style, songEnd }: NotesProps) => {
           value: mode === 'decay' ? Math.pow(1 - decayRate, 1 / (DECAY_MS * timeScale)) : 1,
         },
         uRadius: { value: radius },
-        uPedalColor: { value: toColor(pedalColor) },
+        uPedalColor: { value: toColor(pedalColor, defaultStyleRuntime.pedalColor) },
         uUseCC: { value: mode === 'CC' },
         uCC: { value: ccTexture(ccTrack) },
         uCCCount: { value: ccTrack.times.length },
