@@ -3,6 +3,7 @@ import { useContext, useState } from 'react'
 
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
+import { computePeaks, decodeAudio } from '@/utils/audio'
 import { parseMidiFile } from '@/utils/midi'
 import { resetPlaybackRange } from '@/utils/timeline'
 
@@ -30,14 +31,27 @@ const ImportConfigPanel = () => {
     }
   }
 
+  const loadPeaks = async(src: string) => {
+    try {
+      const peaks = computePeaks(await decodeAudio(src))
+      // A newer import may have replaced this audio during the decode
+      if (context.playback?.audioSrc === src) context.setAudioPeaks(peaks)
+    } catch(err) {
+      // Only the navigator's waveform is missing; the audio itself still plays
+      console.error(err)
+    }
+  }
+
   const onAudioFileChange = async(file: File | null) => {
     if (!file || !context.playback) return
 
     setaudioFile(file)
     setAudioError(null)
+    context.setAudioPeaks(null)
     const audioUrl = URL.createObjectURL(file)
     try {
       await context.playback.loadAudio(audioUrl)
+      void loadPeaks(audioUrl)
     } catch(err) {
       console.error(err)
       URL.revokeObjectURL(audioUrl)

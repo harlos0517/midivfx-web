@@ -14,6 +14,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import MidiFileContext from '@/context/MidiFileContext'
 import useConfigStore from '@/store/configStore'
 import { useIsExporting } from '@/store/exportStore'
+import type { AudioPeaks } from '@/utils/audio'
 import type { MidiData } from '@/utils/midi'
 import Playback from '@/utils/Playback'
 import { getLength } from '@/utils/timeline'
@@ -23,6 +24,7 @@ import DisplayConfigPanel from '@/panels/DisplayConfigPanel'
 import ExportConfigPanel from '@/panels/ExportConfigPanel'
 import ImportConfigPanel from '@/panels/ImportConfigPanel'
 import MainPanel from '@/panels/MainPanel'
+import NavigatorPanel from '@/panels/NavigatorPanel'
 import PlaybackConfigPanel from '@/panels/PlaybackConfigPanel'
 import StylesConfigPanel from '@/panels/StylesConfigPanel'
 import TracksPanel from '@/panels/TracksPanel'
@@ -34,6 +36,7 @@ const NonClosableTab = (props: IDockviewPanelHeaderProps) =>
 
 const Index = () => {
   const [midiData, setMidiData] = useState<MidiData | null>(null)
+  const [audioPeaks, setAudioPeaks] = useState<AudioPeaks | null>(null)
   const playback = useMemo(() => {
     const playback = new Playback()
     playback.seek(useConfigStore.getState().config.playback.startTime)
@@ -44,6 +47,7 @@ const Index = () => {
   const [api, setApi] = useState<DockviewApi>()
   const components = useMemo(() => ({
     main: MainPanel,
+    navigator: NavigatorPanel,
     playback: PlaybackConfigPanel,
     import: ImportConfigPanel,
     export: ExportConfigPanel,
@@ -56,6 +60,12 @@ const Index = () => {
   const loadDefaultLayout = (api: DockviewApi) => {
     if (!api) return
     api.addPanel({ id: 'Main', component: 'main' })
+    api.addPanel({
+      id: 'Navigator', component: 'navigator',
+      position: { referencePanel: 'Main', direction: 'below' },
+      minimumHeight: 34,
+    })
+    api.getPanel('Navigator')?.api.setSize({ height: 130 })
     api.addPanel({
       id: 'Tracks', component: 'tracks',
       position: { referencePanel: 'Main', direction: 'left' },
@@ -171,7 +181,7 @@ const Index = () => {
   }, { useKey: true, enabled })
 
   return <MidiFileContext.Provider
-    value={{ midiData, setMidiData, playback }}
+    value={{ midiData, setMidiData, audioPeaks, setAudioPeaks, playback }}
   >
     <Box h="100dvh" style={{ overflow: 'hidden' }}>
       <DockviewReact

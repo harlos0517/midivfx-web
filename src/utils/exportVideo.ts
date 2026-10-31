@@ -10,6 +10,7 @@ import {
 } from 'mediabunny'
 
 import type { RendererHandle } from '@/store/rendererStore'
+import { decodeAudio } from '@/utils/audio'
 import type { MidiData } from '@/utils/midi'
 import type Playback from '@/utils/Playback'
 import { getLength } from '@/utils/timeline'
@@ -31,15 +32,6 @@ export interface ExportOptions {
 export interface ExportResult {
   blob: Blob
   extension: string
-}
-
-const decodeAudio = async(src: string) => {
-  const ctx = new AudioContext()
-  try {
-    return await ctx.decodeAudioData(await (await fetch(src)).arrayBuffer())
-  } finally {
-    void ctx.close()
-  }
 }
 
 /** Audio for [startMs, endMs) of the buffer; parts outside the buffer are silent. */

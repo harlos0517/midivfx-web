@@ -24,7 +24,7 @@ The stack is React 19, react-three-fiber, Zustand, Mantine (UI), and dockview (d
 
 ### State lives in three places
 
-- **`MidiFileContext`** holds `midiData` (parsed MIDI) and `playback` (the single `Playback` instance). Neither is persisted, so imports are lost on reload.
+- **`MidiFileContext`** holds `midiData` (parsed MIDI), `audioPeaks` (the waveform envelope for the navigator), and `playback` (the single `Playback` instance). None are persisted, so imports are lost on reload.
 - **`configStore`** holds all user settings as `Config` (`src/utils/config.ts`) and writes them to `localStorage['config']` on every change. Section hooks (`usePlaybackConfig`, `useCameraConfig`, and so on) read and write one key. Outside React, use `useConfigStore.getState()`.
 - **`exportStore`** and **`rendererStore`** are not persisted. They hold export progress and cancellation, and handles into the live R3F canvas. `RendererBridge` publishes those handles so code outside `<Canvas>` can drive rendering.
 
