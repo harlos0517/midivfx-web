@@ -31,7 +31,14 @@ export default class Playback {
         if (this.playing) this.sync(this.currentTime)
         resolve()
       })
-      audio.once('loaderror', (_, err) => reject(new Error(String(err))))
+      audio.once('loaderror', (_, err) => {
+        // The previous audio is already gone, so a failed load leaves no audio at all
+        if (this.audio === audio) {
+          this.audio = null
+          this.audioSrc = null
+        }
+        reject(new Error(String(err)))
+      })
     })
   }
 
