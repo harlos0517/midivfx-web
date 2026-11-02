@@ -83,7 +83,6 @@ const OverridableInput = (props: OverridableInputProps) => {
   return <Group
     className={withBox ? classes['joined'] : undefined}
     gap={withBox ? '0' : 'xs'}
-    wrap="nowrap"
     {...wrapperProps}
   >
     {tooltip ? <Tooltip label={tooltip}>{actionIcon}</Tooltip> : actionIcon}

@@ -50,7 +50,7 @@ const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
         {...sliderProps}
       />
       : <NumberInput flex={1} {...inputProps}
-        onChange={v => onChange?.(v === '' ? emptyValue ?? 0 : Number(v))}
+        onChange={v => onChange?.(v === '' ? emptyValue : Number(v))}
       />
     }
   </ConfigOptionRow>
