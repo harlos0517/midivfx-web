@@ -11,6 +11,7 @@ A MIDI file visualizer that runs in the browser. Import a MIDI file and optional
 - Per-track and per-channel styles, including color, decay, velocity, CC opacity, sustain pedal, and pitch remapping
 - Video export to MP4, or WebM with transparency
 - Dockable panels
+- Interface in English and Traditional Chinese, with a tooltip on every option
 
 ## Usage
 

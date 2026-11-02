@@ -22,11 +22,16 @@ pnpm lint                # Lint (pnpm lint:fix to autofix)
 
 The stack is React 19, react-three-fiber, Zustand, Mantine (UI), and dockview (dockable panels). `@/` maps to `src/`. The only route is `src/pages/Index.tsx`, which owns the dockview layout, the transport hotkeys, and the `MidiFileContext` provider.
 
-### State lives in three places
+### State lives in four places
 
 - **`MidiFileContext`** holds `midiData` (parsed MIDI), `audioPeaks` (the waveform envelope for the navigator), and `playback` (the single `Playback` instance). None are persisted, so imports are lost on reload.
 - **`configStore`** holds all user settings as `Config` (`src/utils/config.ts`) and writes them to `localStorage['config']` on every change. Section hooks (`usePlaybackConfig`, `useCameraConfig`, and so on) read and write one key. Outside React, use `useConfigStore.getState()`.
 - **`exportStore`** and **`rendererStore`** are not persisted. They hold export progress and cancellation, and handles into the live R3F canvas. `RendererBridge` publishes those handles so code outside `<Canvas>` can drive rendering.
+- **`localeStore`** holds the UI language in `localStorage['locale']`, separate from `Config` because it is a browser preference, not part of a project. `useMessages()` returns the active dictionary. Outside React, use `getMessages()`.
+
+### Text and tooltips
+
+All UI text lives in `src/i18n/`. `en.ts` is the source of truth and `zh-TW.ts` is typed against it, so `tsc` fails on a missing translation. The UI is mostly icons, so a tooltip is what names an option: each one is a `{ name, desc }` entry, rendered by `OptionTooltip`. Icon-only controls also take `name` as their `aria-label`.
 
 ### The clock drives everything
 
@@ -62,8 +67,9 @@ MIDI ticks are converted to ms in `src/utils/midi.ts` via `tempoMap`. Note and e
 ## When changing things
 
 - **New config section:** add it to the per-section merge in `configStore`, or configs saved before the change will be missing its defaults.
+- **New option:** add a tooltip to `src/i18n/en.ts` and `zh-TW.ts` and describe what the code actually does. `ConfigOptionNumberInputRow` requires `tooltip`, and `OverridableInput` finds its tip by `styleKey`.
 - **New style option:** add it to `StyleRuntime` and `defaultStyleRuntime`. If it affects note geometry or uniforms, also add it to the `useMemo` dependency list in `Notes.tsx`.
-- **New panel:** wrap it in `PanelWrapper`, and register it in both `components` and `loadDefaultLayout` in `Index.tsx`. The saved layout in `localStorage['layout']` takes priority over the default, so clear that key to see the panel in a browser that has already used the app.
+- **New panel:** wrap it in `PanelWrapper`, register it in both `components` and `panels` in `Index.tsx`, and add its tab title to `panels` in the dictionaries. `addMissingPanels` adds it to saved layouts too. Its `position` must reference a panel listed before it.
 - **New hotkey:** pass `enabled: !exporting`.
 - **`getLength` vs `getMidiDuration`:** `getLength` (`src/utils/timeline.ts`) includes audio and is the song length used for playback and export. `getMidiDuration` is MIDI only.
 
