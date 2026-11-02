@@ -6,7 +6,6 @@ import {
   SegmentedControl,
   Slider,
   Switch,
-  Tooltip,
   type ColorInputProps,
   type MantineStyleProps,
   type NumberInputProps,
@@ -15,10 +14,12 @@ import {
   type SliderProps,
   type SwitchProps,
 } from '@mantine/core'
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef } from 'react'
 
+import OptionTooltip from '@/components/OptionTooltip'
 import styleIcons, { type OverridableStyleKey } from '@/components/styleIcons'
 import useStyleConfig from '@/hooks/useStyleConfig'
+import { useMessages } from '@/store/localeStore'
 import { defaultStyleRuntime } from '@/utils/config'
 import { DIMMED } from '@/utils/const'
 
@@ -28,7 +29,6 @@ interface CommonProps {
   wrapperProps?: MantineStyleProps
   id: string
   styleKey: OverridableStyleKey
-  tooltip?: ReactNode
 }
 
 type OverridableInputProps = CommonProps & (
@@ -48,9 +48,10 @@ const OverridableInput = (props: OverridableInputProps) => {
     wrapperProps = {},
     id,
     styleKey,
-    tooltip,
   } = props
 
+  const m = useMessages()
+  const tip = m.style.options[styleKey]
   const defaultValue = defaultStyleRuntime[styleKey]
   const [value, setValue, clearValue] = useStyleConfig(id, styleKey, true)
   const overrideValue = useRef<string | number | boolean>(value ?? defaultValue)
@@ -70,22 +71,25 @@ const OverridableInput = (props: OverridableInputProps) => {
   const commonProps = {
     flex: 1,
     disabled: !isOverride,
+    'aria-label': tip.name,
   }
-
-  const actionIcon = <ActionIcon
-    onClick={triggerOverride}
-    variant={isOverride ? 'filled' : 'default'}
-    c={isOverride ? 'white' : DIMMED}
-  >
-    {icon}
-  </ActionIcon>
 
   return <Group
     className={withBox ? classes['joined'] : undefined}
     gap={withBox ? '0' : 'xs'}
     {...wrapperProps}
   >
-    {tooltip ? <Tooltip label={tooltip}>{actionIcon}</Tooltip> : actionIcon}
+    <OptionTooltip tip={tip} hint={id === 'default' ? undefined : m.hints.toggleOverride}>
+      <ActionIcon
+        onClick={triggerOverride}
+        variant={isOverride ? 'filled' : 'default'}
+        c={isOverride ? 'white' : DIMMED}
+        aria-label={tip.name}
+        aria-pressed={isOverride}
+      >
+        {icon}
+      </ActionIcon>
+    </OptionTooltip>
     {props.inputType === 'number' && <NumberInput
       {...commonProps}
       {...props.inputProps}
@@ -101,6 +105,7 @@ const OverridableInput = (props: OverridableInputProps) => {
     {props.inputType === 'slider' && <Slider
       {...commonProps}
       {...props.inputProps}
+      thumbLabel={tip.name}
       value={value as number}
       onChange={setValue}
     />}

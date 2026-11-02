@@ -1,10 +1,12 @@
 import ConfigOptionRow from '@/components/ConfigOptionRow'
+import OptionTooltip from '@/components/OptionTooltip'
+import type { Tip } from '@/i18n/en'
+import { useMessages } from '@/store/localeStore'
 import {
   ActionIcon,
   Box,
   NumberInput,
   Slider,
-  Tooltip,
   type NumberInputProps,
   type SliderProps,
 } from '@mantine/core'
@@ -12,7 +14,7 @@ import { useState, type ReactNode } from 'react'
 
 interface ConfigOptionNumberInputProps extends Omit<NumberInputProps, 'onChange'> {
   label?: ReactNode
-  tooltip?: ReactNode
+  tooltip: Tip
   withSlider?: boolean
   sliderProps?: SliderProps
   onChange?: (value: number) => void
@@ -30,26 +32,32 @@ const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
     ...inputProps
   } = props
 
+  const m = useMessages()
   const [showSlider, setShowSlider] = useState(false)
 
-  const withTooltip = tooltip ? <Tooltip label={tooltip}>{label}</Tooltip> : label
+  const rowLabel = withSlider ? <ActionIcon
+    w="auto"
+    variant="subtle"
+    aria-label={tooltip.name}
+    onClick={() => setShowSlider(!showSlider)}
+  >
+    {label}
+  </ActionIcon> : <Box m="3px">{label}</Box>
 
   return <ConfigOptionRow
-    label={withSlider ? <ActionIcon
-      w="auto"
-      variant="subtle"
-      onClick={() => setShowSlider(!showSlider)}
-    >
-      {withTooltip}
-    </ActionIcon> : <Box m="3px">{withTooltip}</Box>}
+    label={<OptionTooltip tip={tooltip} hint={withSlider ? m.hints.toggleSlider : undefined}>
+      {rowLabel}
+    </OptionTooltip>}
   >
     {withSlider && showSlider
       ? <Slider flex={1}
         value={Number(inputProps.value)}
         onChange={onChange}
+        thumbLabel={tooltip.name}
         {...sliderProps}
       />
       : <NumberInput flex={1} {...inputProps}
+        aria-label={tooltip.name}
         onChange={v => onChange?.(v === '' ? emptyValue : Number(v))}
       />
     }

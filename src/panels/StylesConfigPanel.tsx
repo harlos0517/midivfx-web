@@ -4,11 +4,14 @@ import { ActionIcon } from '@mantine/core'
 import { PlusIcon } from '@phosphor-icons/react'
 import { useShallow } from 'zustand/react/shallow'
 
+import OptionTooltip from '@/components/OptionTooltip'
 import PanelWrapper from '@/components/PanelWrapper'
 import StyleConfigBox from '@/components/StyleConfigBox'
 import useConfigStore from '@/store/configStore'
+import { useMessages } from '@/store/localeStore'
 
 const StylesConfigPanel = () => {
+  const m = useMessages()
   const ids = useConfigStore(useShallow(s => s.config.styles.map(style => style.id)))
   const setConfig = useConfigStore(s => s.setConfig)
 
@@ -26,21 +29,24 @@ const StylesConfigPanel = () => {
   return <DragDropProvider onDragEnd={onDragEnd}>
     <PanelWrapper>
       {ids.map(id => <StyleConfigBox key={id} id={id} />)}
-      <ActionIcon
-        w="100%"
-        size="xl"
-        onClick={() => {
-          setConfig(c => ({
-            ...c,
-            styles: [...c.styles, {
-              id: window.crypto.randomUUID(),
-              order: c.styles[c.styles.length - 1]!.order + 1,
-            }],
-          }))
-        }}
-      >
-        <PlusIcon />
-      </ActionIcon>
+      <OptionTooltip tip={m.style.add}>
+        <ActionIcon
+          w="100%"
+          size="xl"
+          aria-label={m.style.add.name}
+          onClick={() => {
+            setConfig(c => ({
+              ...c,
+              styles: [...c.styles, {
+                id: window.crypto.randomUUID(),
+                order: c.styles[c.styles.length - 1]!.order + 1,
+              }],
+            }))
+          }}
+        >
+          <PlusIcon />
+        </ActionIcon>
+      </OptionTooltip>
     </PanelWrapper>
   </DragDropProvider>
 }

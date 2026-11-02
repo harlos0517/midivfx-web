@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
+import { useMessages } from '@/store/localeStore'
 import { computePeaks, decodeAudio } from '@/utils/audio'
 import { parseMidiFile } from '@/utils/midi'
 import { resetPlaybackRange } from '@/utils/timeline'
@@ -12,6 +13,7 @@ import { FileInput } from '@mantine/core'
 import { SpeakerLowIcon } from '@phosphor-icons/react'
 
 const ImportConfigPanel = () => {
+  const m = useMessages()
   const context = useContext(MidiFileContext)
 
   const [midiFile, setMidiFile] = useState<File | null>(null)
@@ -31,7 +33,7 @@ const ImportConfigPanel = () => {
     } catch(err) {
       // The previous file stays loaded
       console.error(err)
-      setMidiError(`Could not read ${file.name}.`)
+      setMidiError(m.errors.readFile(file.name))
     }
   }
 
@@ -60,15 +62,16 @@ const ImportConfigPanel = () => {
       console.error(err)
       URL.revokeObjectURL(audioUrl)
       setaudioFile(null)
-      setAudioError(`Could not read ${file.name}.`)
+      setAudioError(m.errors.readFile(file.name))
     }
     resetPlaybackRange(context.midiData, context.playback)
   }
 
   return <PanelWrapper>
-    <ConfigOptionRow label={<MIDIIcon />}>
+    <ConfigOptionRow label={<MIDIIcon />} tooltip={m.import.midi}>
       <FileInput
         flex="1"
+        aria-label={m.import.midi.name}
         maw="calc(100% - 24px - .5rem)"
         accept=".mid,.midi"
         value={midiFile}
@@ -76,9 +79,10 @@ const ImportConfigPanel = () => {
         error={midiError}
       />
     </ConfigOptionRow>
-    <ConfigOptionRow label={<SpeakerLowIcon />}>
+    <ConfigOptionRow label={<SpeakerLowIcon />} tooltip={m.import.audio}>
       <FileInput
         flex="1"
+        aria-label={m.import.audio.name}
         maw="calc(100% - 24px - .5rem)"
         accept=".mp3,.wav,.ogg"
         value={audioFile}

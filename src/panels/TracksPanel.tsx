@@ -3,9 +3,11 @@ import { useDisclosure, useElementSize } from '@mantine/hooks'
 import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react'
 import { useContext } from 'react'
 
+import OptionTooltip from '@/components/OptionTooltip'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
+import { useMessages } from '@/store/localeStore'
 import { getTextColor } from '@/utils/colors'
 
 import classes from './TracksPanel.module.sass'
@@ -32,6 +34,7 @@ interface TrackInfoProps {
 }
 
 const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
+  const m = useMessages()
   const style = useStyle(trackName, i, 1)
   const { ref, width } = useElementSize()
   const cols = width > 500 ? 16 : width > 250 ? 8 : 4
@@ -50,16 +53,20 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     <Group>
       <Text>{i}</Text>
       <Text flex={1}>{trackName.replace(/\u00AD/g, '')}</Text>
-      <ActionIcon
-        className={classes['collapse-icon']}
-        onClick={toggle}
-        style={{ borderColor: getTextColor(style.color) }}
-      >
-        {expanded
-          ? <CaretUpIcon color={getTextColor(style.color)} />
-          : <CaretDownIcon color={getTextColor(style.color)} />
-        }
-      </ActionIcon>
+      <OptionTooltip tip={m.tracks.expand}>
+        <ActionIcon
+          className={classes['collapse-icon']}
+          onClick={toggle}
+          style={{ borderColor: getTextColor(style.color) }}
+          aria-label={m.tracks.expand.name}
+          aria-expanded={expanded}
+        >
+          {expanded
+            ? <CaretUpIcon color={getTextColor(style.color)} />
+            : <CaretDownIcon color={getTextColor(style.color)} />
+          }
+        </ActionIcon>
+      </OptionTooltip>
     </Group>
     <Collapse expanded={expanded}>
       <Stack gap={8}>

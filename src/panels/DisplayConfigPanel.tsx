@@ -12,6 +12,7 @@ import ConfigOptionNumberInputRow from '@/components/ConfigOptionNumberInputRow'
 import ConfigOptionRow from '@/components/ConfigOptionRow'
 import PanelWrapper from '@/components/PanelWrapper'
 import useDisplayConfig from '@/hooks/useDisplayConfig'
+import { useMessages } from '@/store/localeStore'
 import { getNumberInputProps } from '@/utils/input'
 import { roundTo } from '@/utils/round'
 
@@ -20,6 +21,7 @@ import SpeedIcon from '@/assets/icons/speed.svg?react'
 import WidthIcon from '@/assets/icons/width.svg?react'
 
 const DisplayConfigPanel = () => {
+  const m = useMessages()
   const [width, setWidth] = useDisplayConfig('width')
   const [height, setHeight] = useDisplayConfig('height')
   const [unitsPerSecond, setUnitsPerSecond] = useDisplayConfig('unitsPerSecond')
@@ -32,18 +34,21 @@ const DisplayConfigPanel = () => {
   return <PanelWrapper>
     <ConfigOptionNumberInputRow
       label={<WidthIcon />}
+      tooltip={m.display.width}
       value={width}
       {...getNumberInputProps(640, 3840, 20, [1280, 1920, 2560], true)}
       onChange={setWidth}
     />
     <ConfigOptionNumberInputRow
       label={<HeightIcon />}
+      tooltip={m.display.height}
       value={height}
       {...getNumberInputProps(360, 2160, 20, [720, 1080, 1440], true)}
       onChange={setHeight}
     />
     <ConfigOptionNumberInputRow
       label={<SpeedIcon />}
+      tooltip={m.display.speed}
       value={roundTo(unitsPerSecond, 2)}
       min={2} max={1024} step={1}
       onChange={v => setUnitsPerSecond(roundTo(v, 2))}
@@ -59,27 +64,38 @@ const DisplayConfigPanel = () => {
         scale: v => roundTo(2 ** v, 2),
       }}
     />
-    <ConfigOptionRow label={<MetronomeIcon />}>
-      <Switch checked={beat}  onChange={e => setBeat(e.currentTarget.checked)} />
+    <ConfigOptionRow label={<MetronomeIcon />} tooltip={m.display.beat}>
+      <Switch
+        aria-label={m.display.beat.name}
+        checked={beat}
+        onChange={e => setBeat(e.currentTarget.checked)}
+      />
     </ConfigOptionRow>
-    <ConfigOptionRow label={<SunIcon />}>
-      <Switch checked={bloom} onChange={e => setBloom(e.currentTarget.checked)} />
+    <ConfigOptionRow label={<SunIcon />} tooltip={m.display.bloom}>
+      <Switch
+        aria-label={m.display.bloom.name}
+        checked={bloom}
+        onChange={e => setBloom(e.currentTarget.checked)}
+      />
     </ConfigOptionRow>
     {bloom && <>
       <ConfigOptionNumberInputRow
         label={<><SunIcon /><LightningIcon /></>}
+        tooltip={m.display.bloomIntensity}
         value={bloomIntensity}
         {...getNumberInputProps(0, 5, 0.1)}
         onChange={setBloomIntensity}
       />
       <ConfigOptionNumberInputRow
         label={<><SunIcon /><ArrowsOutLineVerticalIcon /></>}
+        tooltip={m.display.bloomThreshold}
         value={bloomThreshold}
         {...getNumberInputProps(0, 1, 0.01)}
         onChange={setBloomThreshold}
       />
       <ConfigOptionNumberInputRow
         label={<><SunIcon /><AngleIcon /></>}
+        tooltip={m.display.bloomRadius}
         value={bloomRadius}
         {...getNumberInputProps(0, 1, 0.01)}
         onChange={setBloomRadius}

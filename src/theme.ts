@@ -7,6 +7,7 @@ import {
   NumberInput,
   SegmentedControl,
   Slider,
+  Tooltip,
 } from '@mantine/core'
 
 export const theme = createTheme({
@@ -45,6 +46,15 @@ export const theme = createTheme({
     }),
     Group: Group.extend({
       defaultProps: { gap: 'xs', wrap: 'nowrap' },
+    }),
+    Tooltip: Tooltip.extend({
+      defaultProps: {
+        multiline: true,
+        w: 260,
+        openDelay: 300,
+        // Without focus, or a tooltip would stay open after its button is clicked
+        events: { hover: true, focus: false, touch: true },
+      },
     }),
   },
 })

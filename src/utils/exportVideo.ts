@@ -9,6 +9,7 @@ import {
   WebMOutputFormat,
 } from 'mediabunny'
 
+import { getMessages } from '@/store/localeStore'
 import type { RendererHandle } from '@/store/rendererStore'
 import { decodeAudio } from '@/utils/audio'
 import type { MidiData } from '@/utils/midi'
@@ -56,11 +57,12 @@ export const exportVideo = async({
   renderer, playback, midiData, fps, alpha, startTime, endTime, onProgress, signal,
 }: ExportOptions): Promise<ExportResult> => {
   const canvas = renderer.gl.domElement
+  const { errors } = getMessages()
   if (canvas.width % 2 || canvas.height % 2)
-    throw new Error(`Display size must be even (got ${canvas.width}×${canvas.height}).`)
+    throw new Error(errors.oddSize(canvas.width, canvas.height))
 
   const end = endTime ?? getLength(midiData, playback)
-  if (end <= startTime) throw new Error('Nothing to export: end time is before start time.')
+  if (end <= startTime) throw new Error(errors.emptyRange)
 
   // H.264/MP4 has no alpha channel, so transparent exports go to VP9/WebM.
   const format = alpha ? new WebMOutputFormat() : new Mp4OutputFormat({ fastStart: 'in-memory' })

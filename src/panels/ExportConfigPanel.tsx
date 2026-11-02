@@ -6,6 +6,7 @@ import MidiFileContext from '@/context/MidiFileContext'
 import useExportConfig from '@/hooks/useExportConfig'
 import useConfigStore from '@/store/configStore'
 import useExportStore from '@/store/exportStore'
+import { useMessages } from '@/store/localeStore'
 import useRendererStore from '@/store/rendererStore'
 
 import AlphaIcon from '@/assets/icons/alpha.svg?react'
@@ -13,6 +14,7 @@ import FPSIcon from '@/assets/icons/fps.svg?react'
 import ConfigOptionRow from '@/components/ConfigOptionRow'
 
 const ExportConfigPanel = () => {
+  const m = useMessages()
   const [fps, setFps] = useExportConfig('fps')
   const [alpha, setAlpha] = useExportConfig('alpha')
   const { midiData, playback } = useContext(MidiFileContext)
@@ -32,18 +34,20 @@ const ExportConfigPanel = () => {
   const exporting = progress !== null
 
   return <PanelWrapper isExportPanel>
-    <ConfigOptionRow label={<FPSIcon />}>
+    <ConfigOptionRow label={<FPSIcon />} tooltip={m.export.fps}>
       <Select
         flex="1"
+        aria-label={m.export.fps.name}
         value={fps.toString()}
         onChange={v => setFps(Number(v))}
         data={['15', '24', '30', '60']}
         disabled={exporting}
       />
     </ConfigOptionRow>
-    <ConfigOptionRow label={<AlphaIcon />}>
+    <ConfigOptionRow label={<AlphaIcon />} tooltip={m.export.alpha}>
       <Switch
         flex="1"
+        aria-label={m.export.alpha.name}
         checked={alpha}
         onChange={e => setAlpha(e.currentTarget.checked)}
         disabled={exporting}
@@ -54,11 +58,11 @@ const ExportConfigPanel = () => {
         <Progress value={progress * 100} style={{ flex: 1 }} />
         <Text size="xs" w={36} ta="right">{Math.round(progress * 100)}%</Text>
         <Button size="xs" variant="default" onClick={cancel}>
-          Cancel
+          {m.export.cancel}
         </Button>
       </Group>
       : <Button onClick={onExport} disabled={!renderer || !playback}>
-        Export {alpha ? 'WebM' : 'MP4'}
+        {m.export.start(alpha ? 'WebM' : 'MP4')}
       </Button>}
     {error && <Text size="sm" c="red">{error}</Text>}
   </PanelWrapper>
