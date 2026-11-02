@@ -38,7 +38,7 @@ import { getTextColor } from '@/utils/colors'
 import type { Remap } from '@/utils/config'
 import { ICON_SIZE } from '@/utils/const'
 import { getSliderProps } from '@/utils/input'
-import { parseRange, rangeText } from '@/utils/range'
+import { normalizeRange, parseRange, rangeText } from '@/utils/range'
 
 import CCIcon from '@/assets/icons/cc.svg?react'
 import ChannelIcon from '@/assets/icons/channel.svg?react'
@@ -212,7 +212,6 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             <Group gap="2px" flex={2}>
               <TrackIcon />
               <SegmentedControl
-                bd="#444444 1px solid"
                 data={[
                   { value: 'ids', label: <HashIcon size={16} /> },
                   { value: 'regex', label: <TagIcon size={16} /> },
@@ -232,10 +231,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
                 onChange={e => setTrack(e.target.value)}
                 onBlur={e => {
                   if (isRegex) return
-                  const v = e.target.value
-                  const range = parseRange(v || '', 1, 256)
-                  const text = rangeText(range)
-                  setTrack(text)
+                  setTrack(normalizeRange(e.target.value, 1, 256))
                 }}
               />
             </Group>
@@ -246,12 +242,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
                 w={100}
                 value={channel || ''}
                 onChange={e => setChannel(e.target.value)}
-                onBlur={e => {
-                  const v = e.target.value
-                  const range = parseRange(v || '', 1, 256)
-                  const text = rangeText(range)
-                  setChannel(text)
-                }}
+                onBlur={e => setChannel(normalizeRange(e.target.value, 1, 16))}
               />
             </Group>
           </Group>
@@ -276,9 +267,6 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               id={id}
               styleKey="mode"
               inputType="segmented"
-              inputProps={{
-                bd: '#444444 1px solid',
-              }}
               data={[
                 { value: 'fill', label: <PaintBucketIcon size={16} /> },
                 { value: 'decay', label: <ArrowBendDownRightIcon size={16} /> },

@@ -33,3 +33,8 @@ export const rangeText = (arr: number[]) => {
 
   return parts.join(',')
 }
+
+export const normalizeRange = (value: string, min: number, max: number) => {
+  const range = parseRange(value, min, max)
+  return rangeText(range)
+}

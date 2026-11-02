@@ -17,10 +17,11 @@ import {
 } from '@mantine/core'
 import { useEffect, useRef, type ReactNode } from 'react'
 
+import styleIcons from '@/components/styleIcons'
 import useStyleConfig from '@/hooks/useStyleConfig'
 import { defaultStyleRuntime, type StyleConfig } from '@/utils/config'
+import { DIMMED } from '@/utils/const'
 
-import styleIcons from '@/components/styleIcons'
 import classes from './OverridableInput.module.sass'
 
 interface CommonProps {
@@ -74,7 +75,7 @@ const OverridableInput = (props: OverridableInputProps) => {
   const actionIcon = <ActionIcon
     onClick={triggerOverride}
     variant={isOverride ? 'filled' : 'default'}
-    c={isOverride ? 'white' : '#666666'}
+    c={isOverride ? 'white' : DIMMED}
   >
     {icon}
   </ActionIcon>

@@ -26,7 +26,12 @@ export const theme = createTheme({
       defaultProps: { size: 'xs' },
       styles: {
         label: { padding: '2px 4px' },
-        root: { height: '2rem', padding: '1px 1px 0 1px', borderRadius: 4 },
+        root: {
+          height: '2rem',
+          padding: '1px 1px 0 1px',
+          borderRadius: 4,
+          border: '1px solid #444444',
+        },
       },
     }),
     ActionIcon: ActionIcon.extend({
