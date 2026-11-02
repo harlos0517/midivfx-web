@@ -80,7 +80,7 @@ const OverridableInput = (props: OverridableInputProps) => {
   </ActionIcon>
 
   return <Group
-    className={classes['joined']}
+    className={withBox ? classes['joined'] : undefined}
     gap={withBox ? '0' : 'xs'}
     wrap="nowrap"
     {...wrapperProps}

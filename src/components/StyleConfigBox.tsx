@@ -37,6 +37,7 @@ import useConfigStore from '@/store/configStore'
 import { getTextColor } from '@/utils/colors'
 import type { Remap } from '@/utils/config'
 import { ICON_SIZE } from '@/utils/const'
+import { getSliderProps } from '@/utils/input'
 import { parseRange, rangeText } from '@/utils/range'
 
 import CCIcon from '@/assets/icons/cc.svg?react'
@@ -302,14 +303,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               styleKey="decayRate"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
-              inputProps={{
-                min: 0, max: 1, step: 0.01,
-                marks: [
-                  { value: 0, label: '0' },
-                  { value: 0.5, label: '0.5' },
-                  { value: 1, label: '1' },
-                ],
-              }}
+              inputProps={getSliderProps(0, 1, 0.01, [0.5])}
             /> : <Space flex={1}/>}
           </Group>
           <Group {...groupProps}>
@@ -331,24 +325,14 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               styleKey="gap"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
-              inputProps={{
-                min: 0, max: 1, step: 0.01,
-                marks: [
-                  { value: 0, label: '0' },
-                  { value: 0.5, label: '0.5' },
-                  { value: 1, label: '1' },
-                ],
-              }}
+              inputProps={getSliderProps(0, 1, 0.01, [0.5])}
             />
             <OverridableInput
               id={id}
               styleKey="radius"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
-              inputProps={{
-                min: 0, max: 0.5, step: 0.01,
-                marks: [{ value: 0, label: '0' }, { value: 0.5, label: '0.5' }],
-              }}
+              inputProps={getSliderProps(0, 0.5, 0.01)}
             />
           </Group>
           <Group {...groupProps}>
@@ -357,14 +341,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               styleKey="z"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
-              inputProps={{
-                min: -10, max: 10, step: 0.1,
-                marks: [
-                  { value: -10, label: '-10' },
-                  { value: 0, label: '0' },
-                  { value: 10, label: '10' },
-                ],
-              }}
+              inputProps={getSliderProps(-10, 10, 0.1, [0])}
             />
           </Group>
           <Group {...groupProps}>
