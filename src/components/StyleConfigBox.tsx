@@ -81,7 +81,7 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
       value={originalPitch || ''}
       onChange={e => set({ originalPitch: e.target.value })}
     />
-    <ArrowRightIcon size={ICON_SIZE} style={{  margin: '0 4px' }} />
+    <ArrowRightIcon style={{  margin: '0 4px' }} />
     <StyledTextInput
       flex={1} miw={48}
       value={mappedPitch[0]}
@@ -90,7 +90,7 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
         set({ mappedPitch: [v || 0, mappedPitch[1]] })
       }}
     />
-    <TildeIcon size={ICON_SIZE} />
+    <TildeIcon />
     <StyledTextInput
       flex={1} miw={48}
       value={mappedPitch[1]}
@@ -105,7 +105,7 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
       onChange={v => set({ color: v })}
     />
     <StyledActionIcon size="lg" variant="subtle" c="red" onClick={onRemove}>
-      <TrashIcon size={ICON_SIZE} color="red" />
+      <TrashIcon color="red" />
     </StyledActionIcon>
   </Group>
 }
@@ -165,11 +165,11 @@ const StyleConfigBox = ({ id }: { id: string }) => {
       <Group {...groupProps} gap="4px">
         {id === 'default'
           ? <LockIcon
-            size={ICON_SIZE} color="gray"
+            color="gray"
             style={{ padding: '0 2px' }}
           />
           : <DotsSixVerticalIcon
-            ref={handleRef} size={ICON_SIZE} color="gray"
+            ref={handleRef} color="gray"
             style={{ cursor: 'grab', touchAction: 'none' }}
           />
         }
@@ -177,16 +177,13 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           variant="subtle"
           onClick={() => { setIsExpanded(!isExpanded) }}
         >
-          {isExpanded
-            ? <CaretUpIcon size={ICON_SIZE} />
-            : <CaretDownIcon size={ICON_SIZE} />
-          }
+          {isExpanded ? <CaretUpIcon /> : <CaretDownIcon /> }
         </StyledActionIcon>
         <StyledActionIcon
           variant="subtle"
           onClick={copy}
         >
-          <CopyIcon size={ICON_SIZE} />
+          <CopyIcon />
         </StyledActionIcon>
         <StyledActionIcon
           variant="subtle"
@@ -194,7 +191,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           disabled={id === 'default'}
           color="red"
         >
-          <TrashIcon size={16} color="red"/>
+          <TrashIcon color="red"/>
         </StyledActionIcon>
         <Group {...groupProps} px={4} h={32}
           gap={4} flex={1} bdrs={4}
@@ -212,7 +209,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
       </Group>
       <Collapse expanded={!isExpanded}>
         <Group gap="xs" justify="space-between" wrap="nowrap">
-          <Overridable id={id} styleKey="color" label={<PaletteIcon size={ICON_SIZE} />} />
+          <Overridable id={id} styleKey="color" label={<PaletteIcon />} />
           <Overridable id={id}
             styleKey="velocity"
             label={<VelocityIcon {...CUSTOM_ICON_STYLE} />}
@@ -222,19 +219,19 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             ? <Overridable id={id} label={<CCIcon {...CUSTOM_ICON_STYLE} />} styleKey="cc" />
             : mode === 'decay'
               ? <Overridable id={id}
-                label={<ArrowBendDownRightIcon size={ICON_SIZE} />}
+                label={<ArrowBendDownRightIcon />}
                 styleKey="decayRate"
               />
               : <Space w={ICON_SIZE} />}
           <Overridable id={id} styleKey="showPedal" label={<PedalIcon {...CUSTOM_ICON_STYLE} />} />
           {showPedal
-            ? <Overridable id={id} styleKey="pedalColor" label={<PaletteIcon size={ICON_SIZE} />} />
+            ? <Overridable id={id} styleKey="pedalColor" label={<PaletteIcon />} />
             : <Space w={ICON_SIZE} />}
           <Overridable id={id}
             label={<ThicknessIcon {...CUSTOM_ICON_STYLE} />}
             styleKey="gap"
           />
-          <Overridable id={id} label={<AngleIcon size={ICON_SIZE} />} styleKey="radius" />
+          <Overridable id={id} label={<AngleIcon />} styleKey="radius" />
           <Overridable id={id} label={<ZIcon {...CUSTOM_ICON_STYLE} />} styleKey="z" />
         </Group>
       </Collapse>
@@ -291,7 +288,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             <OverridableInput
               id={id}
               styleKey="color"
-              label={<PaletteIcon size={ICON_SIZE} />}
+              label={<PaletteIcon />}
               inputType="color"
               wrapperProps={{ w: 180, flex: 1 }}
             />
@@ -329,7 +326,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               inputProps={{ min: 0, max: 127, step: 1 }}
             /> : mode === 'decay' ? <OverridableInput
               id={id}
-              label={<ArrowBendDownRightIcon size={ICON_SIZE} />}
+              label={<ArrowBendDownRightIcon />}
               styleKey="decayRate"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -353,7 +350,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             {showPedal ? <OverridableInput
               id={id}
               styleKey="pedalColor"
-              label={<PaletteIcon size={ICON_SIZE} />}
+              label={<PaletteIcon />}
               inputType="color"
               wrapperProps={{ w: 180 }}
             /> : <Space w={180} />}
@@ -376,7 +373,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             />
             <OverridableInput
               id={id}
-              label={<AngleIcon size={ICON_SIZE} />}
+              label={<AngleIcon />}
               styleKey="radius"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -411,7 +408,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
                 setRemaps([...(remaps || []), { mappedPitch: [0, 127], color: '#ffffff' }])
               }}
             >
-              <PlusIcon size={ICON_SIZE} />
+              <PlusIcon />
             </StyledActionIcon>
           </Group>
           {!!remaps?.length && <Stack>

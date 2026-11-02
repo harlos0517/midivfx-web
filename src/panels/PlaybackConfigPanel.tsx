@@ -5,7 +5,6 @@ import ConfigOptionNumberInput from '@/components/ConfigOptionNumberInput'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import usePlaybackConfig from '@/hooks/usePlaybackConfig'
-import { ICON_SIZE } from '@/utils/const'
 import { generateSliderMarks } from '@/utils/input'
 import { roundTo } from '@/utils/round'
 import { getLength } from '@/utils/timeline'
@@ -20,7 +19,7 @@ const PlaybackConfigPanel = () => {
 
   return <PanelWrapper>
     <ConfigOptionNumberInput
-      label={<TimerIcon size={ICON_SIZE} />}
+      label={<TimerIcon />}
       value={audioOffset / 1000}
       onChange={v => setAudioOffset(Number(v) * 1000)}
       step={0.01}
@@ -30,7 +29,7 @@ const PlaybackConfigPanel = () => {
       }}
     />
     <ConfigOptionNumberInput
-      label={<ArrowLineLeftIcon size={ICON_SIZE} />}
+      label={<ArrowLineLeftIcon />}
       value={startTime / 1000}
       onChange={v => setStartTime(Number(v) * 1000)}
       rightSection="s"
@@ -38,7 +37,7 @@ const PlaybackConfigPanel = () => {
       step={0.1}
     />
     <ConfigOptionNumberInput
-      label={<ArrowLineRightIcon size={ICON_SIZE} />}
+      label={<ArrowLineRightIcon />}
       value={(endTime ?? length) / 1000}
       onChange={v => {
         const isValid = v !== '' && !isNaN(Number(v))

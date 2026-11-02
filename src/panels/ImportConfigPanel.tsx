@@ -8,7 +8,7 @@ import { parseMidiFile } from '@/utils/midi'
 import { resetPlaybackRange } from '@/utils/timeline'
 
 import MIDIIcon from '@/assets/icons/midi.svg?react'
-import { CUSTOM_ICON_STYLE, ICON_SIZE } from '@/utils/const'
+import { CUSTOM_ICON_STYLE } from '@/utils/const'
 import { SpeakerLowIcon } from '@phosphor-icons/react'
 
 const ImportConfigPanel = () => {
@@ -74,7 +74,7 @@ const ImportConfigPanel = () => {
       error={midiError}
     />
     <ConfigOptionFileInput
-      label={<SpeakerLowIcon size={ICON_SIZE} />}
+      label={<SpeakerLowIcon />}
       accept=".mp3,.wav,.ogg"
       value={audioFile}
       onChange={onAudioFileChange}

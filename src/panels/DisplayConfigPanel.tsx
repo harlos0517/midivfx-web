@@ -2,7 +2,7 @@ import ConfigOptionNumberInput from '@/components/ConfigOptionNumberInput'
 import ConfigOptionSwitch from '@/components/ConfigOptionSwitch'
 import PanelWrapper from '@/components/PanelWrapper'
 import useDisplayConfig from '@/hooks/useDisplayConfig'
-import { CUSTOM_ICON_STYLE, ICON_SIZE } from '@/utils/const'
+import { CUSTOM_ICON_STYLE } from '@/utils/const'
 
 import HeightIcon from '@/assets/icons/height.svg?react'
 import SpeedIcon from '@/assets/icons/speed.svg?react'
@@ -77,18 +77,18 @@ const DisplayConfigPanel = () => {
       }}
     />
     <ConfigOptionSwitch
-      label={<MetronomeIcon size={ICON_SIZE} />}
+      label={<MetronomeIcon />}
       checked={beat}
       onChange={e => setBeat(e.currentTarget.checked)}
     />
     <ConfigOptionSwitch
-      label={<SunIcon size={ICON_SIZE} />}
+      label={<SunIcon />}
       checked={bloom}
       onChange={e => setBloom(e.currentTarget.checked)}
     />
     {bloom && <>
       <ConfigOptionNumberInput
-        label={<><SunIcon size={ICON_SIZE} /><LightningIcon size={ICON_SIZE} /></>}
+        label={<><SunIcon /><LightningIcon /></>}
         value={bloomIntensity}
         min={0}
         step={0.1}
@@ -96,7 +96,7 @@ const DisplayConfigPanel = () => {
         sliderProps={{ min: 0, max: 5, step: 0.1 }}
       />
       <ConfigOptionNumberInput
-        label={<><SunIcon size={ICON_SIZE} /><ArrowsOutLineVerticalIcon size={ICON_SIZE} /></>}
+        label={<><SunIcon /><ArrowsOutLineVerticalIcon /></>}
         value={bloomThreshold}
         min={0}
         max={1}
@@ -105,7 +105,7 @@ const DisplayConfigPanel = () => {
         sliderProps={{ min: 0, max: 1, step: 0.01 }}
       />
       <ConfigOptionNumberInput
-        label={<><SunIcon size={ICON_SIZE} /><AngleIcon size={ICON_SIZE} /></>}
+        label={<><SunIcon /><AngleIcon /></>}
         value={bloomRadius}
         min={0}
         max={1}

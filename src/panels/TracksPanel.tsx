@@ -56,8 +56,8 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
         style={{ borderColor: getTextColor(style.color) }}
       >
         {expanded
-          ? <CaretUpIcon size={24} color={getTextColor(style.color)} />
-          : <CaretDownIcon size={24} color={getTextColor(style.color)} />
+          ? <CaretUpIcon color={getTextColor(style.color)} />
+          : <CaretDownIcon color={getTextColor(style.color)} />
         }
       </ActionIcon>
     </Group>

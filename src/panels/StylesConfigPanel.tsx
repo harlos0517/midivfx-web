@@ -39,7 +39,7 @@ const StylesConfigPanel = () => {
           }))
         }}
       >
-        <PlusIcon size={24} />
+        <PlusIcon />
       </ActionIcon>
     </PanelWrapper>
   </DragDropProvider>
