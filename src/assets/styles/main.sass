@@ -1,11 +1,15 @@
 html
   scroll-behavior: smooth
+  font-size: 12px
 
 *
   user-select: none
   -webkit-touch-callout: none
   -webkit-tap-highlight-color: transparent
   font-family: monospace
+
+input
+  font-family: monospace!important
 
 a
   text-decoration: none
@@ -14,3 +18,16 @@ a
 
 svg
   vertical-align: middle
+
+.dockview-theme-dark
+  --dv-tabs-and-actions-container-height: 2rem
+
+  .dv-void-container
+    background-color: #282828
+
+  .dv-default-tab-content
+    margin-right: 0!important
+
+  .dv-tab
+    border-top-left-radius: 8px
+    border-top-right-radius: 8px

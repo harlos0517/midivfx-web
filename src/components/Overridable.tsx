@@ -21,10 +21,8 @@ const Overridable = (props: OverridableProps) => {
   const isOverride = value !== undefined
 
   return <Box
-    variant="subtle"
     c={isOverride ? 'white' : '#666666'}
-    size="lg"
-    flex={1}
+    size="2rem"
   >
     {icon}
   </Box>

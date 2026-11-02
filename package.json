@@ -30,6 +30,7 @@
 		"react-router-dom": "^7.18.2",
 		"sass-embedded": "^1.100.0",
 		"three": "^0.186.1",
+		"vite-plugin-svgr": "^5.2.0",
 		"zustand": "^5.0.16"
 	},
 	"devDependencies": {

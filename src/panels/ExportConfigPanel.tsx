@@ -1,12 +1,18 @@
-import { Button, Group, Progress, Select, Switch, Text } from '@mantine/core'
+import { Button, Group, Progress, Text } from '@mantine/core'
 import { useContext } from 'react'
 
+import ConfigOptionSelect from '@/components/ConfigOptionSelect'
+import ConfigOptionSwitch from '@/components/ConfigOptionSwitch'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import useExportConfig from '@/hooks/useExportConfig'
 import useConfigStore from '@/store/configStore'
 import useExportStore from '@/store/exportStore'
 import useRendererStore from '@/store/rendererStore'
+import { CUSTOM_ICON_STYLE } from '@/utils/const'
+
+import AlphaIcon from '@/assets/icons/alpha.svg?react'
+import FPSIcon from '@/assets/icons/fps.svg?react'
 
 const ExportConfigPanel = () => {
   const [fps, setFps] = useExportConfig('fps')
@@ -28,15 +34,15 @@ const ExportConfigPanel = () => {
   const exporting = progress !== null
 
   return <PanelWrapper isExportPanel>
-    <Select
-      label="FPS"
+    <ConfigOptionSelect
+      label={<FPSIcon {...CUSTOM_ICON_STYLE} />}
       value={fps.toString()}
       onChange={v => setFps(Number(v))}
       data={['15', '24', '30', '60']}
       disabled={exporting}
     />
-    <Switch
-      label="Alpha Channel (WebM)"
+    <ConfigOptionSwitch
+      label={<AlphaIcon {...CUSTOM_ICON_STYLE} />}
       checked={alpha}
       onChange={e => setAlpha(e.currentTarget.checked)}
       disabled={exporting}

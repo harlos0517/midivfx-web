@@ -6,7 +6,9 @@
         "./src/*"
       ]
     },
-    "types": []
+    "types": [
+      "vite-plugin-svgr/client"
+    ]
   },
   "include": [
     "src/**/*.ts",

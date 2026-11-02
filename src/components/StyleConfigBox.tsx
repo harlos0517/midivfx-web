@@ -1,56 +1,59 @@
 import { useSortable } from '@dnd-kit/react/sortable'
 import {
-  ActionIcon,
   Box,
   Collapse,
-  ColorInput,
   Divider,
   Group,
-  SegmentedControl,
   Space,
   Stack,
   Text,
-  TextInput,
 } from '@mantine/core'
 import {
   AngleIcon,
   ArrowBendDownRightIcon,
   ArrowRightIcon,
-  ArrowsInLineVerticalIcon,
-  BroadcastIcon,
   CaretDownIcon,
   CaretUpIcon,
-  ClosedCaptioningIcon,
   CopyIcon,
-  CopySimpleIcon,
   DotsSixVerticalIcon,
-  HammerIcon,
+  HashIcon,
   LockIcon,
+  MusicNotesIcon,
   PaintBucketIcon,
   PaletteIcon,
-  PianoKeysIcon,
   PlusIcon,
-  RectangleIcon,
-  TextTIcon,
+  TagIcon,
   TildeIcon,
   TrashIcon,
-  TrashSimpleIcon,
 } from '@phosphor-icons/react'
 import { useState } from 'react'
 
+import StyledColorInput from '@/components/inputs/ColorNumberInput'
+import StyledActionIcon from '@/components/inputs/StyledActionIcon'
+import StyledSegmentedControl from '@/components/inputs/StyledSegmentedControl'
+import StyledTextInput from '@/components/inputs/StyledTextInput'
 import Overridable from '@/components/Overridable'
 import OverridableInput from '@/components/OverridableInput'
 import useStyleConfig from '@/hooks/useStyleConfig'
 import useConfigStore from '@/store/configStore'
 import { getTextColor } from '@/utils/colors'
 import type { Remap } from '@/utils/config'
+import { CUSTOM_ICON_STYLE, ICON_SIZE } from '@/utils/const'
 import { parseRange, rangeText } from '@/utils/range'
+
+import CCIcon from '@/assets/icons/cc.svg?react'
+import ChannelIcon from '@/assets/icons/channel.svg?react'
+import ModeIcon from '@/assets/icons/mode.svg?react'
+import PedalIcon from '@/assets/icons/pedal.svg?react'
+import ThicknessIcon from '@/assets/icons/thickness.svg?react'
+import TrackIcon from '@/assets/icons/track.svg?react'
+import VelocityIcon from '@/assets/icons/velocity.svg?react'
+import ZIcon from '@/assets/icons/z.svg?react'
 
 const groupProps = {
   wrap: 'nowrap' as const,
   align: 'center' as const,
-  justify: 'stretch' as const,
-  h: '2.5rem',
+  justify: 'flex-start' as const,
   gap: 'xs',
 }
 
@@ -71,38 +74,39 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
     })
   }
 
-  return <Group {...groupProps}>
-    <TextInput
-      flex={2}
+  return <Group {...groupProps} gap="0">
+    <MusicNotesIcon {...CUSTOM_ICON_STYLE} />
+    <StyledTextInput
+      flex={2} ml="4px"
       value={originalPitch || ''}
       onChange={e => set({ originalPitch: e.target.value })}
     />
-    <ArrowRightIcon size={20} />
-    <TextInput
-      flex={1}
+    <ArrowRightIcon size={ICON_SIZE} style={{  margin: '0 4px' }} />
+    <StyledTextInput
+      flex={1} miw={48}
       value={mappedPitch[0]}
       onChange={e => {
         const v = parseInt(e.target.value, 10)
         set({ mappedPitch: [v || 0, mappedPitch[1]] })
       }}
     />
-    <TildeIcon size={20} />
-    <TextInput
-      flex={1}
+    <TildeIcon size={ICON_SIZE} />
+    <StyledTextInput
+      flex={1} miw={48}
       value={mappedPitch[1]}
       onChange={e => {
         const v = parseInt(e.target.value, 10)
         set({ mappedPitch: [mappedPitch[0], v || 127] })
       }}
     />
-    <ColorInput
-      w={135}
+    <StyledColorInput
+      w={108} mx="4px"
       value={color || '#ffffff'}
       onChange={v => set({ color: v })}
     />
-    <ActionIcon size="lg" variant="subtle" color="red" onClick={onRemove}>
-      <TrashSimpleIcon size={20} />
-    </ActionIcon>
+    <StyledActionIcon size="lg" variant="subtle" c="red" onClick={onRemove}>
+      <TrashIcon size={ICON_SIZE} color="red" />
+    </StyledActionIcon>
   </Group>
 }
 
@@ -160,134 +164,141 @@ const StyleConfigBox = ({ id }: { id: string }) => {
     <Stack gap="xs">
       <Group {...groupProps} gap="4px">
         {id === 'default'
-          ? <ActionIcon
-            size="lg"
-            variant="subtle"
-            disabled
-          ><LockIcon size={20} /></ActionIcon>
-          : <ActionIcon
-            size="lg"
-            ref={handleRef}
-            variant="subtle"
+          ? <LockIcon
+            size={ICON_SIZE} color="gray"
+            style={{ padding: '0 2px' }}
+          />
+          : <DotsSixVerticalIcon
+            ref={handleRef} size={ICON_SIZE} color="gray"
             style={{ cursor: 'grab', touchAction: 'none' }}
-          >
-            <DotsSixVerticalIcon size={20} color="gray" />
-          </ActionIcon>
+          />
         }
-        <ActionIcon
-          size="lg"
+        <StyledActionIcon
           variant="subtle"
           onClick={() => { setIsExpanded(!isExpanded) }}
         >
           {isExpanded
-            ? <CaretUpIcon size={20} />
-            : <CaretDownIcon size={20} />
+            ? <CaretUpIcon size={ICON_SIZE} />
+            : <CaretDownIcon size={ICON_SIZE} />
           }
-        </ActionIcon>
-        <ActionIcon
-          size="lg"
+        </StyledActionIcon>
+        <StyledActionIcon
           variant="subtle"
           onClick={copy}
         >
-          <CopyIcon size={20} />
-        </ActionIcon>
-        <ActionIcon
-          size="lg"
+          <CopyIcon size={ICON_SIZE} />
+        </StyledActionIcon>
+        <StyledActionIcon
           variant="subtle"
           onClick={deleteStyle}
           disabled={id === 'default'}
+          color="red"
         >
-          <TrashIcon size={20} color={id === 'default' ? 'gray' : 'red'} />
-        </ActionIcon>
+          <TrashIcon size={16} color="red"/>
+        </StyledActionIcon>
         <Group {...groupProps} px={4} h={32}
           gap={4} flex={1} bdrs={4}
           bg={color || 'transparent'} c={getTextColor(color || '#000000')}
         >
-          <Text flex="0 0 auto"><TextTIcon size={20} /></Text>
+          <Text flex="0 0 auto"><TrackIcon {...CUSTOM_ICON_STYLE} /></Text>
           <Text mr="xs" flex="1 1 auto" textWrap="nowrap"
             style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
           >
             {isRegex ? (track  || '*') : (track ? ('#' + track) : '*')}
           </Text>
-          <Text flex="0 0 auto"><BroadcastIcon size={20} /></Text>
+          <Text flex="0 0 auto"><ChannelIcon {...CUSTOM_ICON_STYLE}/></Text>
           <Text flex="0 0 auto">{channel || '1-16'}</Text>
         </Group>
       </Group>
       <Collapse expanded={!isExpanded}>
-        <Group gap="xs">
-          <Overridable id={id} styleKey="color" label={<PaletteIcon size={20} />} />
-          <Overridable id={id} styleKey="velocity" label={<HammerIcon size={20} />} />
-          <Overridable id={id} label={<RectangleIcon size={20} />} styleKey="mode" />
+        <Group gap="xs" justify="space-between" wrap="nowrap">
+          <Overridable id={id} styleKey="color" label={<PaletteIcon size={ICON_SIZE} />} />
+          <Overridable id={id}
+            styleKey="velocity"
+            label={<VelocityIcon {...CUSTOM_ICON_STYLE} />}
+          />
+          <Overridable id={id} label={<ModeIcon {...CUSTOM_ICON_STYLE} />} styleKey="mode" />
           {mode === 'CC'
-            ? <Overridable id={id} label="CC" styleKey="cc" />
+            ? <Overridable id={id} label={<CCIcon {...CUSTOM_ICON_STYLE} />} styleKey="cc" />
             : mode === 'decay'
               ? <Overridable id={id}
-                label={<ArrowBendDownRightIcon size={20} />}
+                label={<ArrowBendDownRightIcon size={ICON_SIZE} />}
                 styleKey="decayRate"
               />
-              : <Space flex={1}/>}
-          <Overridable id={id} styleKey="showPedal" label={<PianoKeysIcon size={20} />} />
+              : <Space w={ICON_SIZE} />}
+          <Overridable id={id} styleKey="showPedal" label={<PedalIcon {...CUSTOM_ICON_STYLE} />} />
           {showPedal
-            ? <Overridable id={id} styleKey="pedalColor" label={<PaletteIcon size={20} />} />
-            : <Space flex={1} />}
-          <Overridable id={id} label={<ArrowsInLineVerticalIcon size={20} />} styleKey="gap" />
-          <Overridable id={id} label={<AngleIcon size={20} />} styleKey="radius" />
-          <Overridable id={id} label={<CopySimpleIcon size={20} />} styleKey="z" />
+            ? <Overridable id={id} styleKey="pedalColor" label={<PaletteIcon size={ICON_SIZE} />} />
+            : <Space w={ICON_SIZE} />}
+          <Overridable id={id}
+            label={<ThicknessIcon {...CUSTOM_ICON_STYLE} />}
+            styleKey="gap"
+          />
+          <Overridable id={id} label={<AngleIcon size={ICON_SIZE} />} styleKey="radius" />
+          <Overridable id={id} label={<ZIcon {...CUSTOM_ICON_STYLE} />} styleKey="z" />
         </Group>
       </Collapse>
       <Collapse expanded={isExpanded}>
         <Stack gap="xs">
           <Group {...groupProps}>
-            <SegmentedControl
-              bd="#444444 1px solid"
-              data={[
-                { value: 'ids', label: '#' },
-                { value: 'regex', label: '/' },
-              ]}
-              value={isRegex ? 'regex' : 'ids'}
-              onChange={v => {setIsRegex(v === 'regex')}}
-            />
-            <TextInput
-              flex={2}
-              placeholder={isRegex ? 'track name regex' : 'track numbers'}
-              value={track || ''}
-              onChange={e => setTrack(e.target.value)}
-              onBlur={e => {
-                if (isRegex) return
-                const v = e.target.value
-                console.log(v)
-                const range = parseRange(v || '', 1, 256)
-                const text = rangeText(range)
-                setTrack(text)
-              }}
-            />
-            <TextInput
-              flex={1.5}
-              w={100}
-              leftSection="Ch"
-              value={channel || ''}
-              onChange={e => setChannel(e.target.value)}
-              onBlur={e => {
-                const v = e.target.value
-                console.log(v)
-                const range = parseRange(v || '', 1, 256)
-                const text = rangeText(range)
-                setChannel(text)
-              }}
-            />
+            <Group gap="2px" flex={2}>
+              <TrackIcon {...CUSTOM_ICON_STYLE} />
+              <StyledSegmentedControl
+                bd="#444444 1px solid"
+                data={[
+                  { value: 'ids', label: <HashIcon size={16} /> },
+                  { value: 'regex', label: <TagIcon size={16} /> },
+                ]}
+                value={isRegex ? 'regex' : 'ids'}
+                onChange={v => {
+                  setIsRegex(v === 'regex')
+                  if (v === 'regex') return
+                  const range = parseRange(track || '', 1, 256)
+                  const text = rangeText(range)
+                  setTrack(text)
+                }}
+              />
+              <StyledTextInput
+                flex={1}
+                value={track || ''}
+                onChange={e => setTrack(e.target.value)}
+                onBlur={e => {
+                  if (isRegex) return
+                  const v = e.target.value
+                  const range = parseRange(v || '', 1, 256)
+                  const text = rangeText(range)
+                  setTrack(text)
+                }}
+              />
+            </Group>
+            <Group gap="2px" flex={1}>
+              <ChannelIcon {...CUSTOM_ICON_STYLE}/>
+              <StyledTextInput
+                flex={1}
+                w={100}
+                value={channel || ''}
+                onChange={e => setChannel(e.target.value)}
+                onBlur={e => {
+                  const v = e.target.value
+                  const range = parseRange(v || '', 1, 256)
+                  const text = rangeText(range)
+                  setChannel(text)
+                }}
+              />
+            </Group>
           </Group>
           <Group {...groupProps}>
             <OverridableInput
               id={id}
               styleKey="color"
-              label={<PaletteIcon size={20} />}
+              label={<PaletteIcon size={ICON_SIZE} />}
               inputType="color"
               wrapperProps={{ w: 180, flex: 1 }}
             />
             <OverridableInput
               id={id}
               styleKey="velocity"
-              label={<HammerIcon size={20} />}
+              label={<VelocityIcon {...CUSTOM_ICON_STYLE} />}
               inputType="switch"
               inputProps={{
                 styles: { body: { display: 'flex', alignItems: 'center' } },
@@ -297,28 +308,28 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<RectangleIcon size={20} />}
+              label={<ModeIcon {...CUSTOM_ICON_STYLE} />}
               styleKey="mode"
               inputType="segmented"
               inputProps={{
                 bd: '#444444 1px solid',
               }}
               data={[
-                { value: 'fill', label: <PaintBucketIcon size={20} /> },
-                { value: 'decay', label: <ArrowBendDownRightIcon size={20} /> },
-                { value: 'CC', label: <ClosedCaptioningIcon size={20} /> },
+                { value: 'fill', label: <PaintBucketIcon size={16} /> },
+                { value: 'decay', label: <ArrowBendDownRightIcon size={16} /> },
+                { value: 'CC', label: <CCIcon {...CUSTOM_ICON_STYLE} width={16} height={16} /> },
               ]}
             />
             {mode === 'CC' ? <OverridableInput
               id={id}
-              label="CC"
+              label={<CCIcon {...CUSTOM_ICON_STYLE} />}
               styleKey="cc"
               inputType="number"
               wrapperProps={{ flex: 1 }}
               inputProps={{ min: 0, max: 127, step: 1 }}
             /> : mode === 'decay' ? <OverridableInput
               id={id}
-              label={<ArrowBendDownRightIcon size={20} />}
+              label={<ArrowBendDownRightIcon size={ICON_SIZE} />}
               styleKey="decayRate"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -336,13 +347,13 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             <OverridableInput
               id={id}
               styleKey="showPedal"
-              label={<PianoKeysIcon size={20} />}
+              label={<PedalIcon {...CUSTOM_ICON_STYLE} />}
               inputType="switch"
             />
             {showPedal ? <OverridableInput
               id={id}
               styleKey="pedalColor"
-              label={<PaletteIcon size={20} />}
+              label={<PaletteIcon size={ICON_SIZE} />}
               inputType="color"
               wrapperProps={{ w: 180 }}
             /> : <Space w={180} />}
@@ -350,7 +361,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<ArrowsInLineVerticalIcon size={20} />}
+              label={<ThicknessIcon {...CUSTOM_ICON_STYLE} />}
               styleKey="gap"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -365,7 +376,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             />
             <OverridableInput
               id={id}
-              label={<AngleIcon size={20} />}
+              label={<AngleIcon size={ICON_SIZE} />}
               styleKey="radius"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -378,7 +389,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<CopySimpleIcon size={20} />}
+              label={<ZIcon {...CUSTOM_ICON_STYLE} />}
               styleKey="z"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -393,15 +404,15 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             />
           </Group>
           <Group {...groupProps}>
-            <Text>Note remapping</Text>
-            <ActionIcon
+            <Text flex={1}>Percussion Notes Remapping</Text>
+            <StyledActionIcon
               size="lg"
               onClick={() => {
                 setRemaps([...(remaps || []), { mappedPitch: [0, 127], color: '#ffffff' }])
               }}
             >
-              <PlusIcon size={20} />
-            </ActionIcon>
+              <PlusIcon size={ICON_SIZE} />
+            </StyledActionIcon>
           </Group>
           {!!remaps?.length && <Stack>
             {remaps.map((r, i) => <RemapConfigBox
@@ -413,7 +424,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           </Stack>}
         </Stack>
       </Collapse>
-      <Divider/>
+      <Divider my="xs"/>
     </Stack>
   </Box>
 }

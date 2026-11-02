@@ -174,7 +174,7 @@ const NavigatorPanel = () => {
         bd="1px solid blue.4"
         style={{
           left: `calc(${(range.start - domain.start) / span * 100}% + 1px)`,
-          width: `${Math.max(0, range.end - range.start) / span * 100}%`,
+          width: `calc(${Math.max(0, range.end - range.start) / span * 100}% - 1px)`,
           boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.6)',
           cursor: draft ? 'grabbing' : 'grab',
         }}

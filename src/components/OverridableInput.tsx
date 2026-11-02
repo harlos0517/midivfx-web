@@ -1,11 +1,8 @@
 import {
-  ActionIcon,
-  ColorInput,
   Group,
-  NumberInput,
-  SegmentedControl,
   Slider,
   Switch,
+  Tooltip,
   type ColorInputProps,
   type MantineStyleProps,
   type NumberInputProps,
@@ -16,6 +13,10 @@ import {
 } from '@mantine/core'
 import { useEffect, useRef, type ReactNode } from 'react'
 
+import StyledColorInput from '@/components/inputs/ColorNumberInput'
+import StyledActionIcon from '@/components/inputs/StyledActionIcon'
+import StyledNumberInput from '@/components/inputs/StyledNumberInput'
+import StyledSegmentedControl from '@/components/inputs/StyledSegmentedControl'
 import useStyleConfig from '@/hooks/useStyleConfig'
 import { defaultStyleRuntime, type StyleConfig } from '@/utils/config'
 
@@ -24,6 +25,7 @@ interface CommonProps {
   wrapperProps?: MantineStyleProps
   id: string
   styleKey: Exclude<keyof StyleConfig, 'id' | 'order' | 'track' | 'channel' | 'isRegex' | 'remaps'>
+  tooltip?: ReactNode
 }
 
 type OverridableInputProps = CommonProps & (
@@ -44,12 +46,14 @@ const OverridableInput = (props: OverridableInputProps) => {
     wrapperProps = {},
     id,
     styleKey,
+    tooltip,
   } = props
 
   const defaultValue = defaultStyleRuntime[styleKey]
   const [value, setValue, clearValue] = useStyleConfig(id, styleKey, true)
   const overrideValue = useRef<string | number | boolean>(value ?? defaultValue)
   const isOverride = value !== undefined || id === 'default'
+  const withBox = ['number', 'color', 'segmented'].includes(props.inputType)
 
   useEffect(() => {
     if (value !== undefined) overrideValue.current = value
@@ -60,48 +64,52 @@ const OverridableInput = (props: OverridableInputProps) => {
     else setValue(overrideValue.current)
   }
 
-  return <Group gap="xs" wrap="nowrap" {...wrapperProps}>
-    <ActionIcon
-      onClick={triggerOverride}
-      variant={isOverride ? 'filled' : 'subtle'}
-      c={isOverride ? 'white' : '#666666'}
-      size="lg"
-    >
-      {icon}
-    </ActionIcon>
-    {props.inputType === 'number' && <NumberInput
-      flex={1}
+  const commonProps = {
+    flex: 1,
+    disabled: !isOverride,
+    prepend: withBox,
+  }
+
+  const actionIcon = <StyledActionIcon
+    append={withBox}
+    onClick={triggerOverride}
+    variant={isOverride ? 'filled' : 'default'}
+    c={isOverride ? 'white' : '#666666'}
+  >
+    {icon}
+  </StyledActionIcon>
+
+  return <Group gap={withBox ? '0' : 'xs'} wrap="nowrap" {...wrapperProps}>
+    {tooltip ? <Tooltip label={tooltip}>{actionIcon}</Tooltip> : actionIcon}
+    {props.inputType === 'number' && <StyledNumberInput
+      {...commonProps}
       {...props.inputProps}
-      disabled={!isOverride}
       value={value as number}
       onChange={v => setValue(typeof v === 'string' ? (parseFloat(v) || 0) : v)}
     />}
-    {props.inputType === 'color' && <ColorInput
-      flex={1}
+    {props.inputType === 'color' && <StyledColorInput
+      {...commonProps}
       {...props.inputProps}
-      disabled={!isOverride}
       value={value as string}
       onChange={setValue}
     />}
     {props.inputType === 'slider' && <Slider
-      flex={1}
+      {...commonProps}
       {...props.inputProps}
-      disabled={!isOverride}
       value={value as number}
       onChange={setValue}
+      styles={{ markLabel: { fontSize: '8px' } }}
     />}
     {props.inputType === 'switch' && <Switch
-      flex={1}
+      {...commonProps}
       {...props.inputProps}
-      disabled={!isOverride}
       checked={value as boolean}
       onChange={e => setValue(e.currentTarget.checked)}
     />}
-    {props.inputType === 'segmented' && <SegmentedControl
-      flex={1}
+    {props.inputType === 'segmented' && <StyledSegmentedControl
+      {...commonProps}
       {...props.inputProps}
       data={props.data}
-      disabled={!isOverride}
       value={value as string}
       onChange={setValue}
     />}
