@@ -4,6 +4,7 @@ import {
   DockviewDefaultTab,
   DockviewReact,
   themeDark,
+  type AddPanelOptions,
   type DockviewReadyEvent,
   type IDockviewPanelHeaderProps,
   type SerializedDockview,
@@ -30,6 +31,30 @@ import StylesConfigPanel from '@/panels/StylesConfigPanel'
 import TracksPanel from '@/panels/TracksPanel'
 
 import 'dockview-react/dist/styles/dockview.css'
+
+const panels: AddPanelOptions[] = [
+  { id: 'Main' },
+  {
+    id: 'Tracks',
+    position: { referencePanel: 'Main', direction: 'left' },
+    minimumWidth: 200, initialWidth: 330,
+  },
+  {
+    id: 'Styles',
+    position: { referencePanel: 'Main', direction: 'right' },
+    minimumWidth: 320, initialWidth: 330,
+  },
+  { id: 'Import', position: { referencePanel: 'Main', direction: 'below' } },
+  { id: 'Playback', position: { referencePanel: 'Import', direction: 'right' } },
+  { id: 'Camera', position: { referencePanel: 'Playback', direction: 'right' } },
+  { id: 'Display', position: { referencePanel: 'Camera', direction: 'right' } },
+  { id: 'Export', position: { referencePanel: 'Import', direction: 'below' } },
+  {
+    id: 'Navigator',
+    position: { referencePanel: 'Main', direction: 'below' },
+    minimumHeight: 34, initialHeight: 130,
+  },
+].map(p => ({ ...p, component: p.id.toLowerCase() }))
 
 const NonClosableTab = (props: IDockviewPanelHeaderProps) =>
   <DockviewDefaultTab {...props} hideClose />
@@ -59,46 +84,16 @@ const Index = () => {
 
   const loadDefaultLayout = (api: DockviewApi) => {
     if (!api) return
-    api.addPanel({ id: 'Main', component: 'main' })
-    api.addPanel({
-      id: 'Navigator', component: 'navigator',
-      position: { referencePanel: 'Main', direction: 'below' },
-      minimumHeight: 34,
-    })
-    api.getPanel('Navigator')?.api.setSize({ height: 130 })
-    api.addPanel({
-      id: 'Tracks', component: 'tracks',
-      position: { referencePanel: 'Main', direction: 'left' },
-      minimumWidth: 200,
-    })
-    api.addPanel({
-      id: 'Styles', component: 'styles',
-      position: { referencePanel: 'Main', direction: 'right' },
-      minimumWidth: 320,
-    })
-    api.addPanel({
-      id: 'Import', component: 'import',
-      position: { referencePanel: 'Main', direction: 'below' },
-    })
-    api.addPanel({
-      id: 'Playback', component: 'playback',
-      position: { referencePanel: 'Import', direction: 'right' },
-    })
-    api.addPanel({
-      id: 'Camera', component: 'camera',
-      position: { referencePanel: 'Playback', direction: 'right' },
-    })
-    api.addPanel({
-      id: 'Display', component: 'display',
-      position: { referencePanel: 'Camera', direction: 'right' },
-    })
-    api.addPanel({
-      id: 'Export', component: 'export',
-      position: { referencePanel: 'Import', direction: 'below' },
-    })
 
-    api.getPanel('Tracks')?.api.setSize({ width: 330 })
-    api.getPanel('Styles')?.api.setSize({ width: 330 })
+    const missingPanels = panels.filter(panel => !api.getPanel(panel.id))
+
+    for (const panel of missingPanels)
+      api.addPanel(panel)
+
+    for (const panel of missingPanels) {
+      if (panel.initialHeight) api.getPanel(panel.id)?.api.setSize({ height: panel.initialHeight })
+      if (panel.initialWidth) api.getPanel(panel.id)?.api.setSize({ width: panel.initialWidth })
+    }
   }
 
   useEffect(() => {
