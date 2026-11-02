@@ -8,7 +8,6 @@ import { parseMidiFile } from '@/utils/midi'
 import { resetPlaybackRange } from '@/utils/timeline'
 
 import MIDIIcon from '@/assets/icons/midi.svg?react'
-import { CUSTOM_ICON_STYLE } from '@/utils/const'
 import { SpeakerLowIcon } from '@phosphor-icons/react'
 
 const ImportConfigPanel = () => {
@@ -67,7 +66,7 @@ const ImportConfigPanel = () => {
 
   return <PanelWrapper>
     <ConfigOptionFileInput
-      label={<MIDIIcon {...CUSTOM_ICON_STYLE} />}
+      label={<MIDIIcon />}
       accept=".mid,.midi"
       value={midiFile}
       onChange={onMidiFileChange}

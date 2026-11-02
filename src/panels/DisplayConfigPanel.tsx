@@ -2,7 +2,6 @@ import ConfigOptionNumberInput from '@/components/ConfigOptionNumberInput'
 import ConfigOptionSwitch from '@/components/ConfigOptionSwitch'
 import PanelWrapper from '@/components/PanelWrapper'
 import useDisplayConfig from '@/hooks/useDisplayConfig'
-import { CUSTOM_ICON_STYLE } from '@/utils/const'
 
 import HeightIcon from '@/assets/icons/height.svg?react'
 import SpeedIcon from '@/assets/icons/speed.svg?react'
@@ -28,7 +27,7 @@ const DisplayConfigPanel = () => {
 
   return <PanelWrapper>
     <ConfigOptionNumberInput
-      label={<WidthIcon {...CUSTOM_ICON_STYLE} />}
+      label={<WidthIcon />}
       value={width}
       max={3840}
       min={640}
@@ -43,7 +42,7 @@ const DisplayConfigPanel = () => {
       ], restrictToMarks: true }}
     />
     <ConfigOptionNumberInput
-      label={<HeightIcon {...CUSTOM_ICON_STYLE} />}
+      label={<HeightIcon />}
       value={height}
       max={2160}
       min={360}
@@ -58,7 +57,7 @@ const DisplayConfigPanel = () => {
       ], restrictToMarks: true }}
     />
     <ConfigOptionNumberInput
-      label={<SpeedIcon {...CUSTOM_ICON_STYLE} />}
+      label={<SpeedIcon />}
       value={roundTo(unitsPerSecond, 2)}
       min={2}
       max={1024}

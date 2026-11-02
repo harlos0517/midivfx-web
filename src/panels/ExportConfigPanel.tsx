@@ -9,7 +9,6 @@ import useExportConfig from '@/hooks/useExportConfig'
 import useConfigStore from '@/store/configStore'
 import useExportStore from '@/store/exportStore'
 import useRendererStore from '@/store/rendererStore'
-import { CUSTOM_ICON_STYLE } from '@/utils/const'
 
 import AlphaIcon from '@/assets/icons/alpha.svg?react'
 import FPSIcon from '@/assets/icons/fps.svg?react'
@@ -35,14 +34,14 @@ const ExportConfigPanel = () => {
 
   return <PanelWrapper isExportPanel>
     <ConfigOptionSelect
-      label={<FPSIcon {...CUSTOM_ICON_STYLE} />}
+      label={<FPSIcon />}
       value={fps.toString()}
       onChange={v => setFps(Number(v))}
       data={['15', '24', '30', '60']}
       disabled={exporting}
     />
     <ConfigOptionSwitch
-      label={<AlphaIcon {...CUSTOM_ICON_STYLE} />}
+      label={<AlphaIcon />}
       checked={alpha}
       onChange={e => setAlpha(e.currentTarget.checked)}
       disabled={exporting}

@@ -38,7 +38,7 @@ import useStyleConfig from '@/hooks/useStyleConfig'
 import useConfigStore from '@/store/configStore'
 import { getTextColor } from '@/utils/colors'
 import type { Remap } from '@/utils/config'
-import { CUSTOM_ICON_STYLE, ICON_SIZE } from '@/utils/const'
+import { ICON_SIZE } from '@/utils/const'
 import { parseRange, rangeText } from '@/utils/range'
 
 import CCIcon from '@/assets/icons/cc.svg?react'
@@ -75,7 +75,7 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
   }
 
   return <Group {...groupProps} gap="0">
-    <MusicNotesIcon {...CUSTOM_ICON_STYLE} />
+    <MusicNotesIcon />
     <StyledTextInput
       flex={2} ml="4px"
       value={originalPitch || ''}
@@ -197,49 +197,40 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           gap={4} flex={1} bdrs={4}
           bg={color || 'transparent'} c={getTextColor(color || '#000000')}
         >
-          <Text flex="0 0 auto"><TrackIcon {...CUSTOM_ICON_STYLE} /></Text>
+          <Text flex="0 0 auto"><TrackIcon /></Text>
           <Text mr="xs" flex="1 1 auto" textWrap="nowrap"
             style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
           >
             {isRegex ? (track  || '*') : (track ? ('#' + track) : '*')}
           </Text>
-          <Text flex="0 0 auto"><ChannelIcon {...CUSTOM_ICON_STYLE}/></Text>
+          <Text flex="0 0 auto"><ChannelIcon/></Text>
           <Text flex="0 0 auto">{channel || '1-16'}</Text>
         </Group>
       </Group>
       <Collapse expanded={!isExpanded}>
         <Group gap="xs" justify="space-between" wrap="nowrap">
           <Overridable id={id} styleKey="color" label={<PaletteIcon />} />
-          <Overridable id={id}
-            styleKey="velocity"
-            label={<VelocityIcon {...CUSTOM_ICON_STYLE} />}
-          />
-          <Overridable id={id} label={<ModeIcon {...CUSTOM_ICON_STYLE} />} styleKey="mode" />
+          <Overridable id={id} styleKey="velocity" label={<VelocityIcon />} />
+          <Overridable id={id} label={<ModeIcon />} styleKey="mode" />
           {mode === 'CC'
-            ? <Overridable id={id} label={<CCIcon {...CUSTOM_ICON_STYLE} />} styleKey="cc" />
+            ? <Overridable id={id} label={<CCIcon />} styleKey="cc" />
             : mode === 'decay'
-              ? <Overridable id={id}
-                label={<ArrowBendDownRightIcon />}
-                styleKey="decayRate"
-              />
+              ? <Overridable id={id} label={<ArrowBendDownRightIcon />} styleKey="decayRate" />
               : <Space w={ICON_SIZE} />}
-          <Overridable id={id} styleKey="showPedal" label={<PedalIcon {...CUSTOM_ICON_STYLE} />} />
+          <Overridable id={id} styleKey="showPedal" label={<PedalIcon />} />
           {showPedal
             ? <Overridable id={id} styleKey="pedalColor" label={<PaletteIcon />} />
             : <Space w={ICON_SIZE} />}
-          <Overridable id={id}
-            label={<ThicknessIcon {...CUSTOM_ICON_STYLE} />}
-            styleKey="gap"
-          />
+          <Overridable id={id} label={<ThicknessIcon />} styleKey="gap" />
           <Overridable id={id} label={<AngleIcon />} styleKey="radius" />
-          <Overridable id={id} label={<ZIcon {...CUSTOM_ICON_STYLE} />} styleKey="z" />
+          <Overridable id={id} label={<ZIcon />} styleKey="z" />
         </Group>
       </Collapse>
       <Collapse expanded={isExpanded}>
         <Stack gap="xs">
           <Group {...groupProps}>
             <Group gap="2px" flex={2}>
-              <TrackIcon {...CUSTOM_ICON_STYLE} />
+              <TrackIcon />
               <StyledSegmentedControl
                 bd="#444444 1px solid"
                 data={[
@@ -269,7 +260,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               />
             </Group>
             <Group gap="2px" flex={1}>
-              <ChannelIcon {...CUSTOM_ICON_STYLE}/>
+              <ChannelIcon/>
               <StyledTextInput
                 flex={1}
                 w={100}
@@ -295,7 +286,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             <OverridableInput
               id={id}
               styleKey="velocity"
-              label={<VelocityIcon {...CUSTOM_ICON_STYLE} />}
+              label={<VelocityIcon />}
               inputType="switch"
               inputProps={{
                 styles: { body: { display: 'flex', alignItems: 'center' } },
@@ -305,7 +296,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<ModeIcon {...CUSTOM_ICON_STYLE} />}
+              label={<ModeIcon />}
               styleKey="mode"
               inputType="segmented"
               inputProps={{
@@ -314,12 +305,12 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               data={[
                 { value: 'fill', label: <PaintBucketIcon size={16} /> },
                 { value: 'decay', label: <ArrowBendDownRightIcon size={16} /> },
-                { value: 'CC', label: <CCIcon {...CUSTOM_ICON_STYLE} width={16} height={16} /> },
+                { value: 'CC', label: <CCIcon width={16} height={16} /> },
               ]}
             />
             {mode === 'CC' ? <OverridableInput
               id={id}
-              label={<CCIcon {...CUSTOM_ICON_STYLE} />}
+              label={<CCIcon />}
               styleKey="cc"
               inputType="number"
               wrapperProps={{ flex: 1 }}
@@ -344,7 +335,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             <OverridableInput
               id={id}
               styleKey="showPedal"
-              label={<PedalIcon {...CUSTOM_ICON_STYLE} />}
+              label={<PedalIcon />}
               inputType="switch"
             />
             {showPedal ? <OverridableInput
@@ -358,7 +349,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<ThicknessIcon {...CUSTOM_ICON_STYLE} />}
+              label={<ThicknessIcon />}
               styleKey="gap"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -386,7 +377,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<ZIcon {...CUSTOM_ICON_STYLE} />}
+              label={<ZIcon />}
               styleKey="z"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
