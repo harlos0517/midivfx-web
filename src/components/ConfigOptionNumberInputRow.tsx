@@ -10,15 +10,23 @@ import {
 } from '@mantine/core'
 import { useState, type ReactNode } from 'react'
 
-interface ConfigOptionNumberInputProps extends NumberInputProps {
+interface ConfigOptionNumberInputProps extends Omit<NumberInputProps, 'onChange'> {
   label?: ReactNode
   tooltip?: ReactNode
   withSlider?: boolean
   sliderProps?: SliderProps
+  onChange?: (value: number) => void
 }
 
 const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
-  const { label, tooltip, sliderProps, withSlider = true, ...inputProps } = props
+  const {
+    label,
+    tooltip,
+    sliderProps,
+    withSlider = true,
+    onChange = ((() => {}) as (value: number) => void),
+    ...inputProps
+  } = props
 
   const [showSlider, setShowSlider] = useState(false)
 
@@ -36,10 +44,10 @@ const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
     {withSlider && showSlider
       ? <Slider flex={1}
         value={Number(inputProps.value)}
-        onChange={value => inputProps.onChange?.(value.toString())}
+        onChange={onChange}
         {...sliderProps}
       />
-      : <NumberInput flex={1} {...inputProps} />
+      : <NumberInput flex={1} {...inputProps} onChange={v => onChange?.(Number(v))} />
     }
   </ConfigOptionRow>
 }

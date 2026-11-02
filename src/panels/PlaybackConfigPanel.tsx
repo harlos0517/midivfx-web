@@ -21,7 +21,7 @@ const PlaybackConfigPanel = () => {
     <ConfigOptionNumberInputRow
       label={<TimerIcon />}
       value={audioOffset / 1000}
-      onChange={v => setAudioOffset(Number(v) * 1000)}
+      onChange={v => setAudioOffset(v * 1000)}
       step={0.01}
       sliderProps={{
         min: -3, max: 3, step: 0.01,
@@ -31,7 +31,7 @@ const PlaybackConfigPanel = () => {
     <ConfigOptionNumberInputRow
       label={<ArrowLineLeftIcon />}
       value={startTime / 1000}
-      onChange={v => setStartTime(Number(v) * 1000)}
+      onChange={v => setStartTime(v * 1000)}
       rightSection="s"
       withSlider={false}
       step={0.1}
@@ -39,10 +39,7 @@ const PlaybackConfigPanel = () => {
     <ConfigOptionNumberInputRow
       label={<ArrowLineRightIcon />}
       value={(endTime ?? length) / 1000}
-      onChange={v => {
-        const isValid = v !== '' && !isNaN(Number(v))
-        setEndTime((isValid ? roundTo(Number(v) * 1000, 0) : length))
-      }}
+      onChange={v => setEndTime(roundTo(v * 1000, 0) ?? length)}
       rightSection="s"
       withSlider={false}
       step={0.1}

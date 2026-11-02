@@ -2,6 +2,7 @@ import {
   ActionIcon,
   ColorInput,
   createTheme,
+  Group,
   Input,
   NumberInput,
   SegmentedControl,
@@ -36,6 +37,9 @@ export const theme = createTheme({
       styles: {
         markLabel: { fontSize: '8px' },
       },
+    }),
+    Group: Group.extend({
+      defaultProps: { gap: 'xs', wrap: 'nowrap' },
     }),
   },
 })

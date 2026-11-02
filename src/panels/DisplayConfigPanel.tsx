@@ -34,19 +34,19 @@ const DisplayConfigPanel = () => {
       label={<WidthIcon />}
       value={width}
       {...getNumberInputProps(640, 3840, 20, [640, 1280, 1920, 2560, 3840], true)}
-      onChange={v => setWidth(Number(v))}
+      onChange={setWidth}
     />
     <ConfigOptionNumberInputRow
       label={<HeightIcon />}
       value={height}
       {...getNumberInputProps(360, 2160, 20, [360, 720, 1080, 1440, 2160], true)}
-      onChange={v => setHeight(Number(v))}
+      onChange={setHeight}
     />
     <ConfigOptionNumberInputRow
       label={<SpeedIcon />}
       value={roundTo(unitsPerSecond, 2)}
       min={2} max={1024} step={1}
-      onChange={v => setUnitsPerSecond(roundTo(Number(v), 2))}
+      onChange={v => setUnitsPerSecond(roundTo(v, 2))}
       sliderProps={{
         value: Math.log2(unitsPerSecond),
         onChange: v => setUnitsPerSecond(roundTo(2 ** v, 2)),
@@ -70,19 +70,19 @@ const DisplayConfigPanel = () => {
         label={<><SunIcon /><LightningIcon /></>}
         value={bloomIntensity}
         {...getNumberInputProps(0, 5, 0.1)}
-        onChange={v => setBloomIntensity(Number(v))}
+        onChange={setBloomIntensity}
       />
       <ConfigOptionNumberInputRow
         label={<><SunIcon /><ArrowsOutLineVerticalIcon /></>}
         value={bloomThreshold}
         {...getNumberInputProps(0, 1, 0.01)}
-        onChange={v => setBloomThreshold(Number(v))}
+        onChange={setBloomThreshold}
       />
       <ConfigOptionNumberInputRow
         label={<><SunIcon /><AngleIcon /></>}
         value={bloomRadius}
         {...getNumberInputProps(0, 1, 0.01)}
-        onChange={v => setBloomRadius(Number(v))}
+        onChange={setBloomRadius}
       />
     </>}
   </PanelWrapper>

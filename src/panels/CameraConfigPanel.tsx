@@ -23,42 +23,42 @@ const CameraConfigPanel = () => {
       label={<><CameraIcon /><XIcon /></>}
       value={x}
       step={1}
-      onChange={v => setX(Number(v))}
+      onChange={setX}
       sliderProps={getSliderProps(-100, 100, 1, [0])}
     />
     <ConfigOptionNumberInputRow
       label={<><CameraIcon /><YIcon /></>}
       value={y}
       step={1}
-      onChange={v => setY(Number(v))}
+      onChange={setY}
       sliderProps={getSliderProps(0, 128, 1, [64])}
     />
     <ConfigOptionNumberInputRow
       label={<><CameraIcon /><ZIcon /></>}
       value={z}
       step={1}
-      onChange={v => setZ(Number(v))}
+      onChange={setZ}
       sliderProps={getSliderProps(0, 200, 1, [100])}
     />
     <ConfigOptionNumberInputRow
       label={<><CrosshairIcon /><XIcon /></>}
       value={targetX}
       step={1}
-      onChange={v => setTargetX(Number(v))}
+      onChange={setTargetX}
       sliderProps={getSliderProps(-100, 100, 1, [0])}
     />
     <ConfigOptionNumberInputRow
       label={<><CrosshairIcon /><YIcon /></>}
       value={targetY}
       step={1}
-      onChange={v => setTargetY(Number(v))}
+      onChange={setTargetY}
       sliderProps={getSliderProps(0, 128, 1, [64])}
     />
     <ConfigOptionNumberInputRow
       label={<><CrosshairIcon /><ZIcon /></>}
       value={targetZ}
       step={1}
-      onChange={v => setTargetZ(Number(v))}
+      onChange={setTargetZ}
       sliderProps={getSliderProps(-100, 100, 1, [0])}
     />
   </PanelWrapper>

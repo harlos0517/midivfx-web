@@ -44,13 +44,6 @@ import CCIcon from '@/assets/icons/cc.svg?react'
 import ChannelIcon from '@/assets/icons/channel.svg?react'
 import TrackIcon from '@/assets/icons/track.svg?react'
 
-const groupProps = {
-  wrap: 'nowrap' as const,
-  align: 'center' as const,
-  justify: 'flex-start' as const,
-  gap: 'xs',
-}
-
 interface RemapConfigBoxProps extends Remap {
   setRemap: (remap: Remap) => void
   onRemove: () => void
@@ -68,7 +61,7 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
     })
   }
 
-  return <Group {...groupProps} gap="0">
+  return <Group gap="0">
     <MusicNotesIcon />
     <TextInput
       flex={2} ml="4px"
@@ -156,7 +149,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
     data-no-dnd={String(id === 'default')}
   >
     <Stack gap="xs">
-      <Group {...groupProps} gap="4px">
+      <Group gap="4px">
         {id === 'default'
           ? <LockIcon color="gray" style={{ padding: '0 2px' }} />
           : <DotsSixVerticalIcon
@@ -181,7 +174,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
         >
           <TrashIcon color="red"/>
         </ActionIcon>
-        <Group {...groupProps} px={4} h={32} gap={4} flex={1} bdrs={4}
+        <Group px={4} h={32} gap={4} flex={1} bdrs={4}
           bg={color || 'transparent'} c={getTextColor(color || '#000000')}
         >
           <Text flex="0 0 auto"><TrackIcon /></Text>
@@ -215,7 +208,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
       </Collapse>
       <Collapse expanded={isExpanded}>
         <Stack gap="xs">
-          <Group {...groupProps}>
+          <Group>
             <Group gap="2px" flex={2}>
               <TrackIcon />
               <SegmentedControl
@@ -262,7 +255,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               />
             </Group>
           </Group>
-          <Group {...groupProps}>
+          <Group>
             <OverridableInput
               id={id}
               styleKey="color"
@@ -278,7 +271,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               }}
             />
           </Group>
-          <Group {...groupProps}>
+          <Group>
             <OverridableInput
               id={id}
               styleKey="mode"
@@ -306,7 +299,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               inputProps={getSliderProps(0, 1, 0.01, [0.5])}
             /> : <Space flex={1}/>}
           </Group>
-          <Group {...groupProps}>
+          <Group>
             <OverridableInput
               id={id}
               styleKey="showPedal"
@@ -319,7 +312,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               wrapperProps={{ w: 180 }}
             /> : <Space w={180} />}
           </Group>
-          <Group {...groupProps}>
+          <Group>
             <OverridableInput
               id={id}
               styleKey="gap"
@@ -335,7 +328,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               inputProps={getSliderProps(0, 0.5, 0.01)}
             />
           </Group>
-          <Group {...groupProps}>
+          <Group>
             <OverridableInput
               id={id}
               styleKey="z"
@@ -344,7 +337,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               inputProps={getSliderProps(-10, 10, 0.1, [0])}
             />
           </Group>
-          <Group {...groupProps}>
+          <Group>
             <Text flex={1}>Percussion Notes Remapping</Text>
             <ActionIcon
               onClick={() => {
