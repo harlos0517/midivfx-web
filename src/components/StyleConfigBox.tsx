@@ -201,7 +201,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           {showPedal
             ? <Overridable id={id} styleKey="pedalColor" />
             : <Space w={ICON_SIZE} />}
-          <Overridable id={id} styleKey="gap" />
+          <Overridable id={id} styleKey="thickness" />
           <Overridable id={id} styleKey="radius" />
           <Overridable id={id} styleKey="z" />
         </Group>
@@ -301,7 +301,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group>
             <OverridableInput
               id={id}
-              styleKey="gap"
+              styleKey="thickness"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
               inputProps={getSliderProps(0, 1, 0.01, [0.5])}

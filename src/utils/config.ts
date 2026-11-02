@@ -49,7 +49,7 @@ export interface StyleRuntime {
   cc: number
   velocity: boolean
   color: string
-  gap: number
+  thickness: number
   radius: number
   z: number
   decayRate: number
@@ -79,7 +79,7 @@ export const defaultStyleRuntime: Omit<StyleRuntime, 'id' | 'order'> = {
   isRegex: true,
   velocity: false,
   color: '#ffffff',
-  gap: 0.1,
+  thickness: 1,
   radius: 0.33,
   z: 0.00,
   decayRate: 0.0,

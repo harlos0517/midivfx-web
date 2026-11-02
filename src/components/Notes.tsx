@@ -139,7 +139,7 @@ interface NotesProps {
 
 const Notes = ({ notes, style, songEnd }: NotesProps) => {
   const {
-    mode, cc, velocity, color, z, decayRate, gap, radius, remaps, showPedal, pedalColor,
+    mode, cc, velocity, color, z, decayRate, thickness, radius, remaps, showPedal, pedalColor,
   } = style
   const timeScale = useTimeScale()
 
@@ -183,8 +183,8 @@ const Notes = ({ notes, style, songEnd }: NotesProps) => {
       const remap = findRemap(note.noteNumber)
       const bottom = remap ? Math.min(...remap.mappedPitch) : note.noteNumber
       const top = (remap ? Math.max(...remap.mappedPitch) : note.noteNumber) + 1
-      // `gap` is the empty space between adjacent pitches, in pitch units
-      const h = Math.max(0, top - bottom - gap)
+      // `thickness` is the filled part of one pitch, so 1 leaves no space between adjacent pitches
+      const h = Math.max(0, top - bottom - (1 - thickness))
 
       const offTime = note.endEvent?.time ?? note.time
       const endTime = heldUntil ? heldUntil(note.noteNumber, note.time, offTime) : offTime
@@ -203,7 +203,7 @@ const Notes = ({ notes, style, songEnd }: NotesProps) => {
     mesh.computeBoundingSphere()
     return mesh
   }, [
-    notes, mode, cc, velocity, color, decayRate, gap, radius, remaps, showPedal, pedalColor,
+    notes, mode, cc, velocity, color, decayRate, thickness, radius, remaps, showPedal, pedalColor,
     timeScale, songEnd,
   ])
 

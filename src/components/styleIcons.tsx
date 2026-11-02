@@ -20,7 +20,7 @@ export const styleIcons: Record<OverridableStyleKey, ReactNode> = {
   decayRate: <ArrowBendDownRightIcon />,
   showPedal: <PedalIcon />,
   pedalColor: <PaletteIcon />,
-  gap: <ThicknessIcon />,
+  thickness: <ThicknessIcon />,
   radius: <AngleIcon />,
   z: <ZIcon />,
 }
