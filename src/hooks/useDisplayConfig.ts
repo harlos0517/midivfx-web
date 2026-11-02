@@ -1,20 +1,5 @@
-import useConfigStore from '@/store/configStore'
-import { type Config } from '@/utils/config'
+import createSectionHook from '@/hooks/createSectionHook'
 
-type DisplayConfig = Config['display']
-
-const useDisplayConfig = <T extends keyof DisplayConfig>(key: T) => {
-  const value = useConfigStore(s => s.config.display[key])
-  const setConfig = useConfigStore(s => s.setConfig)
-
-  const updateValue = (newValue: DisplayConfig[T]) => {
-    setConfig(c => ({
-      ...c,
-      display: { ...c.display, [key]: newValue },
-    }))
-  }
-
-  return [value, updateValue] as const
-}
+const useDisplayConfig = createSectionHook('display')
 
 export default useDisplayConfig
