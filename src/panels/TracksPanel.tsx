@@ -47,7 +47,7 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     c={getTextColor(style.color)}
     bdrs="sm" p="xs"
   >
-    <Group wrap="nowrap">
+    <Group>
       <Text>{i}</Text>
       <Text flex={1}>{trackName.replace(/\u00AD/g, '')}</Text>
       <ActionIcon
@@ -63,7 +63,7 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     </Group>
     <Collapse expanded={expanded}>
       <Stack gap={8}>
-        {channels.map(row => <Group gap={8} wrap="nowrap" justify="space-between">
+        {channels.map((row, tr) => <Group key={tr} gap={8} justify="space-between">
           {row.map(ch => <ChannelBox key={ch} trackName={trackName} i={i} channel={ch} />)}
         </Group>)}
       </Stack>

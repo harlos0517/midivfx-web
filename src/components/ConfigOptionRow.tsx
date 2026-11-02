@@ -10,7 +10,7 @@ interface ConfigOptionRowProps {
 const ConfigOptionRow = (props: ConfigOptionRowProps) => {
   const { label, tooltip, children } = props
 
-  return <Group wrap="nowrap" gap="xs">
+  return <Group>
     {tooltip ? <Tooltip label={tooltip}>{label}</Tooltip> : label}
     {children}
   </Group>

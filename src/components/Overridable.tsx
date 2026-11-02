@@ -1,12 +1,12 @@
 import { Box } from '@mantine/core'
 
-import styleIcons, { type OverridableKey } from '@/components/styleIcons'
+import styleIcons, { type OverridableStyleKey } from '@/components/styleIcons'
 import useStyleConfig from '@/hooks/useStyleConfig'
 import { DIMMED } from '@/utils/const'
 
 interface OverridableProps {
   id: string
-  styleKey: OverridableKey
+  styleKey: OverridableStyleKey
 }
 
 const Overridable = (props: OverridableProps) => {

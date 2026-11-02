@@ -38,7 +38,7 @@ import { getTextColor } from '@/utils/colors'
 import type { Remap } from '@/utils/config'
 import { ICON_SIZE } from '@/utils/const'
 import { getSliderProps } from '@/utils/input'
-import { normalizeRange, parseRange, rangeText } from '@/utils/range'
+import { normalizeRange } from '@/utils/range'
 
 import CCIcon from '@/assets/icons/cc.svg?react'
 import ChannelIcon from '@/assets/icons/channel.svg?react'
@@ -188,7 +188,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
         </Group>
       </Group>
       <Collapse expanded={!isExpanded}>
-        <Group gap="xs" justify="space-between" wrap="nowrap">
+        <Group justify="space-between">
           <Overridable id={id} styleKey="color" />
           <Overridable id={id} styleKey="velocity" />
           <Overridable id={id} styleKey="mode" />
@@ -220,9 +220,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
                 onChange={v => {
                   setIsRegex(v === 'regex')
                   if (v === 'regex') return
-                  const range = parseRange(track || '', 1, 256)
-                  const text = rangeText(range)
-                  setTrack(text)
+                  setTrack(normalizeRange(track || '', 1, 256))
                 }}
               />
               <TextInput

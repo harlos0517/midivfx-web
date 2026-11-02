@@ -33,13 +33,13 @@ const DisplayConfigPanel = () => {
     <ConfigOptionNumberInputRow
       label={<WidthIcon />}
       value={width}
-      {...getNumberInputProps(640, 3840, 20, [640, 1280, 1920, 2560, 3840], true)}
+      {...getNumberInputProps(640, 3840, 20, [1280, 1920, 2560], true)}
       onChange={setWidth}
     />
     <ConfigOptionNumberInputRow
       label={<HeightIcon />}
       value={height}
-      {...getNumberInputProps(360, 2160, 20, [360, 720, 1080, 1440, 2160], true)}
+      {...getNumberInputProps(360, 2160, 20, [720, 1080, 1440], true)}
       onChange={setHeight}
     />
     <ConfigOptionNumberInputRow

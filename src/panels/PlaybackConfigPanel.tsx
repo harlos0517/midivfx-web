@@ -5,7 +5,7 @@ import ConfigOptionNumberInputRow from '@/components/ConfigOptionNumberInputRow'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import usePlaybackConfig from '@/hooks/usePlaybackConfig'
-import { generateSliderMarks } from '@/utils/input'
+import { getSliderProps } from '@/utils/input'
 import { roundTo } from '@/utils/round'
 import { getLength } from '@/utils/timeline'
 
@@ -23,10 +23,7 @@ const PlaybackConfigPanel = () => {
       value={audioOffset / 1000}
       onChange={v => setAudioOffset(v * 1000)}
       step={0.01}
-      sliderProps={{
-        min: -3, max: 3, step: 0.01,
-        marks: generateSliderMarks(-3, 3),
-      }}
+      sliderProps={getSliderProps(-3, 3, 0.01)}
     />
     <ConfigOptionNumberInputRow
       label={<ArrowLineLeftIcon />}
@@ -43,6 +40,7 @@ const PlaybackConfigPanel = () => {
       rightSection="s"
       withSlider={false}
       step={0.1}
+      emptyValue={length / 1000}
     />
   </PanelWrapper>
 

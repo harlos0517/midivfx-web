@@ -17,9 +17,9 @@ import {
 } from '@mantine/core'
 import { useEffect, useRef, type ReactNode } from 'react'
 
-import styleIcons from '@/components/styleIcons'
+import styleIcons, { type OverridableStyleKey } from '@/components/styleIcons'
 import useStyleConfig from '@/hooks/useStyleConfig'
-import { defaultStyleRuntime, type StyleConfig } from '@/utils/config'
+import { defaultStyleRuntime } from '@/utils/config'
 import { DIMMED } from '@/utils/const'
 
 import classes from './OverridableInput.module.sass'
@@ -27,7 +27,7 @@ import classes from './OverridableInput.module.sass'
 interface CommonProps {
   wrapperProps?: MantineStyleProps
   id: string
-  styleKey: Exclude<keyof StyleConfig, 'id' | 'order' | 'track' | 'channel' | 'isRegex' | 'remaps'>
+  styleKey: OverridableStyleKey
   tooltip?: ReactNode
 }
 

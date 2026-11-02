@@ -9,10 +9,10 @@ import VelocityIcon from '@/assets/icons/velocity.svg?react'
 import ZIcon from '@/assets/icons/z.svg?react'
 import { AngleIcon, ArrowBendDownRightIcon, PaletteIcon } from '@phosphor-icons/react'
 
-export type OverridableKey =
+export type OverridableStyleKey =
   Exclude<keyof StyleConfig, 'id' | 'order' | 'track' | 'channel' | 'isRegex' | 'remaps'>
 
-export const styleIcons: Record<OverridableKey, ReactNode> = {
+export const styleIcons: Record<OverridableStyleKey, ReactNode> = {
   color: <PaletteIcon />,
   velocity: <VelocityIcon />,
   mode: <ModeIcon />,

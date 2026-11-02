@@ -12,9 +12,11 @@ export const getSliderProps = (
   max: number,
   step: number,
   mid: number[] | null = null,
+  restrictToMarks: boolean = false,
 ) => ({
   min, max, step,
   marks: generateSliderMarks(min, max, mid),
+  restrictToMarks,
 })
 
 export const getNumberInputProps = (
@@ -24,9 +26,8 @@ export const getNumberInputProps = (
   mid: number[] | null = null,
   restrictToMarks: boolean = false,
 ) => ({
-  sliderProps: getSliderProps(min, max, step, mid),
+  sliderProps: getSliderProps(min, max, step, mid, restrictToMarks),
   min,
   max,
   step,
-  restrictToMarks,
 })

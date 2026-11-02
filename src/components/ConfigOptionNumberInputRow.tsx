@@ -16,6 +16,7 @@ interface ConfigOptionNumberInputProps extends Omit<NumberInputProps, 'onChange'
   withSlider?: boolean
   sliderProps?: SliderProps
   onChange?: (value: number) => void
+  emptyValue?: number
 }
 
 const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
@@ -25,6 +26,7 @@ const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
     sliderProps,
     withSlider = true,
     onChange = ((() => {}) as (value: number) => void),
+    emptyValue = 0,
     ...inputProps
   } = props
 
@@ -47,7 +49,9 @@ const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
         onChange={onChange}
         {...sliderProps}
       />
-      : <NumberInput flex={1} {...inputProps} onChange={v => onChange?.(Number(v))} />
+      : <NumberInput flex={1} {...inputProps}
+        onChange={v => onChange?.(v === '' ? emptyValue ?? 0 : Number(v))}
+      />
     }
   </ConfigOptionRow>
 }

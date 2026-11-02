@@ -50,7 +50,7 @@ const ExportConfigPanel = () => {
       />
     </ConfigOptionRow>
     {exporting
-      ? <Group gap="xs" wrap="nowrap">
+      ? <Group>
         <Progress value={progress * 100} style={{ flex: 1 }} />
         <Text size="xs" w={36} ta="right">{Math.round(progress * 100)}%</Text>
         <Button size="xs" variant="default" onClick={cancel}>
