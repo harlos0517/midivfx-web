@@ -1,8 +1,6 @@
-import { Button, Group, Progress, Text } from '@mantine/core'
+import { Button, Group, Progress, Select, Switch, Text } from '@mantine/core'
 import { useContext } from 'react'
 
-import ConfigOptionSelect from '@/components/ConfigOptionSelect'
-import ConfigOptionSwitch from '@/components/ConfigOptionSwitch'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import useExportConfig from '@/hooks/useExportConfig'
@@ -12,6 +10,7 @@ import useRendererStore from '@/store/rendererStore'
 
 import AlphaIcon from '@/assets/icons/alpha.svg?react'
 import FPSIcon from '@/assets/icons/fps.svg?react'
+import ConfigOptionRow from '@/components/ConfigOptionRow'
 
 const ExportConfigPanel = () => {
   const [fps, setFps] = useExportConfig('fps')
@@ -33,19 +32,23 @@ const ExportConfigPanel = () => {
   const exporting = progress !== null
 
   return <PanelWrapper isExportPanel>
-    <ConfigOptionSelect
-      label={<FPSIcon />}
-      value={fps.toString()}
-      onChange={v => setFps(Number(v))}
-      data={['15', '24', '30', '60']}
-      disabled={exporting}
-    />
-    <ConfigOptionSwitch
-      label={<AlphaIcon />}
-      checked={alpha}
-      onChange={e => setAlpha(e.currentTarget.checked)}
-      disabled={exporting}
-    />
+    <ConfigOptionRow label={<FPSIcon />}>
+      <Select
+        flex="1"
+        value={fps.toString()}
+        onChange={v => setFps(Number(v))}
+        data={['15', '24', '30', '60']}
+        disabled={exporting}
+      />
+    </ConfigOptionRow>
+    <ConfigOptionRow label={<AlphaIcon />}>
+      <Switch
+        flex="1"
+        checked={alpha}
+        onChange={e => setAlpha(e.currentTarget.checked)}
+        disabled={exporting}
+      />
+    </ConfigOptionRow>
     {exporting
       ? <Group gap="xs" wrap="nowrap">
         <Progress value={progress * 100} style={{ flex: 1 }} />

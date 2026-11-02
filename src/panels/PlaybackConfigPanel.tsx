@@ -1,7 +1,7 @@
 import { ArrowLineLeftIcon, ArrowLineRightIcon, TimerIcon } from '@phosphor-icons/react'
 import { useContext } from 'react'
 
-import ConfigOptionNumberInput from '@/components/ConfigOptionNumberInput'
+import ConfigOptionNumberInputRow from '@/components/ConfigOptionNumberInputRow'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import usePlaybackConfig from '@/hooks/usePlaybackConfig'
@@ -18,7 +18,7 @@ const PlaybackConfigPanel = () => {
   const [endTime, setEndTime] = usePlaybackConfig('endTime')
 
   return <PanelWrapper>
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<TimerIcon />}
       value={audioOffset / 1000}
       onChange={v => setAudioOffset(Number(v) * 1000)}
@@ -28,7 +28,7 @@ const PlaybackConfigPanel = () => {
         marks: generateSliderMarks(-3, 3),
       }}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<ArrowLineLeftIcon />}
       value={startTime / 1000}
       onChange={v => setStartTime(Number(v) * 1000)}
@@ -36,7 +36,7 @@ const PlaybackConfigPanel = () => {
       withSlider={false}
       step={0.1}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<ArrowLineRightIcon />}
       value={(endTime ?? length) / 1000}
       onChange={v => {

@@ -1,7 +1,7 @@
+import ConfigOptionRow from '@/components/ConfigOptionRow'
 import {
   ActionIcon,
   Box,
-  Group,
   NumberInput,
   Slider,
   Tooltip,
@@ -24,14 +24,15 @@ const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
 
   const withTooltip = tooltip ? <Tooltip label={tooltip}>{label}</Tooltip> : label
 
-  return <Group wrap="nowrap" gap="xs">
-    {withSlider ? <ActionIcon
+  return <ConfigOptionRow
+    label={withSlider ? <ActionIcon
       w="auto"
       variant="subtle"
       onClick={() => setShowSlider(!showSlider)}
     >
       {withTooltip}
     </ActionIcon> : <Box m="3px">{withTooltip}</Box>}
+  >
     {withSlider && showSlider
       ? <Slider flex={1}
         value={Number(inputProps.value)}
@@ -40,7 +41,7 @@ const ConfigOptionNumberInput = (props: ConfigOptionNumberInputProps) => {
       />
       : <NumberInput flex={1} {...inputProps} />
     }
-  </Group>
+  </ConfigOptionRow>
 }
 
 export default ConfigOptionNumberInput

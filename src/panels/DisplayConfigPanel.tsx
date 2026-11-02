@@ -1,12 +1,13 @@
-import ConfigOptionNumberInput from '@/components/ConfigOptionNumberInput'
-import ConfigOptionSwitch from '@/components/ConfigOptionSwitch'
+import ConfigOptionNumberInputRow from '@/components/ConfigOptionNumberInputRow'
 import PanelWrapper from '@/components/PanelWrapper'
 import useDisplayConfig from '@/hooks/useDisplayConfig'
 
 import HeightIcon from '@/assets/icons/height.svg?react'
 import SpeedIcon from '@/assets/icons/speed.svg?react'
 import WidthIcon from '@/assets/icons/width.svg?react'
+import ConfigOptionRow from '@/components/ConfigOptionRow'
 import { roundTo } from '@/utils/round'
+import { Switch } from '@mantine/core'
 import {
   AngleIcon,
   ArrowsOutLineVerticalIcon,
@@ -26,7 +27,7 @@ const DisplayConfigPanel = () => {
   const [bloomRadius, setBloomRadius] = useDisplayConfig('bloomRadius')
 
   return <PanelWrapper>
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<WidthIcon />}
       value={width}
       max={3840}
@@ -41,7 +42,7 @@ const DisplayConfigPanel = () => {
         { value: 3840, label: '3840' },
       ], restrictToMarks: true }}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<HeightIcon />}
       value={height}
       max={2160}
@@ -56,7 +57,7 @@ const DisplayConfigPanel = () => {
         { value: 2160, label: '2160' },
       ], restrictToMarks: true }}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<SpeedIcon />}
       value={roundTo(unitsPerSecond, 2)}
       min={2}
@@ -75,18 +76,14 @@ const DisplayConfigPanel = () => {
         scale: v => roundTo(2 ** v, 2),
       }}
     />
-    <ConfigOptionSwitch
-      label={<MetronomeIcon />}
-      checked={beat}
-      onChange={e => setBeat(e.currentTarget.checked)}
-    />
-    <ConfigOptionSwitch
-      label={<SunIcon />}
-      checked={bloom}
-      onChange={e => setBloom(e.currentTarget.checked)}
-    />
+    <ConfigOptionRow label={<MetronomeIcon />}>
+      <Switch checked={beat}  onChange={e => setBeat(e.currentTarget.checked)} />
+    </ConfigOptionRow>
+    <ConfigOptionRow label={<SunIcon />}>
+      <Switch checked={bloom} onChange={e => setBloom(e.currentTarget.checked)} />
+    </ConfigOptionRow>
     {bloom && <>
-      <ConfigOptionNumberInput
+      <ConfigOptionNumberInputRow
         label={<><SunIcon /><LightningIcon /></>}
         value={bloomIntensity}
         min={0}
@@ -94,7 +91,7 @@ const DisplayConfigPanel = () => {
         onChange={v => setBloomIntensity(Number(v))}
         sliderProps={{ min: 0, max: 5, step: 0.1 }}
       />
-      <ConfigOptionNumberInput
+      <ConfigOptionNumberInputRow
         label={<><SunIcon /><ArrowsOutLineVerticalIcon /></>}
         value={bloomThreshold}
         min={0}
@@ -103,7 +100,7 @@ const DisplayConfigPanel = () => {
         onChange={v => setBloomThreshold(Number(v))}
         sliderProps={{ min: 0, max: 1, step: 0.01 }}
       />
-      <ConfigOptionNumberInput
+      <ConfigOptionNumberInputRow
         label={<><SunIcon /><AngleIcon /></>}
         value={bloomRadius}
         min={0}

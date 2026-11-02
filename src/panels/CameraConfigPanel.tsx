@@ -1,6 +1,6 @@
 import { CameraIcon, CrosshairIcon } from '@phosphor-icons/react'
 
-import ConfigOptionNumberInput from '@/components/ConfigOptionNumberInput'
+import ConfigOptionNumberInputRow from '@/components/ConfigOptionNumberInputRow'
 import PanelWrapper from '@/components/PanelWrapper'
 import useCameraConfig from '@/hooks/useCameraConfig'
 import { generateSliderMarks } from '@/utils/input'
@@ -19,42 +19,42 @@ const CameraConfigPanel = () => {
   const [targetZ, setTargetZ] = useCameraConfig('targetZ')
 
   return <PanelWrapper>
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<><CameraIcon /><XIcon /></>}
       value={x}
       step={1}
       onChange={v => setX(Number(v))}
       sliderProps={{ min: -100, max: 100, step: 1, marks: generateSliderMarks(-100, 100) }}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<><CameraIcon /><YIcon /></>}
       value={y}
       step={1}
       onChange={v => setY(Number(v))}
       sliderProps={{ min: 0, max: 128, step: 1, marks: generateSliderMarks(0, 128) }}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<><CameraIcon /><ZIcon /></>}
       value={z}
       step={1}
       onChange={v => setZ(Number(v))}
       sliderProps={{ min: 0, max: 200, step: 1, marks: generateSliderMarks(0, 200) }}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<><CrosshairIcon /><XIcon /></>}
       value={targetX}
       step={1}
       onChange={v => setTargetX(Number(v))}
       sliderProps={{ min: -100, max: 100, step: 1, marks: generateSliderMarks(-100, 100) }}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<><CrosshairIcon /><YIcon /></>}
       value={targetY}
       step={1}
       onChange={v => setTargetY(Number(v))}
       sliderProps={{ min: 0, max: 128, step: 1, marks: generateSliderMarks(0, 128) }}
     />
-    <ConfigOptionNumberInput
+    <ConfigOptionNumberInputRow
       label={<><CrosshairIcon /><ZIcon /></>}
       value={targetZ}
       step={1}

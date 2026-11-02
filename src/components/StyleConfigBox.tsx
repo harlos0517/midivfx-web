@@ -13,7 +13,6 @@ import {
   TextInput,
 } from '@mantine/core'
 import {
-  AngleIcon,
   ArrowBendDownRightIcon,
   ArrowRightIcon,
   CaretDownIcon,
@@ -24,7 +23,6 @@ import {
   LockIcon,
   MusicNotesIcon,
   PaintBucketIcon,
-  PaletteIcon,
   PlusIcon,
   TagIcon,
   TildeIcon,
@@ -43,12 +41,7 @@ import { parseRange, rangeText } from '@/utils/range'
 
 import CCIcon from '@/assets/icons/cc.svg?react'
 import ChannelIcon from '@/assets/icons/channel.svg?react'
-import ModeIcon from '@/assets/icons/mode.svg?react'
-import PedalIcon from '@/assets/icons/pedal.svg?react'
-import ThicknessIcon from '@/assets/icons/thickness.svg?react'
 import TrackIcon from '@/assets/icons/track.svg?react'
-import VelocityIcon from '@/assets/icons/velocity.svg?react'
-import ZIcon from '@/assets/icons/z.svg?react'
 
 const groupProps = {
   wrap: 'nowrap' as const,
@@ -164,10 +157,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
     <Stack gap="xs">
       <Group {...groupProps} gap="4px">
         {id === 'default'
-          ? <LockIcon
-            color="gray"
-            style={{ padding: '0 2px' }}
-          />
+          ? <LockIcon color="gray" style={{ padding: '0 2px' }} />
           : <DotsSixVerticalIcon
             ref={handleRef} color="gray"
             style={{ cursor: 'grab', touchAction: 'none' }}
@@ -179,10 +169,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
         >
           {isExpanded ? <CaretUpIcon /> : <CaretDownIcon /> }
         </ActionIcon>
-        <ActionIcon
-          variant="subtle"
-          onClick={copy}
-        >
+        <ActionIcon variant="subtle" onClick={copy} >
           <CopyIcon />
         </ActionIcon>
         <ActionIcon
@@ -193,8 +180,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
         >
           <TrashIcon color="red"/>
         </ActionIcon>
-        <Group {...groupProps} px={4} h={32}
-          gap={4} flex={1} bdrs={4}
+        <Group {...groupProps} px={4} h={32} gap={4} flex={1} bdrs={4}
           bg={color || 'transparent'} c={getTextColor(color || '#000000')}
         >
           <Text flex="0 0 auto"><TrackIcon /></Text>
@@ -209,21 +195,21 @@ const StyleConfigBox = ({ id }: { id: string }) => {
       </Group>
       <Collapse expanded={!isExpanded}>
         <Group gap="xs" justify="space-between" wrap="nowrap">
-          <Overridable id={id} styleKey="color" label={<PaletteIcon />} />
-          <Overridable id={id} styleKey="velocity" label={<VelocityIcon />} />
-          <Overridable id={id} label={<ModeIcon />} styleKey="mode" />
+          <Overridable id={id} styleKey="color" />
+          <Overridable id={id} styleKey="velocity" />
+          <Overridable id={id} styleKey="mode" />
           {mode === 'CC'
-            ? <Overridable id={id} label={<CCIcon />} styleKey="cc" />
+            ? <Overridable id={id} styleKey="cc" />
             : mode === 'decay'
-              ? <Overridable id={id} label={<ArrowBendDownRightIcon />} styleKey="decayRate" />
+              ? <Overridable id={id} styleKey="decayRate" />
               : <Space w={ICON_SIZE} />}
-          <Overridable id={id} styleKey="showPedal" label={<PedalIcon />} />
+          <Overridable id={id} styleKey="showPedal" />
           {showPedal
-            ? <Overridable id={id} styleKey="pedalColor" label={<PaletteIcon />} />
+            ? <Overridable id={id} styleKey="pedalColor" />
             : <Space w={ICON_SIZE} />}
-          <Overridable id={id} label={<ThicknessIcon />} styleKey="gap" />
-          <Overridable id={id} label={<AngleIcon />} styleKey="radius" />
-          <Overridable id={id} label={<ZIcon />} styleKey="z" />
+          <Overridable id={id} styleKey="gap" />
+          <Overridable id={id} styleKey="radius" />
+          <Overridable id={id} styleKey="z" />
         </Group>
       </Collapse>
       <Collapse expanded={isExpanded}>
@@ -279,14 +265,12 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             <OverridableInput
               id={id}
               styleKey="color"
-              label={<PaletteIcon />}
               inputType="color"
               wrapperProps={{ w: 180, flex: 1 }}
             />
             <OverridableInput
               id={id}
               styleKey="velocity"
-              label={<VelocityIcon />}
               inputType="switch"
               inputProps={{
                 styles: { body: { display: 'flex', alignItems: 'center' } },
@@ -296,7 +280,6 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<ModeIcon />}
               styleKey="mode"
               inputType="segmented"
               inputProps={{
@@ -310,14 +293,12 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             />
             {mode === 'CC' ? <OverridableInput
               id={id}
-              label={<CCIcon />}
               styleKey="cc"
               inputType="number"
               wrapperProps={{ flex: 1 }}
               inputProps={{ min: 0, max: 127, step: 1 }}
             /> : mode === 'decay' ? <OverridableInput
               id={id}
-              label={<ArrowBendDownRightIcon />}
               styleKey="decayRate"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -335,13 +316,11 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             <OverridableInput
               id={id}
               styleKey="showPedal"
-              label={<PedalIcon />}
               inputType="switch"
             />
             {showPedal ? <OverridableInput
               id={id}
               styleKey="pedalColor"
-              label={<PaletteIcon />}
               inputType="color"
               wrapperProps={{ w: 180 }}
             /> : <Space w={180} />}
@@ -349,7 +328,6 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<ThicknessIcon />}
               styleKey="gap"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -364,7 +342,6 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             />
             <OverridableInput
               id={id}
-              label={<AngleIcon />}
               styleKey="radius"
               inputType="slider"
               wrapperProps={{ flex: 1 }}
@@ -377,7 +354,6 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <OverridableInput
               id={id}
-              label={<ZIcon />}
               styleKey="z"
               inputType="slider"
               wrapperProps={{ flex: 1 }}

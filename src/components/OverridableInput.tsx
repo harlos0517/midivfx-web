@@ -20,10 +20,10 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import useStyleConfig from '@/hooks/useStyleConfig'
 import { defaultStyleRuntime, type StyleConfig } from '@/utils/config'
 
+import styleIcons from '@/components/styleIcons'
 import classes from './OverridableInput.module.sass'
 
 interface CommonProps {
-  label?: ReactNode
   wrapperProps?: MantineStyleProps
   id: string
   styleKey: Exclude<keyof StyleConfig, 'id' | 'order' | 'track' | 'channel' | 'isRegex' | 'remaps'>
@@ -44,7 +44,6 @@ type OverridableInputProps = CommonProps & (
 
 const OverridableInput = (props: OverridableInputProps) => {
   const {
-    label: icon,
     wrapperProps = {},
     id,
     styleKey,
@@ -56,6 +55,7 @@ const OverridableInput = (props: OverridableInputProps) => {
   const overrideValue = useRef<string | number | boolean>(value ?? defaultValue)
   const isOverride = value !== undefined || id === 'default'
   const withBox = ['number', 'color', 'segmented'].includes(props.inputType)
+  const icon = styleIcons[styleKey]
 
   useEffect(() => {
     if (value !== undefined) overrideValue.current = value

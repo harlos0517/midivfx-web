@@ -1,6 +1,5 @@
 import { useContext, useState } from 'react'
 
-import ConfigOptionFileInput from '@/components/ConfigOptionFileInput'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import { computePeaks, decodeAudio } from '@/utils/audio'
@@ -8,6 +7,8 @@ import { parseMidiFile } from '@/utils/midi'
 import { resetPlaybackRange } from '@/utils/timeline'
 
 import MIDIIcon from '@/assets/icons/midi.svg?react'
+import ConfigOptionRow from '@/components/ConfigOptionRow'
+import { FileInput } from '@mantine/core'
 import { SpeakerLowIcon } from '@phosphor-icons/react'
 
 const ImportConfigPanel = () => {
@@ -65,20 +66,26 @@ const ImportConfigPanel = () => {
   }
 
   return <PanelWrapper>
-    <ConfigOptionFileInput
-      label={<MIDIIcon />}
-      accept=".mid,.midi"
-      value={midiFile}
-      onChange={onMidiFileChange}
-      error={midiError}
-    />
-    <ConfigOptionFileInput
-      label={<SpeakerLowIcon />}
-      accept=".mp3,.wav,.ogg"
-      value={audioFile}
-      onChange={onAudioFileChange}
-      error={audioError}
-    />
+    <ConfigOptionRow label={<MIDIIcon />}>
+      <FileInput
+        flex="1"
+        maw="calc(100% - 24px - .5rem)"
+        accept=".mid,.midi"
+        value={midiFile}
+        onChange={onMidiFileChange}
+        error={midiError}
+      />
+    </ConfigOptionRow>
+    <ConfigOptionRow label={<SpeakerLowIcon />}>
+      <FileInput
+        flex="1"
+        maw="calc(100% - 24px - .5rem)"
+        accept=".mp3,.wav,.ogg"
+        value={audioFile}
+        onChange={onAudioFileChange}
+        error={audioError}
+      />
+    </ConfigOptionRow>
   </PanelWrapper>
 }
 
