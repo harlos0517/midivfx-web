@@ -20,10 +20,7 @@ const Overridable = (props: OverridableProps) => {
   const [value] = useStyleConfig(id, styleKey, true)
   const isOverride = value !== undefined
 
-  return <Box
-    c={isOverride ? 'white' : '#666666'}
-    size="2rem"
-  >
+  return <Box c={isOverride ? 'white' : '#666666'}>
     {icon}
   </Box>
 }

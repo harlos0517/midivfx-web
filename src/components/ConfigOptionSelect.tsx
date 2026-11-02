@@ -1,11 +1,10 @@
 import {
   Group,
+  Select,
   Tooltip,
   type SelectProps,
 } from '@mantine/core'
 import { type ReactNode } from 'react'
-
-import StyledSelect from '@/components/inputs/StyledSelect'
 
 interface ConfigOptionSelectProps extends SelectProps {
   label?: ReactNode
@@ -17,7 +16,7 @@ const ConfigOptionSelect = (props: ConfigOptionSelectProps) => {
 
   return <Group wrap="nowrap" gap="xs">
     {tooltip ? <Tooltip label={tooltip}>{label}</Tooltip> : label}
-    <StyledSelect flex={1} {...inputProps} />
+    <Select flex={1} {...inputProps} />
   </Group>
 }
 

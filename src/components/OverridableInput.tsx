@@ -1,5 +1,9 @@
 import {
+  ActionIcon,
+  ColorInput,
   Group,
+  NumberInput,
+  SegmentedControl,
   Slider,
   Switch,
   Tooltip,
@@ -13,12 +17,10 @@ import {
 } from '@mantine/core'
 import { useEffect, useRef, type ReactNode } from 'react'
 
-import StyledColorInput from '@/components/inputs/ColorNumberInput'
-import StyledActionIcon from '@/components/inputs/StyledActionIcon'
-import StyledNumberInput from '@/components/inputs/StyledNumberInput'
-import StyledSegmentedControl from '@/components/inputs/StyledSegmentedControl'
 import useStyleConfig from '@/hooks/useStyleConfig'
 import { defaultStyleRuntime, type StyleConfig } from '@/utils/config'
+
+import classes from './OverridableInput.module.sass'
 
 interface CommonProps {
   label?: ReactNode
@@ -67,27 +69,30 @@ const OverridableInput = (props: OverridableInputProps) => {
   const commonProps = {
     flex: 1,
     disabled: !isOverride,
-    prepend: withBox,
   }
 
-  const actionIcon = <StyledActionIcon
-    append={withBox}
+  const actionIcon = <ActionIcon
     onClick={triggerOverride}
     variant={isOverride ? 'filled' : 'default'}
     c={isOverride ? 'white' : '#666666'}
   >
     {icon}
-  </StyledActionIcon>
+  </ActionIcon>
 
-  return <Group gap={withBox ? '0' : 'xs'} wrap="nowrap" {...wrapperProps}>
+  return <Group
+    className={classes['joined']}
+    gap={withBox ? '0' : 'xs'}
+    wrap="nowrap"
+    {...wrapperProps}
+  >
     {tooltip ? <Tooltip label={tooltip}>{actionIcon}</Tooltip> : actionIcon}
-    {props.inputType === 'number' && <StyledNumberInput
+    {props.inputType === 'number' && <NumberInput
       {...commonProps}
       {...props.inputProps}
       value={value as number}
       onChange={v => setValue(typeof v === 'string' ? (parseFloat(v) || 0) : v)}
     />}
-    {props.inputType === 'color' && <StyledColorInput
+    {props.inputType === 'color' && <ColorInput
       {...commonProps}
       {...props.inputProps}
       value={value as string}
@@ -98,7 +103,6 @@ const OverridableInput = (props: OverridableInputProps) => {
       {...props.inputProps}
       value={value as number}
       onChange={setValue}
-      styles={{ markLabel: { fontSize: '8px' } }}
     />}
     {props.inputType === 'switch' && <Switch
       {...commonProps}
@@ -106,7 +110,7 @@ const OverridableInput = (props: OverridableInputProps) => {
       checked={value as boolean}
       onChange={e => setValue(e.currentTarget.checked)}
     />}
-    {props.inputType === 'segmented' && <StyledSegmentedControl
+    {props.inputType === 'segmented' && <SegmentedControl
       {...commonProps}
       {...props.inputProps}
       data={props.data}

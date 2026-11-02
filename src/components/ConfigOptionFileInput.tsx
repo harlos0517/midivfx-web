@@ -6,8 +6,6 @@ import {
 } from '@mantine/core'
 import { type ReactNode } from 'react'
 
-import { input } from '@/components/inputs/inputBoxStyle'
-
 interface ConfigOptionFileInputProps extends FileInputProps {
   label?: ReactNode
   tooltip?: ReactNode
@@ -20,8 +18,7 @@ const ConfigOptionFileInput = (props: ConfigOptionFileInputProps) => {
     {tooltip ? <Tooltip label={tooltip}>{label}</Tooltip> : label}
     <FileInput flex={1} {...inputProps}
       variant="filled"
-      size="xs" maw="calc(100% - 24px - .5rem)"
-      styles={{ input }}
+      maw="calc(100% - 24px - .5rem)"
     />
   </Group>
 }

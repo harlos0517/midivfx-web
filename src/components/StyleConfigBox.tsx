@@ -1,12 +1,16 @@
 import { useSortable } from '@dnd-kit/react/sortable'
 import {
+  ActionIcon,
   Box,
   Collapse,
+  ColorInput,
   Divider,
   Group,
+  SegmentedControl,
   Space,
   Stack,
   Text,
+  TextInput,
 } from '@mantine/core'
 import {
   AngleIcon,
@@ -28,10 +32,6 @@ import {
 } from '@phosphor-icons/react'
 import { useState } from 'react'
 
-import StyledColorInput from '@/components/inputs/ColorNumberInput'
-import StyledActionIcon from '@/components/inputs/StyledActionIcon'
-import StyledSegmentedControl from '@/components/inputs/StyledSegmentedControl'
-import StyledTextInput from '@/components/inputs/StyledTextInput'
 import Overridable from '@/components/Overridable'
 import OverridableInput from '@/components/OverridableInput'
 import useStyleConfig from '@/hooks/useStyleConfig'
@@ -76,13 +76,13 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
 
   return <Group {...groupProps} gap="0">
     <MusicNotesIcon />
-    <StyledTextInput
+    <TextInput
       flex={2} ml="4px"
       value={originalPitch || ''}
       onChange={e => set({ originalPitch: e.target.value })}
     />
     <ArrowRightIcon style={{  margin: '0 4px' }} />
-    <StyledTextInput
+    <TextInput
       flex={1} miw={48}
       value={mappedPitch[0]}
       onChange={e => {
@@ -91,7 +91,7 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
       }}
     />
     <TildeIcon />
-    <StyledTextInput
+    <TextInput
       flex={1} miw={48}
       value={mappedPitch[1]}
       onChange={e => {
@@ -99,14 +99,14 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
         set({ mappedPitch: [mappedPitch[0], v || 127] })
       }}
     />
-    <StyledColorInput
+    <ColorInput
       w={108} mx="4px"
       value={color || '#ffffff'}
       onChange={v => set({ color: v })}
     />
-    <StyledActionIcon size="lg" variant="subtle" c="red" onClick={onRemove}>
+    <ActionIcon variant="subtle" c="red" onClick={onRemove}>
       <TrashIcon color="red" />
-    </StyledActionIcon>
+    </ActionIcon>
   </Group>
 }
 
@@ -173,26 +173,26 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             style={{ cursor: 'grab', touchAction: 'none' }}
           />
         }
-        <StyledActionIcon
+        <ActionIcon
           variant="subtle"
           onClick={() => { setIsExpanded(!isExpanded) }}
         >
           {isExpanded ? <CaretUpIcon /> : <CaretDownIcon /> }
-        </StyledActionIcon>
-        <StyledActionIcon
+        </ActionIcon>
+        <ActionIcon
           variant="subtle"
           onClick={copy}
         >
           <CopyIcon />
-        </StyledActionIcon>
-        <StyledActionIcon
+        </ActionIcon>
+        <ActionIcon
           variant="subtle"
           onClick={deleteStyle}
           disabled={id === 'default'}
           color="red"
         >
           <TrashIcon color="red"/>
-        </StyledActionIcon>
+        </ActionIcon>
         <Group {...groupProps} px={4} h={32}
           gap={4} flex={1} bdrs={4}
           bg={color || 'transparent'} c={getTextColor(color || '#000000')}
@@ -231,7 +231,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Group {...groupProps}>
             <Group gap="2px" flex={2}>
               <TrackIcon />
-              <StyledSegmentedControl
+              <SegmentedControl
                 bd="#444444 1px solid"
                 data={[
                   { value: 'ids', label: <HashIcon size={16} /> },
@@ -246,7 +246,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
                   setTrack(text)
                 }}
               />
-              <StyledTextInput
+              <TextInput
                 flex={1}
                 value={track || ''}
                 onChange={e => setTrack(e.target.value)}
@@ -261,7 +261,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             </Group>
             <Group gap="2px" flex={1}>
               <ChannelIcon/>
-              <StyledTextInput
+              <TextInput
                 flex={1}
                 w={100}
                 value={channel || ''}
@@ -393,19 +393,17 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           </Group>
           <Group {...groupProps}>
             <Text flex={1}>Percussion Notes Remapping</Text>
-            <StyledActionIcon
-              size="lg"
+            <ActionIcon
               onClick={() => {
                 setRemaps([...(remaps || []), { mappedPitch: [0, 127], color: '#ffffff' }])
               }}
             >
               <PlusIcon />
-            </StyledActionIcon>
+            </ActionIcon>
           </Group>
           {!!remaps?.length && <Stack>
             {remaps.map((r, i) => <RemapConfigBox
-              key={i}
-              {...r}
+              key={i} {...r}
               setRemap={v => setRemaps(remaps.map((r, idx) => idx === i ? v : r))}
               onRemove={() => setRemaps(remaps.filter((_, idx) => idx !== i))}
             />)}
