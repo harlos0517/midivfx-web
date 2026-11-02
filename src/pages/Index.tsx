@@ -13,8 +13,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import MidiFileContext from '@/context/MidiFileContext'
+import type { Messages } from '@/i18n/en'
 import useConfigStore from '@/store/configStore'
 import { useIsExporting } from '@/store/exportStore'
+import { useMessages } from '@/store/localeStore'
 import type { AudioPeaks } from '@/utils/audio'
 import type { MidiData } from '@/utils/midi'
 import Playback from '@/utils/Playback'
@@ -25,6 +27,7 @@ import DisplayConfigPanel from '@/panels/DisplayConfigPanel'
 import ExportConfigPanel from '@/panels/ExportConfigPanel'
 import ImportConfigPanel from '@/panels/ImportConfigPanel'
 import MainPanel from '@/panels/MainPanel'
+import MiscellaneousPanel from '@/panels/MiscellaneousPanel'
 import NavigatorPanel from '@/panels/NavigatorPanel'
 import PlaybackConfigPanel from '@/panels/PlaybackConfigPanel'
 import StylesConfigPanel from '@/panels/StylesConfigPanel'
@@ -54,6 +57,11 @@ const panels: AddPanelOptions[] = [
     position: { referencePanel: 'Main', direction: 'below' },
     minimumHeight: 34, initialHeight: 130,
   },
+  {
+    id: 'Miscellaneous',
+    position: { referencePanel: 'Display', direction: 'within' },
+    inactive: true,
+  },
 ].map(p => ({ ...p, component: p.id.toLowerCase() }))
 
 const NonClosableTab = (props: IDockviewPanelHeaderProps) =>
@@ -80,9 +88,10 @@ const Index = () => {
     display: DisplayConfigPanel,
     styles: StylesConfigPanel,
     tracks: TracksPanel,
+    miscellaneous: MiscellaneousPanel,
   }), [])
 
-  const loadDefaultLayout = (api: DockviewApi) => {
+  const addMissingPanels = (api: DockviewApi) => {
     if (!api) return
 
     const missingPanels = panels.filter(panel => !api.getPanel(panel.id))
@@ -117,11 +126,18 @@ const Index = () => {
         event.api.fromJSON(layout)
       } catch(err) {
         console.error(err)
-        loadDefaultLayout(event.api)
       }
-    } else loadDefaultLayout(event.api)
-    // loadDefaultLayout(event.api)
+    }
+    addMissingPanels(event.api)
   }
+
+  // Titles are saved in the layout, so restored panels need them set again too
+  const m = useMessages()
+  useEffect(() => {
+    api?.panels.forEach(panel => {
+      panel.api.setTitle(m.panels[panel.id as keyof Messages['panels']])
+    })
+  }, [api, m])
 
   useEffect(() => () => {
     playback.dispose()
