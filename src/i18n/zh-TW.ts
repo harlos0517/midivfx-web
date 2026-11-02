@@ -1,0 +1,262 @@
+import type { Messages } from '@/i18n/en'
+
+const cameraHint = '在預覽畫面中拖曳也會改變此數值。按 R 可重設攝影機。'
+
+const zhTW: Messages = {
+  panels: {
+    Main: '主畫面',
+    Tracks: '音軌',
+    Styles: '樣式',
+    Import: '匯入',
+    Playback: '播放',
+    Camera: '攝影機',
+    Display: '顯示',
+    Export: '匯出',
+    Navigator: '導覽列',
+    Miscellaneous: '其他',
+  },
+  hints: {
+    toggleSlider: '點擊可切換滑桿與數字輸入。',
+    toggleOverride: '點擊可在此設定這個選項，或改為沿用前面樣式的設定。',
+  },
+  errors: {
+    readFile: name => `無法讀取 ${name}。`,
+    oddSize: (width, height) => `顯示尺寸必須是偶數（目前為 ${width}×${height}）。`,
+    emptyRange: '沒有可匯出的內容：結束時間早於開始時間。',
+  },
+  import: {
+    midi: {
+      name: 'MIDI 檔案',
+      desc: '要視覺化的 .mid 或 .midi 檔案。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
+    },
+    audio: {
+      name: '音訊檔案',
+      desc: '選用的 .mp3、.wav 或 .ogg 檔案，會與音符同步播放並包含在匯出影片中。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
+    },
+  },
+  playback: {
+    audioOffset: {
+      name: '音訊偏移',
+      desc: '調整音訊相對於音符的時間，單位為秒。正值會讓音訊較晚開始。',
+    },
+    startTime: {
+      name: '開始時間',
+      desc: '播放與匯出的起點，單位為秒。負值會在歌曲前加入空白時間。',
+    },
+    endTime: {
+      name: '結束時間',
+      desc: '播放與匯出的終點，單位為秒。超過歌曲結尾的數值會在歌曲後加入空白時間。清空欄位可使用歌曲長度。',
+    },
+  },
+  camera: {
+    x: {
+      name: '攝影機 X',
+      desc: `攝影機在時間軸上的位置。0 與游標對齊。${cameraHint}`,
+    },
+    y: {
+      name: '攝影機 Y',
+      desc: `攝影機在音高軸上的位置。一單位為一個半音，MIDI 音高範圍為 0 到 127。${cameraHint}`,
+    },
+    z: {
+      name: '攝影機 Z',
+      desc: `攝影機與音符的距離。數值越大，可看到的音高與時間範圍越廣。${cameraHint}`,
+    },
+    targetX: {
+      name: '目標 X',
+      desc: `攝影機注視點在時間軸上的位置。0 與游標對齊。${cameraHint}`,
+    },
+    targetY: {
+      name: '目標 Y',
+      desc: `攝影機注視點在音高軸上的位置。${cameraHint}`,
+    },
+    targetZ: {
+      name: '目標 Z',
+      desc: `攝影機注視點在深度軸上的位置。0 為音符所在的平面。${cameraHint}`,
+    },
+  },
+  display: {
+    width: {
+      name: '寬度',
+      desc: '預覽畫面與匯出影片的寬度，單位為像素。匯出時必須是偶數。',
+    },
+    height: {
+      name: '高度',
+      desc: '預覽畫面與匯出影片的高度，單位為像素。匯出時必須是偶數。',
+    },
+    speed: {
+      name: '捲動速度',
+      desc: '音符移動的速度，單位為每秒單位數。數值越大，音符也會越長。一單位等於一個半音的高度。',
+    },
+    beat: {
+      name: '拍線',
+      desc: '在每一拍畫上垂直線，小節線會更明顯。這些線條會保持在音符後方。',
+    },
+    bloom: {
+      name: '光暈',
+      desc: '在明亮的音符周圍加上光暈。',
+    },
+    bloomIntensity: {
+      name: '光暈強度',
+      desc: '光暈的強弱。',
+    },
+    bloomThreshold: {
+      name: '光暈門檻',
+      desc: '產生光暈所需的最低亮度，範圍為 0 到 1。設為 1 時不會有光暈。',
+    },
+    bloomRadius: {
+      name: '光暈半徑',
+      desc: '光暈擴散的範圍。',
+    },
+  },
+  export: {
+    fps: {
+      name: '影格率',
+      desc: '匯出影片每秒的影格數。',
+    },
+    alpha: {
+      name: '透明背景',
+      desc: '保留透明背景。這會匯出 WebM 而非 MP4。',
+    },
+    start: format => `匯出 ${format}`,
+    cancel: '取消',
+  },
+  style: {
+    options: {
+      color: {
+        name: '音符顏色',
+        desc: '音符的顏色。',
+      },
+      velocity: {
+        name: '力度透明度',
+        desc: '依 MIDI 力度讓較弱的音符更透明。',
+      },
+      mode: {
+        name: '音符模式',
+        desc: '決定音符透明度的方式。',
+      },
+      cc: {
+        name: 'CC 編號',
+        desc: '控制音符透明度的 MIDI 控制器，範圍為 0 到 127。例如 11 為 Expression。在此控制器的第一個事件之前，音符會保持完全不透明。',
+      },
+      decayRate: {
+        name: '衰減率',
+        desc: '音符淡出的速度，以每 25 毫秒損失的透明度比例表示。不受捲動速度影響。',
+      },
+      showPedal: {
+        name: '顯示延音踏板',
+        desc: '在延音踏板踩住期間延長音符。',
+      },
+      pedalColor: {
+        name: '踏板顏色',
+        desc: '音符中僅由延音踏板延續之部分的顏色。',
+      },
+      thickness: {
+        name: '音符粗細',
+        desc: '音符佔據音高列的比例。設為 1 時，相鄰音高的音符會緊貼在一起。',
+      },
+      radius: {
+        name: '圓角半徑',
+        desc: '音符邊角的圓潤程度。一單位等於一個半音的高度。',
+      },
+      z: {
+        name: '圖層',
+        desc: '在深度軸上的位置。數值較高者較靠近攝影機，並會蓋住數值較低者。',
+      },
+    },
+    modes: {
+      fill: {
+        name: '填滿',
+        desc: '音符保持實心。',
+      },
+      decay: {
+        name: '衰減',
+        desc: '音符從頭到尾逐漸淡出。',
+      },
+      CC: {
+        name: 'CC',
+        desc: '音符透明度跟隨 MIDI 控制器。',
+      },
+    },
+    track: {
+      name: '音軌',
+      desc: '此樣式套用的音軌。留空會符合所有音軌。',
+    },
+    byNumber: {
+      name: '依編號比對',
+      desc: '以編號比對音軌，例如 1-4,7。',
+    },
+    byName: {
+      name: '依名稱比對',
+      desc: '以不分大小寫的正規表達式比對音軌名稱。無效的表達式不會符合任何音軌。',
+    },
+    channel: {
+      name: '頻道',
+      desc: '此樣式套用的 MIDI 頻道，例如 1-4,7。留空會符合全部 16 個頻道。',
+    },
+    drag: {
+      name: '調整順序',
+      desc: '拖曳以變更順序。後面的樣式會覆蓋前面的樣式。',
+    },
+    locked: {
+      name: '預設樣式',
+      desc: '所有音符的基礎樣式。它永遠排在最前面，並設定所有選項。',
+    },
+    expand: {
+      name: '顯示或隱藏選項',
+      desc: '展開或收合此樣式。',
+    },
+    duplicate: {
+      name: '複製',
+      desc: '在此樣式後方加入一份副本。',
+    },
+    delete: {
+      name: '刪除',
+      desc: '移除此樣式。',
+    },
+    add: {
+      name: '新增樣式',
+      desc: '在最後新增一個空白樣式。在你設定選項之前，所有選項都會沿用前面的設定。',
+    },
+  },
+  remap: {
+    heading: '打擊樂音符重新對應',
+    add: {
+      name: '新增對應',
+      desc: '將選定的音高畫成橫跨某個音高範圍的色帶，並使用專屬顏色。適合每個音高代表不同樂器的打擊樂。',
+    },
+    source: {
+      name: '來源音高',
+      desc: '要重新對應的 MIDI 音高，範圍為 0 到 127，例如 36,38-40。留空會符合所有音高。若有多個對應符合，以最後一個為準。',
+    },
+    low: {
+      name: '色帶起點',
+      desc: '色帶涵蓋之音高範圍的一端。',
+    },
+    high: {
+      name: '色帶終點',
+      desc: '色帶涵蓋之音高範圍的另一端。',
+    },
+    color: {
+      name: '色帶顏色',
+      desc: '重新對應後音符的顏色。',
+    },
+    remove: {
+      name: '移除對應',
+      desc: '移除此對應。',
+    },
+  },
+  tracks: {
+    expand: {
+      name: '顯示或隱藏頻道',
+      desc: '顯示此音軌各頻道從樣式取得的顏色。',
+    },
+  },
+  miscellaneous: {
+    language: {
+      name: '語言',
+      desc: '介面的語言。',
+    },
+  },
+}
+
+export default zhTW
