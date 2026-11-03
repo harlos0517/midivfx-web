@@ -284,6 +284,10 @@ const en = {
       name: 'About author',
       desc: 'The website of the author.',
     },
+    support: {
+      name: 'Support me',
+      desc: 'If MIDIVFX is useful to you, you can support me here!',
+    },
   },
   changelog: {
     updated: 'MIDIVFX has been updated',

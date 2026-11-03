@@ -283,6 +283,10 @@ const zhTW: Messages = {
       name: '關於作者',
       desc: '作者的網站。',
     },
+    support: {
+      name: '支持作者',
+      desc: '如果 MIDIVFX 對你有幫助，可以在這裡贊助我！',
+    },
   },
   changelog: {
     updated: 'MIDIVFX 已更新',
