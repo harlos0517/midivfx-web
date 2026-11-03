@@ -12,11 +12,13 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
+import GuidedTour from '@/components/GuidedTour'
 import MidiFileContext from '@/context/MidiFileContext'
 import type { Messages } from '@/i18n/en'
 import useConfigStore from '@/store/configStore'
 import { useIsExporting } from '@/store/exportStore'
 import { useMessages } from '@/store/localeStore'
+import useTourStore from '@/store/tourStore'
 import type { AudioPeaks } from '@/utils/audio'
 import type { MidiData } from '@/utils/midi'
 import Playback from '@/utils/Playback'
@@ -154,8 +156,11 @@ const Index = () => {
 
   const length = () => getLength(midiData, playback)
 
-  // The export drives the playback clock itself, so the transport keys must leave it alone
-  const enabled = !useIsExporting()
+  // The export drives the playback clock itself, so the transport keys must leave it alone.
+  // The tour uses Space and the arrow keys for its own buttons and steps.
+  const exporting = useIsExporting()
+  const touring = useTourStore(s => s.active)
+  const enabled = !exporting && !touring
 
   useHotkeys('space', e => {
     e.preventDefault()
@@ -203,6 +208,7 @@ const Index = () => {
         onReady={onReady}
       />
     </Box>
+    {api && <GuidedTour api={api} />}
   </MidiFileContext.Provider>
 }
 

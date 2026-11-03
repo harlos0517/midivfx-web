@@ -257,6 +257,32 @@ const en = {
       name: 'Language',
       desc: 'Language of the interface.',
     },
+    tour: {
+      name: 'Tour',
+      desc: 'Walks through each panel and what it does.',
+    },
+  },
+  tour: {
+    start: 'Start tour',
+    labels: {
+      skip: 'Skip',
+      back: 'Back',
+      next: 'Next',
+      close: 'Done',
+      stepCounter: (current: number, total: number) => `${current} of ${total}`,
+    },
+    steps: {
+      Import: 'Start here. Choose a MIDI file, and optionally an audio file to play along with it. Imports are not saved, so choose them again after reloading the page.',
+      Main: 'The preview, which looks exactly like the exported video. Drag to orbit the camera, right-drag to pan and scroll to zoom. Press Space to play or pause.',
+      Navigator: 'An overview of the whole song, with the audio waveform behind the notes. Click to seek, or drag the box and its edges to set where playback and export start and end.',
+      Tracks: 'The tracks in the MIDI file, colored by the styles that apply to them. Expand a track to see the color of each channel.',
+      Styles: 'Styles decide how notes look. Each one applies to the tracks and channels it matches, and later styles override earlier ones. An option that is not set in a style is inherited from the styles before it.',
+      Playback: 'Exact start and end times, and an offset to line the audio up with the notes.',
+      Camera: 'Exact camera position and target. Dragging in the preview changes these too, and pressing R resets them.',
+      Display: 'The size of the preview and the exported video, how fast the notes scroll, beat lines and bloom.',
+      Export: 'Renders the video frame by frame and downloads it. Turn on the transparent background to export WebM instead of MP4.',
+      Miscellaneous: 'Change the language here, or start this tour again.',
+    },
   },
 }
 
