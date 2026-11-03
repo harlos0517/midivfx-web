@@ -34,25 +34,27 @@ const ExportConfigPanel = () => {
   const exporting = progress !== null
 
   return <PanelWrapper isExportPanel>
-    <ConfigOptionRow label={<FPSIcon />} tooltip={m.export.fps}>
-      <Select
-        flex="1"
-        aria-label={m.export.fps.name}
-        value={fps.toString()}
-        onChange={v => setFps(Number(v))}
-        data={['15', '24', '30', '60']}
-        disabled={exporting}
-      />
-    </ConfigOptionRow>
-    <ConfigOptionRow label={<AlphaIcon />} tooltip={m.export.alpha}>
-      <Switch
-        flex="1"
-        aria-label={m.export.alpha.name}
-        checked={alpha}
-        onChange={e => setAlpha(e.currentTarget.checked)}
-        disabled={exporting}
-      />
-    </ConfigOptionRow>
+    <Group>
+      <ConfigOptionRow label={<FPSIcon />} tooltip={m.export.fps}>
+        <Select
+          flex="1"
+          aria-label={m.export.fps.name}
+          value={fps.toString()}
+          onChange={v => setFps(Number(v))}
+          data={['15', '24', '30', '60']}
+          disabled={exporting}
+        />
+      </ConfigOptionRow>
+      <ConfigOptionRow label={<AlphaIcon />} tooltip={m.export.alpha}>
+        <Switch
+          flex="1"
+          aria-label={m.export.alpha.name}
+          checked={alpha}
+          onChange={e => setAlpha(e.currentTarget.checked)}
+          disabled={exporting}
+        />
+      </ConfigOptionRow>
+    </Group>
     {exporting
       ? <Group>
         <Progress value={progress * 100} style={{ flex: 1 }} />
@@ -61,7 +63,11 @@ const ExportConfigPanel = () => {
           {m.export.cancel}
         </Button>
       </Group>
-      : <Button onClick={onExport} disabled={!renderer || !playback}>
+      : <Button
+        onClick={onExport}
+        disabled={!renderer || !playback || !midiData}
+        h={40}
+      >
         {m.export.start(alpha ? 'WebM' : 'MP4')}
       </Button>}
     {error && <Text size="sm" c="red">{error}</Text>}

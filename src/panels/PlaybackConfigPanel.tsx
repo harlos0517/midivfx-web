@@ -25,6 +25,7 @@ const PlaybackConfigPanel = () => {
       tooltip={m.playback.audioOffset}
       value={audioOffset / 1000}
       onChange={v => setAudioOffset(v * 1000)}
+      rightSection="s"
       step={0.01}
       sliderProps={getSliderProps(-3, 3, 0.01, [0])}
     />
@@ -32,7 +33,10 @@ const PlaybackConfigPanel = () => {
       label={<ArrowLineLeftIcon />}
       tooltip={m.playback.startTime}
       value={startTime / 1000}
-      onChange={v => setStartTime(v * 1000)}
+      onChange={v => {
+        const clipped = Math.min(v, endTime ?? length)
+        setStartTime(roundTo(clipped * 1000, 0))
+      }}
       rightSection="s"
       withSlider={false}
       step={0.1}
@@ -41,7 +45,10 @@ const PlaybackConfigPanel = () => {
       label={<ArrowLineRightIcon />}
       tooltip={m.playback.endTime}
       value={(endTime ?? length) / 1000}
-      onChange={v => setEndTime(roundTo(v * 1000, 0))}
+      onChange={v => {
+        const clipped = Math.max(v, startTime)
+        setEndTime(roundTo(clipped * 1000, 0))
+      }}
       rightSection="s"
       withSlider={false}
       step={0.1}

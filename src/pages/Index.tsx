@@ -58,7 +58,7 @@ const panels: AddPanelOptions[] = [
   {
     id: 'Export',
     position: { referencePanel: 'Import', direction: 'below' },
-    minimumHeight: 114,
+    minimumHeight: 110,
   },
   {
     id: 'Navigator',

@@ -38,6 +38,8 @@ const DisplayConfigPanel = () => {
       value={width}
       {...getNumberInputProps(640, 3840, 20, [1280, 1920, 2560], true)}
       onChange={setWidth}
+      rightSection="px"
+      rightSectionWidth={32}
     />
     <ConfigOptionNumberInputRow
       label={<HeightIcon />}
@@ -45,6 +47,8 @@ const DisplayConfigPanel = () => {
       value={height}
       {...getNumberInputProps(360, 2160, 20, [720, 1080, 1440], true)}
       onChange={setHeight}
+      rightSection="px"
+      rightSectionWidth={32}
     />
     <ConfigOptionNumberInputRow
       label={<SpeedIcon />}
@@ -52,6 +56,8 @@ const DisplayConfigPanel = () => {
       value={roundTo(unitsPerSecond, 2)}
       min={2} max={1024} step={1}
       onChange={v => setUnitsPerSecond(roundTo(v, 2))}
+      rightSection="units/s"
+      rightSectionWidth={80}
       sliderProps={{
         value: Math.log2(unitsPerSecond),
         onChange: v => setUnitsPerSecond(roundTo(2 ** v, 2)),
