@@ -11,6 +11,18 @@ export interface ChangelogEntry {
 /** Newest first. The first entry is the current version, so add one to release an update. */
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.0.2',
+    date: '2026-11-04',
+    changes: {
+      en: [
+        'Adjust initial layout.',
+      ],
+      'zh-TW': [
+        '調整初始面版佈局。',
+      ],
+    },
+  },
+  {
     version: '1.0.1',
     date: '2026-11-04',
     changes: {

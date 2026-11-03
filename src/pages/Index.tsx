@@ -64,14 +64,14 @@ const panels: AddPanelOptions[] = [
     minimumHeight: 110,
   },
   {
+    id: 'Miscellaneous',
+    position: { referencePanel: 'Playback', direction: 'below' },
+    inactive: true,
+  },
+  {
     id: 'Navigator',
     position: { referencePanel: 'Main', direction: 'below' },
     minimumHeight: 56, maximumHeight: 280, initialHeight: 152,
-  },
-  {
-    id: 'Miscellaneous',
-    position: { referencePanel: 'Export', direction: 'below' },
-    inactive: true,
   },
 ].map(p => ({ ...p, component: p.id.toLowerCase() }))
 
