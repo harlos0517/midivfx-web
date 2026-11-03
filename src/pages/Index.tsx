@@ -40,26 +40,34 @@ const panels: AddPanelOptions[] = [
   {
     id: 'Tracks',
     position: { referencePanel: 'Main', direction: 'left' },
-    minimumWidth: 200, initialWidth: 330,
+    minimumWidth: 200, maximumWidth: 500, initialWidth: 330,
   },
   {
     id: 'Styles',
     position: { referencePanel: 'Main', direction: 'right' },
-    minimumWidth: 320, initialWidth: 330,
+    minimumWidth: 320, maximumWidth: 500, initialWidth: 330,
   },
-  { id: 'Import', position: { referencePanel: 'Main', direction: 'below' } },
+  {
+    id: 'Import',
+    position: { referencePanel: 'Main', direction: 'below' },
+    minimumHeight: 104,
+  },
   { id: 'Playback', position: { referencePanel: 'Import', direction: 'right' } },
   { id: 'Camera', position: { referencePanel: 'Playback', direction: 'right' } },
   { id: 'Display', position: { referencePanel: 'Camera', direction: 'right' } },
-  { id: 'Export', position: { referencePanel: 'Import', direction: 'below' } },
+  {
+    id: 'Export',
+    position: { referencePanel: 'Import', direction: 'below' },
+    minimumHeight: 114,
+  },
   {
     id: 'Navigator',
     position: { referencePanel: 'Main', direction: 'below' },
-    minimumHeight: 34, initialHeight: 130,
+    minimumHeight: 56, maximumHeight: 280, initialHeight: 152,
   },
   {
     id: 'Miscellaneous',
-    position: { referencePanel: 'Display', direction: 'within' },
+    position: { referencePanel: 'Export', direction: 'below' },
     inactive: true,
   },
 ].map(p => ({ ...p, component: p.id.toLowerCase() }))
@@ -95,14 +103,7 @@ const Index = () => {
     if (!api) return
 
     const missingPanels = panels.filter(panel => !api.getPanel(panel.id))
-
-    for (const panel of missingPanels)
-      api.addPanel(panel)
-
-    for (const panel of missingPanels) {
-      if (panel.initialHeight) api.getPanel(panel.id)?.api.setSize({ height: panel.initialHeight })
-      if (panel.initialWidth) api.getPanel(panel.id)?.api.setSize({ width: panel.initialWidth })
-    }
+    for (const panel of missingPanels) api.addPanel(panel)
   }
 
   useEffect(() => {
