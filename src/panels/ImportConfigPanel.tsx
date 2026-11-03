@@ -1,16 +1,24 @@
+import { FileInput, Stack, Text } from '@mantine/core'
+import { Dropzone } from '@mantine/dropzone'
+import { SpeakerLowIcon } from '@phosphor-icons/react'
 import { useContext, useState } from 'react'
 
+import ConfigOptionRow from '@/components/ConfigOptionRow'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
+import { useIsExporting } from '@/store/exportStore'
 import { useMessages } from '@/store/localeStore'
 import { computePeaks, decodeAudio } from '@/utils/audio'
 import { parseMidiFile } from '@/utils/midi'
 import { resetPlaybackRange } from '@/utils/timeline'
 
 import MIDIIcon from '@/assets/icons/midi.svg?react'
-import ConfigOptionRow from '@/components/ConfigOptionRow'
-import { FileInput } from '@mantine/core'
-import { SpeakerLowIcon } from '@phosphor-icons/react'
+
+const midiExtensions = ['.mid', '.midi']
+const audioExtensions = ['.mp3', '.wav', '.ogg']
+
+const hasExtension = (file: File, extensions: string[]) =>
+  extensions.some(ext => file.name.toLowerCase().endsWith(ext))
 
 const ImportConfigPanel = () => {
   const m = useMessages()
@@ -67,13 +75,27 @@ const ImportConfigPanel = () => {
     resetPlaybackRange(context.midiData, context.playback)
   }
 
+  // Sorted by extension rather than with `accept`: browsers often report MIDI files with an
+  // empty MIME type, which `accept` would reject
+  const onDrop = (files: File[]) => {
+    const midi = files.find(file => hasExtension(file, midiExtensions))
+    const audio = files.find(file => hasExtension(file, audioExtensions))
+    if (midi) void onMidiFileChange(midi)
+    if (audio) void onAudioFileChange(audio)
+
+    const unsupported = files.find(file => file !== midi && file !== audio)
+    if (!midi && !audio && unsupported) setMidiError(m.errors.unsupportedFile(unsupported.name))
+  }
+
+  const exporting = useIsExporting()
+
   return <PanelWrapper>
     <ConfigOptionRow label={<MIDIIcon />} tooltip={m.import.midi}>
       <FileInput
         flex="1"
         aria-label={m.import.midi.name}
         maw="calc(100% - 24px - .5rem)"
-        accept=".mid,.midi"
+        accept={midiExtensions.join(',')}
         value={midiFile}
         onChange={onMidiFileChange}
         error={midiError}
@@ -84,12 +106,22 @@ const ImportConfigPanel = () => {
         flex="1"
         aria-label={m.import.audio.name}
         maw="calc(100% - 24px - .5rem)"
-        accept=".mp3,.wav,.ogg"
+        accept={audioExtensions.join(',')}
         value={audioFile}
         onChange={onAudioFileChange}
         error={audioError}
       />
     </ConfigOptionRow>
+    <Dropzone.FullScreen active={!exporting} onDrop={onDrop}>
+      <Stack
+        align="center" justify="center" gap="xs"
+        mih="calc(100dvh - 4rem)" style={{ pointerEvents: 'none' }}
+      >
+        <MIDIIcon width={64} height={64} />
+        <Text size="xl">{m.import.drop.title}</Text>
+        <Text c="dimmed">{m.import.drop.desc}</Text>
+      </Stack>
+    </Dropzone.FullScreen>
   </PanelWrapper>
 }
 

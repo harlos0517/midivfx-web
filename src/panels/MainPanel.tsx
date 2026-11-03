@@ -1,13 +1,20 @@
-import { Box } from '@mantine/core'
+import { Box, Stack, Text } from '@mantine/core'
 import { useElementSize } from '@mantine/hooks'
 import { Canvas } from '@react-three/fiber'
+import { useContext } from 'react'
 
 import CameraControls from '@/components/CameraControls'
 import CanvasRenderer from '@/components/CanvasRenderer'
 import RendererBridge from '@/components/RendererBridge'
+import MidiFileContext from '@/context/MidiFileContext'
 import useConfigStore from '@/store/configStore'
+import { useMessages } from '@/store/localeStore'
+
+import MIDIIcon from '@/assets/icons/midi.svg?react'
 
 const MainPanel = () => {
+  const m = useMessages()
+  const { midiData } = useContext(MidiFileContext)
   const width = useConfigStore(s => s.config.display.width)
   const height = useConfigStore(s => s.config.display.height)
   const { ref: panelRef, width: panelWidth, height: panelHeight } = useElementSize()
@@ -29,6 +36,20 @@ const MainPanel = () => {
         <CanvasRenderer />
       </Canvas>
     </Box>
+    {/* Only a hint: the Import panel's full-screen dropzone takes the drop */}
+    {!midiData && <Box bg="rgba(0, 0, 0, 0.5)" pos="absolute" inset="0">
+      <Stack
+        pos="absolute" inset="1rem"
+        align="center" justify="center" gap="xs" ta="center" p="md"
+        bd="dashed 2px var(--mantine-color-dark-3)" bdrs="md"
+        c="dimmed"
+        style={{ pointerEvents: 'none' }}
+      >
+        <MIDIIcon width={48} height={48} />
+        <Text size="lg">{m.main.empty.title}</Text>
+        <Text size="sm">{m.main.empty.desc}</Text>
+      </Stack>
+    </Box>}
   </Box>
 }
 

@@ -24,8 +24,19 @@ const en = {
     oddSize: (width: number, height: number) =>
       `Display size must be even (got ${width}×${height}).`,
     emptyRange: 'Nothing to export: end time is before start time.',
+    unsupportedFile: (name: string) => `${name} is not a MIDI or audio file.`,
+  },
+  main: {
+    empty: {
+      title: 'Drop a MIDI file anywhere to start',
+      desc: 'Add an audio file the same way, or choose files in the Import panel.',
+    },
   },
   import: {
+    drop: {
+      title: 'Drop to import',
+      desc: 'MIDI (.mid, .midi) and audio (.mp3, .wav, .ogg) files',
+    },
     midi: {
       name: 'MIDI file',
       desc: 'The .mid or .midi file to visualize. Imports are not saved, so choose it again after reloading the page.',
@@ -272,7 +283,7 @@ const en = {
       stepCounter: (current: number, total: number) => `${current} of ${total}`,
     },
     steps: {
-      Import: 'Start here. Choose a MIDI file, and optionally an audio file to play along with it. Imports are not saved, so choose them again after reloading the page.',
+      Import: 'Start here. Choose a MIDI file, and optionally an audio file to play along with it, or drop them anywhere on the page. Imports are not saved, so choose them again after reloading the page.',
       Main: 'The preview, which looks exactly like the exported video. Drag to orbit the camera, right-drag to pan and scroll to zoom. Press Space to play or pause.',
       Navigator: 'An overview of the whole song, with the audio waveform behind the notes. Click to seek, or drag the box and its edges to set where playback and export start and end.',
       Tracks: 'The tracks in the MIDI file, colored by the styles that apply to them. Expand a track to see the color of each channel.',

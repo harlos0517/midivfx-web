@@ -23,8 +23,19 @@ const zhTW: Messages = {
     readFile: name => `無法讀取 ${name}。`,
     oddSize: (width, height) => `顯示尺寸必須是偶數（目前為 ${width}×${height}）。`,
     emptyRange: '沒有可匯出的內容：結束時間早於開始時間。',
+    unsupportedFile: name => `${name} 不是 MIDI 或音訊檔案。`,
+  },
+  main: {
+    empty: {
+      title: '將 MIDI 檔案拖放到任意位置即可開始',
+      desc: '音訊檔案也可以用同樣方式加入，或在匯入面板中選擇檔案。',
+    },
   },
   import: {
+    drop: {
+      title: '放開以匯入',
+      desc: 'MIDI（.mid、.midi）與音訊（.mp3、.wav、.ogg）檔案',
+    },
     midi: {
       name: 'MIDI 檔案',
       desc: '要視覺化的 .mid 或 .midi 檔案。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
@@ -271,7 +282,7 @@ const zhTW: Messages = {
       stepCounter: (current, total) => `${current} / ${total}`,
     },
     steps: {
-      Import: '從這裡開始。選擇一個 MIDI 檔案，也可以再選擇一個音訊檔案一起播放。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
+      Import: '從這裡開始。選擇一個 MIDI 檔案，也可以再選擇一個音訊檔案一起播放，或直接將檔案拖放到頁面上的任意位置。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
       Main: '預覽畫面，與匯出的影片完全相同。拖曳可旋轉攝影機，右鍵拖曳可平移，滾動滑鼠滾輪可縮放。按空白鍵可播放或暫停。',
       Navigator: '整首曲子的概覽，音符後方是音訊波形。點擊可跳到該位置，拖曳方框或其邊緣可設定播放與匯出的開始和結束位置。',
       Tracks: 'MIDI 檔案中的音軌，顏色來自套用到它們的樣式。展開音軌可查看每個頻道的顏色。',

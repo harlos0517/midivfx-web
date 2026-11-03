@@ -7,6 +7,7 @@ import { theme } from '@/theme'
 import { ICON_SIZE } from '@/utils/const'
 
 import '@mantine/core/styles.css'
+import '@mantine/dropzone/styles.css'
 
 import './assets/styles/main.sass'
 
