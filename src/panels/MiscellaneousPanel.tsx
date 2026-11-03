@@ -1,16 +1,26 @@
-import { Button, Select } from '@mantine/core'
-import { SignpostIcon, TranslateIcon } from '@phosphor-icons/react'
+import { ActionIcon, Group, Select } from '@mantine/core'
+import {
+  ClockCounterClockwiseIcon,
+  GithubLogoIcon,
+  GlobeIcon,
+  SignpostIcon,
+  TranslateIcon,
+} from '@phosphor-icons/react'
 
 import ConfigOptionRow from '@/components/ConfigOptionRow'
+import OptionTooltip from '@/components/OptionTooltip'
 import PanelWrapper from '@/components/PanelWrapper'
+import useChangelogStore from '@/store/changelogStore'
 import useLocaleStore, { localeNames, useMessages, type Locale } from '@/store/localeStore'
 import useTourStore from '@/store/tourStore'
+import { REPO_URL, WEBSITE_URL } from '@/utils/const'
 
 const MiscellaneousPanel = () => {
   const m = useMessages()
   const locale = useLocaleStore(s => s.locale)
   const setLocale = useLocaleStore(s => s.setLocale)
   const startTour = useTourStore(s => s.start)
+  const openHistory = useChangelogStore(s => s.openHistory)
 
   return <PanelWrapper>
     <ConfigOptionRow label={<TranslateIcon />} tooltip={m.miscellaneous.language}>
@@ -23,9 +33,34 @@ const MiscellaneousPanel = () => {
         allowDeselect={false}
       />
     </ConfigOptionRow>
-    <ConfigOptionRow label={<SignpostIcon />} tooltip={m.miscellaneous.tour}>
-      <Button flex="1" variant="default" onClick={startTour}>{m.tour.start}</Button>
-    </ConfigOptionRow>
+    <Group>
+      <OptionTooltip tip={m.miscellaneous.tour}>
+        <ActionIcon flex="1" variant="default" size="xl" onClick={startTour}>
+          <SignpostIcon />
+        </ActionIcon>
+      </OptionTooltip>
+      <OptionTooltip tip={m.miscellaneous.history}>
+        <ActionIcon flex="1" variant="default" size="xl" onClick={openHistory}>
+          <ClockCounterClockwiseIcon />
+        </ActionIcon>
+      </OptionTooltip>
+      <OptionTooltip tip={m.miscellaneous.github}>
+        <ActionIcon
+          flex="1" variant="default" size="xl"
+          component="a" href={REPO_URL} target="_blank" rel="noopener noreferrer"
+        >
+          <GithubLogoIcon />
+        </ActionIcon>
+      </OptionTooltip>
+      <OptionTooltip tip={m.miscellaneous.website}>
+        <ActionIcon
+          flex="1" variant="default" size="xl"
+          component="a" href={WEBSITE_URL} target="_blank" rel="noopener noreferrer"
+        >
+          <GlobeIcon />
+        </ActionIcon>
+      </OptionTooltip>
+    </Group>
   </PanelWrapper>
 }
 

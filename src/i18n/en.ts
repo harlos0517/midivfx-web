@@ -272,6 +272,22 @@ const en = {
       name: 'Tour',
       desc: 'Walks through each panel and what it does.',
     },
+    history: {
+      name: 'Update history',
+      desc: 'Lists the changes in each version of MIDIVFX.',
+    },
+    github: {
+      name: 'Source code',
+      desc: 'The source code on GitHub. Issues and PRs are welcomed!',
+    },
+    website: {
+      name: 'About author',
+      desc: 'The website of the author.',
+    },
+  },
+  changelog: {
+    updated: 'MIDIVFX has been updated',
+    history: 'Update history',
   },
   tour: {
     start: 'Start tour',
@@ -292,7 +308,7 @@ const en = {
       Camera: 'Exact camera position and target. Dragging in the preview changes these too, and pressing R resets them.',
       Display: 'The size of the preview and the exported video, how fast the notes scroll, beat lines and bloom.',
       Export: 'Renders the video frame by frame and downloads it. Turn on the transparent background to export WebM instead of MP4.',
-      Miscellaneous: 'Change the language here, or start this tour again.',
+      Miscellaneous: 'Change the language, start this tour again, see what changed in each version, or find the source code.',
     },
   },
 }

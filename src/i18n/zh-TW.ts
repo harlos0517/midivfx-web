@@ -271,6 +271,22 @@ const zhTW: Messages = {
       name: '導覽',
       desc: '逐一介紹每個面板與其功能。',
     },
+    history: {
+      name: '更新紀錄',
+      desc: '列出 MIDIVFX 每個版本的變更。',
+    },
+    github: {
+      name: '原始碼',
+      desc: 'GitHub 上的原始碼。歡迎提出 Issue 或是提交 PR！',
+    },
+    website: {
+      name: '關於作者',
+      desc: '作者的網站。',
+    },
+  },
+  changelog: {
+    updated: 'MIDIVFX 已更新',
+    history: '更新紀錄',
   },
   tour: {
     start: '開始導覽',
@@ -291,7 +307,7 @@ const zhTW: Messages = {
       Camera: '精確的攝影機位置與目標。在預覽畫面中拖曳也會改變這些數值，按 R 可重設。',
       Display: '預覽畫面與匯出影片的尺寸、音符捲動的速度、節拍線與光暈。',
       Export: '逐格算繪影片並下載。開啟透明背景會匯出 WebM 而非 MP4。',
-      Miscellaneous: '可在這裡切換語言，或重新開始這個導覽。',
+      Miscellaneous: '可在這裡切換語言、重新開始這個導覽、查看每個版本的變更，或找到原始碼。',
     },
   },
 }

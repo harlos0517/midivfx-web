@@ -12,6 +12,7 @@ import {
 import { useEffect, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
+import ChangelogModal from '@/components/ChangelogModal'
 import GuidedTour from '@/components/GuidedTour'
 import MidiFileContext from '@/context/MidiFileContext'
 import type { Messages } from '@/i18n/en'
@@ -209,6 +210,7 @@ const Index = () => {
       />
     </Box>
     {api && <GuidedTour api={api} />}
+    <ChangelogModal />
   </MidiFileContext.Provider>
 }
 
