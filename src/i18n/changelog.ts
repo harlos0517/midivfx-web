@@ -11,6 +11,48 @@ export interface ChangelogEntry {
 /** Newest first. The first entry is the current version, so add one to release an update. */
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.1.0',
+    date: '2026-11-05',
+    changes: {
+      en: [
+        'The interface is available in Japanese.',
+        'Background color, and a background image with its own size and opacity, set in Display. Choose the image in Import.',
+        'Fade the picture and audio in and out at the start and end time, set in Playback.',
+        'Click a track or channel in the Tracks panel to hide or show its notes in the preview and the export.',
+        'Save the camera, display and style settings to a config file, and load them again to reuse a look on another song.',
+        'Styles can take the sustain pedal and the opacity CC from another track or channel.',
+        'Pedal-held notes connect smoothly to a restrike of the same pitch.',
+        'Choose the accent color of the interface in the Miscellaneous panel.',
+        'Width and height moved from Display to Export.',
+        'Errors show a message with options to try again, copy the details or report the issue, instead of breaking the page.',
+      ],
+      'zh-TW': [
+        '介面提供日文。',
+        '新增背景顏色，以及可設定大小與透明度的背景圖片，於顯示面板中設定。圖片於匯入面板中選擇。',
+        '可在開始與結束時間淡入與淡出畫面和音訊，於播放面板中設定。',
+        '在音軌面板中點擊音軌或聲道，即可在預覽與匯出中隱藏或顯示其音符。',
+        '可將攝影機、顯示與樣式設定存成設定檔，再次載入即可在其他曲子沿用相同外觀。',
+        '樣式可以使用其他音軌或聲道的延音踏板與控制透明度的 CC。',
+        '踏板延長的音符與同音高的重新觸鍵會平順相連。',
+        '可在其他面板中選擇介面的主題色。',
+        '寬度與高度從顯示面板移至匯出面板。',
+        '發生錯誤時會顯示訊息，並可重試、複製詳細資訊或回報問題，而不會使頁面無法使用。',
+      ],
+      ja: [
+        'インターフェースが日本語に対応しました。',
+        '背景色と、サイズと不透明度を設定できる背景画像を表示パネルで設定できます。画像はインポートパネルで選択します。',
+        '開始・終了時間で映像と音声をフェードイン・フェードアウトできます。再生パネルで設定します。',
+        'トラックパネルでトラックやチャンネルをクリックすると、プレビューとエクスポートでその音符を表示・非表示にできます。',
+        'カメラ、表示、スタイルの設定を設定ファイルに保存し、読み込んで別の曲でも同じ見た目を使えます。',
+        'スタイルで、別のトラックやチャンネルのサステインペダルと不透明度の CC を使えます。',
+        'ペダルで伸ばした音符が、同じ音高の打ち直しと滑らかにつながります。',
+        'その他パネルでインターフェースのテーマカラーを選べます。',
+        '幅と高さが表示パネルからエクスポートパネルに移動しました。',
+        'エラー時にページが壊れる代わりにメッセージを表示し、再試行、詳細のコピー、問題の報告ができます。',
+      ],
+    },
+  },
+  {
     version: '1.0.2',
     date: '2026-11-04',
     changes: {
