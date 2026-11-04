@@ -344,6 +344,22 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               wrapperProps={{ flex: 1 }}
               inputProps={getSliderProps(0, 1, 0.01, [0.5])}
             /> : <Space flex={1}/>}
+            {mode === 'CC' && <>
+              <OverridableInput
+                id={id}
+                styleKey="ccTrack"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, max: 256, step: 1, allowDecimal: false }}
+              />
+              <OverridableInput
+                id={id}
+                styleKey="ccChannel"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, max: 16, step: 1, allowDecimal: false }}
+              />
+            </>}
           </Group>
           <Group>
             <OverridableInput
@@ -355,8 +371,24 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               id={id}
               styleKey="pedalColor"
               inputType="color"
-              wrapperProps={{ w: 180 }}
-            /> : <Space w={180} />}
+              wrapperProps={{ w: 132 }}
+            /> : <Space w={132} />}
+            {showPedal && <>
+              <OverridableInput
+                id={id}
+                styleKey="pedalTrack"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, max: 256, step: 1, allowDecimal: false }}
+              />
+              <OverridableInput
+                id={id}
+                styleKey="pedalChannel"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, max: 16, step: 1, allowDecimal: false }}
+              />
+            </>}
           </Group>
           <Group>
             <OverridableInput

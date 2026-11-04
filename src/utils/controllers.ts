@@ -38,10 +38,15 @@ const SUSTAIN_THRESHOLD = 64
 /**
  * Returns when a note released at a given time stops sounding under the sustain pedal (CC64):
  * at the next pedal release, or earlier if the same pitch is struck again. A pedal that is never
- * released holds until `songEnd`.
+ * released holds until `songEnd`. The pedal can come from another channel's `pedalEvents`, but
+ * restrikes always come from the notes' own `events`.
  */
-export const sustainEnd = (events: MidiChannelEventData[], songEnd: number) => {
-  const pedal = getControllerTrack(events, SUSTAIN_CC)
+export const sustainEnd = (
+  events: MidiChannelEventData[],
+  pedalEvents: MidiChannelEventData[],
+  songEnd: number,
+) => {
+  const pedal = getControllerTrack(pedalEvents, SUSTAIN_CC)
 
   // nextRelease[i]: time of the first release at or after pedal event i
   const nextRelease = new Array<number>(pedal.times.length)

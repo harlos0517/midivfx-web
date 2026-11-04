@@ -56,6 +56,12 @@ export interface StyleRuntime {
   decayRate: number
   showPedal: boolean
   pedalColor: string
+  /** 1-based track and channel whose sustain pedal applies; 0 = the note's own. */
+  pedalTrack: number
+  pedalChannel: number
+  /** 1-based track and channel whose `cc` sets the opacity; 0 = the note's own. */
+  ccTrack: number
+  ccChannel: number
   remaps: Remap[]
 }
 
@@ -86,6 +92,10 @@ export const defaultStyleRuntime: Omit<StyleRuntime, 'id' | 'order'> = {
   decayRate: 0.0,
   showPedal: true,
   pedalColor: '#444444',
+  pedalTrack: 0,
+  pedalChannel: 0,
+  ccTrack: 0,
+  ccChannel: 0,
   remaps: [],
 }
 

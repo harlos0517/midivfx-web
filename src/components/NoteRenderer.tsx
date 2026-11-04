@@ -15,15 +15,17 @@ import { getMidiDuration } from '@/utils/timeline'
 
 interface NoteTrackProps {
   track: TrackData
+  tracks: TrackData[]
   trackNum: number
   songEnd: number
 }
 
-const NoteTrack = ({ track, trackNum, songEnd }: NoteTrackProps) => {
+const NoteTrack = ({ track, tracks, trackNum, songEnd }: NoteTrackProps) => {
   return <group>
     {track.channels.map((ch, i) => <NoteChannel
       key={i}
       notes={ch}
+      tracks={tracks}
       trackName={track.name}
       trackNum={trackNum}
       channel={i + 1}
@@ -34,16 +36,29 @@ const NoteTrack = ({ track, trackNum, songEnd }: NoteTrackProps) => {
 
 type NoteChannelProps = {
   notes: MidiChannelEventData[]
+  tracks: TrackData[]
   trackName: string | undefined
   trackNum: number
   channel: number
   songEnd: number
 }
 
-const NoteChannel = ({ notes, trackName, trackNum, channel, songEnd }: NoteChannelProps) => {
+const NoteChannel = (props: NoteChannelProps) => {
+  const { notes, tracks, trackName, trackNum, channel, songEnd } = props
   const style: StyleRuntime = useStyle(trackName || '', trackNum, channel)
   const hidden = useIsHidden(trackNum, channel)
-  return <Notes notes={notes} style={style} songEnd={songEnd} visible={!hidden} />
+  // Hidden channels still lend their controllers, so a pedal-only track can be hidden. A source
+  // that doesn't exist in this file falls back to the note's own channel.
+  const source = (t: number, c: number) =>
+    tracks[(t || trackNum) - 1]?.channels[(c || channel) - 1] ?? notes
+  return <Notes
+    notes={notes}
+    pedalEvents={source(style.pedalTrack, style.pedalChannel)}
+    ccEvents={source(style.ccTrack, style.ccChannel)}
+    style={style}
+    songEnd={songEnd}
+    visible={!hidden}
+  />
 }
 
 const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {
@@ -61,7 +76,7 @@ const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {
   return <group ref={groupRef}>
     {showBeats && <BeatLines />}
     {tracks.map((track, i) =>
-      <NoteTrack key={i} track={track} trackNum={i + 1} songEnd={songEnd} />)}
+      <NoteTrack key={i} track={track} tracks={tracks} trackNum={i + 1} songEnd={songEnd} />)}
   </group>
 }
 

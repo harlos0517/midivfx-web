@@ -133,13 +133,18 @@ const ccTexture = ({ times, values }: ControllerTrack) => {
 interface NotesProps {
   style: StyleRuntime
   notes: MidiChannelEventData[]
+  /** Events whose sustain pedal holds `notes`. */
+  pedalEvents: MidiChannelEventData[]
+  /** Events whose `cc` sets the opacity of `notes`. */
+  ccEvents: MidiChannelEventData[]
   /** End of the song (ms), where a pedal that is never released stops holding notes. */
   songEnd: number
   /** Hidden rather than unmounted, so showing it again doesn't rebuild the mesh. */
   visible?: boolean
 }
 
-const Notes = ({ notes, style, songEnd, visible = true }: NotesProps) => {
+const Notes = (props: NotesProps) => {
+  const { notes, pedalEvents, ccEvents, style, songEnd, visible = true } = props
   const {
     mode, cc, velocity, color, z, decayRate, thickness, radius, remaps, showPedal, pedalColor,
   } = style
@@ -151,8 +156,8 @@ const Notes = ({ notes, style, songEnd, visible = true }: NotesProps) => {
     const toColor = (c: string, fallback = defaultStyleRuntime.color) =>
       new ThreeColor(fixColorHex(c, fallback))
     const baseColor = toColor(color)
-    const heldUntil = showPedal ? sustainEnd(notes, songEnd) : null
-    const ccTrack = getControllerTrack(mode === 'CC' ? notes : [], cc)
+    const heldUntil = showPedal ? sustainEnd(notes, pedalEvents, songEnd) : null
+    const ccTrack = getControllerTrack(mode === 'CC' ? ccEvents : [], cc)
 
     const material = new ShaderMaterial({
       vertexShader,
@@ -205,8 +210,8 @@ const Notes = ({ notes, style, songEnd, visible = true }: NotesProps) => {
     mesh.computeBoundingSphere()
     return mesh
   }, [
-    notes, mode, cc, velocity, color, decayRate, thickness, radius, remaps, showPedal, pedalColor,
-    timeScale, songEnd,
+    notes, pedalEvents, ccEvents, mode, cc, velocity, color, decayRate, thickness, radius, remaps,
+    showPedal, pedalColor, timeScale, songEnd,
   ])
 
   useEffect(() => () => {

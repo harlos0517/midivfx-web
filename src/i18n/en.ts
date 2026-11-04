@@ -180,6 +180,22 @@ const en = {
         name: 'Pedal color',
         desc: 'Color of the part of a note that is held only by the sustain pedal.',
       },
+      pedalTrack: {
+        name: 'Pedal track',
+        desc: 'Track number whose sustain pedal holds these notes, such as a track that holds only the pedal. 0 uses the notes\' own track. A track missing from the file also falls back to the notes\' own.',
+      },
+      pedalChannel: {
+        name: 'Pedal channel',
+        desc: 'Channel, from 1 to 16, whose sustain pedal holds these notes. 0 uses the notes\' own channel. A held note still ends when its own pitch is played again.',
+      },
+      ccTrack: {
+        name: 'CC track',
+        desc: 'Track number whose CC sets the opacity of these notes. 0 uses the notes\' own track. A track missing from the file also falls back to the notes\' own.',
+      },
+      ccChannel: {
+        name: 'CC channel',
+        desc: 'Channel, from 1 to 16, whose CC sets the opacity of these notes. 0 uses the notes\' own channel.',
+      },
       thickness: {
         name: 'Note thickness',
         desc: 'How much of its pitch row a note fills. At 1, notes on adjacent pitches touch.',
