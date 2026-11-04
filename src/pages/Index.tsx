@@ -15,7 +15,7 @@ import { useHotkeys } from 'react-hotkeys-hook'
 import ChangelogModal from '@/components/ChangelogModal'
 import ErrorBoundary from '@/components/ErrorBoundary'
 import GuidedTour from '@/components/GuidedTour'
-import MidiFileContext from '@/context/MidiFileContext'
+import MidiFileContext, { type BackgroundImage } from '@/context/MidiFileContext'
 import type { Messages } from '@/i18n/en'
 import useConfigStore from '@/store/configStore'
 import { useIsExporting } from '@/store/exportStore'
@@ -88,6 +88,7 @@ const NonClosableTab = (props: IDockviewPanelHeaderProps) =>
 const Index = () => {
   const [midiData, setMidiData] = useState<MidiData | null>(null)
   const [audioPeaks, setAudioPeaks] = useState<AudioPeaks | null>(null)
+  const [backgroundImage, setBackgroundImage] = useState<BackgroundImage | null>(null)
   const playback = useMemo(() => {
     const playback = new Playback()
     playback.seek(useConfigStore.getState().config.playback.startTime)
@@ -212,7 +213,10 @@ const Index = () => {
   }, { useKey: true, enabled })
 
   return <MidiFileContext.Provider
-    value={{ midiData, setMidiData, audioPeaks, setAudioPeaks, playback }}
+    value={{
+      midiData, setMidiData, audioPeaks, setAudioPeaks, playback,
+      backgroundImage, setBackgroundImage,
+    }}
   >
     <Box h="100dvh" style={{ overflow: 'hidden' }}>
       <DockviewReact

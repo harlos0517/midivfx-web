@@ -24,7 +24,7 @@ const en = {
     oddSize: (width: number, height: number) =>
       `Video size must be even (got ${width}×${height}).`,
     emptyRange: 'Nothing to export: end time is before start time.',
-    unsupportedFile: (name: string) => `${name} is not a MIDI, audio or config file.`,
+    unsupportedFile: (name: string) => `${name} is not a MIDI, audio, image or config file.`,
     invalidConfig: (name: string) => `${name} is not a MIDIVFX config file.`,
     newerConfig: (name: string) =>
       `${name} was saved by a newer version of MIDIVFX. Reload the page to update.`,
@@ -57,7 +57,7 @@ const en = {
   import: {
     drop: {
       title: 'Drop to import',
-      desc: 'MIDI (.mid, .midi), audio (.mp3, .wav, .ogg) and config (.json) files',
+      desc: 'MIDI (.mid, .midi), audio (.mp3, .wav, .ogg), image (.png, .jpg, .webp and more) and config (.json) files',
     },
     midi: {
       name: 'MIDI file',
@@ -66,6 +66,10 @@ const en = {
     audio: {
       name: 'Audio file',
       desc: 'Optional .mp3, .wav or .ogg file that plays with the notes and is included in the export. Imports are not saved, so choose it again after reloading the page.',
+    },
+    image: {
+      name: 'Background image',
+      desc: 'Optional image drawn behind the notes and beat lines, in the preview and the export. It is never tone mapped or bloomed. Set how it fits and its opacity in Display. A GIF shows only its first frame. Imports are not saved, so choose it again after reloading the page.',
     },
     config: {
       name: 'Config file',
@@ -147,6 +151,23 @@ const en = {
     bloomRadius: {
       name: 'Bloom radius',
       desc: 'How far the glow spreads.',
+    },
+    backgroundColor: {
+      name: 'Background color',
+      desc: 'The color behind everything. Not used while the transparent background is on in Export.',
+    },
+    backgroundSize: {
+      name: 'Image size',
+      desc: 'Contain fits the whole image inside the frame, with the background color around it. Cover fills the frame and crops what overflows. Stretch fills the frame and ignores the image\'s aspect ratio. Choose the image in Import.',
+    },
+    backgroundSizes: {
+      contain: 'Contain',
+      cover: 'Cover',
+      stretch: 'Stretch',
+    },
+    backgroundOpacity: {
+      name: 'Image opacity',
+      desc: 'How opaque the image is over the background color, from 0 to 1. With the transparent background on, it is the opacity in the exported video. Choose the image in Import.',
     },
   },
   export: {
@@ -364,14 +385,14 @@ const en = {
       stepCounter: (current: number, total: number) => `${current} of ${total}`,
     },
     steps: {
-      Import: 'Start here. Choose a MIDI file, and optionally an audio file to play along with it, or drop them anywhere on the page. Imports are not saved, so choose them again after reloading the page.',
+      Import: 'Start here. Choose a MIDI file, and optionally an audio file to play along with it and a background image, or drop them anywhere on the page. Imports are not saved, so choose them again after reloading the page.',
       Main: 'The preview, which looks exactly like the exported video. Drag to orbit the camera, right-drag to pan and scroll to zoom. Press Space to play or pause.',
       Navigator: 'An overview of the whole song, with the audio waveform behind the notes. Click to seek, or drag the box and its edges to set where playback and export start and end.',
       Tracks: 'The tracks in the MIDI file, colored by the styles that apply to them. Expand a track to see the color of each channel. Click the track/channel to toggle visiblity for it.',
       Styles: 'Styles decide how notes look. Each one applies to the tracks and channels it matches, and later styles override earlier ones. An option that is not set in a style is inherited from the styles before it.',
       Playback: 'Exact start and end times, and an offset to line the audio up with the notes.',
       Camera: 'Exact camera position and target. Dragging in the preview changes these too, and pressing R resets them.',
-      Display: 'The size of the preview and the exported video, how fast the notes scroll, beat lines and bloom.',
+      Display: 'The size of the preview and the exported video, how fast the notes scroll, beat lines, bloom and the background.',
       Export: 'Renders the video frame by frame and downloads it. Turn on the transparent background to export WebM instead of MP4.',
       Miscellaneous: 'Change the language, start this tour again, see what changed in each version, or find the source code.',
     },

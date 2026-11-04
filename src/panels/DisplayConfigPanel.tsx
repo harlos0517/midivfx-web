@@ -1,22 +1,31 @@
-
-import { Switch } from '@mantine/core'
+import { ColorInput, Select, Switch } from '@mantine/core'
 import {
   AngleIcon,
   ArrowsOutLineVerticalIcon,
+  DropHalfIcon,
+  FrameCornersIcon,
   LightningIcon,
   MetronomeIcon,
+  PaintBucketIcon,
   SunIcon,
 } from '@phosphor-icons/react'
+import { useContext } from 'react'
 
 import ConfigOptionNumberInputRow from '@/components/ConfigOptionNumberInputRow'
 import ConfigOptionRow from '@/components/ConfigOptionRow'
 import PanelWrapper from '@/components/PanelWrapper'
+import MidiFileContext from '@/context/MidiFileContext'
 import useDisplayConfig from '@/hooks/useDisplayConfig'
+import useConfigStore from '@/store/configStore'
 import { useMessages } from '@/store/localeStore'
+import type { BackgroundSize } from '@/utils/config'
 import { getNumberInputProps } from '@/utils/input'
 import { roundTo } from '@/utils/round'
 
 import SpeedIcon from '@/assets/icons/speed.svg?react'
+
+const backgroundSizes: BackgroundSize[] = ['contain', 'cover', 'stretch']
+const opacityInputProps = getNumberInputProps(0, 1, 0.01)
 
 const DisplayConfigPanel = () => {
   const m = useMessages()
@@ -26,6 +35,13 @@ const DisplayConfigPanel = () => {
   const [bloomIntensity, setBloomIntensity] = useDisplayConfig('bloomIntensity')
   const [bloomThreshold, setBloomThreshold] = useDisplayConfig('bloomThreshold')
   const [bloomRadius, setBloomRadius] = useDisplayConfig('bloomRadius')
+  const [backgroundColor, setBackgroundColor] = useDisplayConfig('backgroundColor')
+  const [backgroundSize, setBackgroundSize] = useDisplayConfig('backgroundSize')
+  const [backgroundOpacity, setBackgroundOpacity] = useDisplayConfig('backgroundOpacity')
+  const alpha = useConfigStore(s => s.config.export.alpha)
+
+  // The image is chosen in Import, since it is not saved; how it fits is part of the look
+  const hasImage = useContext(MidiFileContext).backgroundImage !== null
 
   return <PanelWrapper>
     <ConfigOptionNumberInputRow
@@ -85,6 +101,37 @@ const DisplayConfigPanel = () => {
         onChange={setBloomRadius}
       />
     </>}
+    <ConfigOptionRow label={<PaintBucketIcon />} tooltip={m.display.backgroundColor}>
+      <ColorInput
+        flex="1"
+        aria-label={m.display.backgroundColor.name}
+        value={backgroundColor}
+        onChange={setBackgroundColor}
+        disabled={alpha}
+      />
+    </ConfigOptionRow>
+    <ConfigOptionRow label={<FrameCornersIcon />} tooltip={m.display.backgroundSize}>
+      <Select
+        flex="1"
+        aria-label={m.display.backgroundSize.name}
+        value={backgroundSize}
+        onChange={v => setBackgroundSize(v as BackgroundSize)}
+        data={backgroundSizes.map(value => ({
+          value, label: m.display.backgroundSizes[value],
+        }))}
+        allowDeselect={false}
+        disabled={!hasImage}
+      />
+    </ConfigOptionRow>
+    <ConfigOptionNumberInputRow
+      label={<DropHalfIcon />}
+      tooltip={m.display.backgroundOpacity}
+      value={backgroundOpacity}
+      {...opacityInputProps}
+      sliderProps={{ ...opacityInputProps.sliderProps, disabled: !hasImage }}
+      onChange={setBackgroundOpacity}
+      disabled={!hasImage}
+    />
   </PanelWrapper>
 }
 

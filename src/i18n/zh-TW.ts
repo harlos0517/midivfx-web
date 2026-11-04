@@ -1,3 +1,5 @@
+/* eslint-disable @stylistic/max-len -- one sentence per string reads better than split strings */
+
 import type { Messages } from '@/i18n/en'
 
 const cameraHint = '在預覽畫面中拖曳也會改變此數值。按 R 可重設攝影機。'
@@ -23,7 +25,7 @@ const zhTW: Messages = {
     readFile: name => `無法讀取 ${name}。`,
     oddSize: (width, height) => `影片尺寸必須是偶數（目前為 ${width}×${height}）。`,
     emptyRange: '沒有可匯出的內容：結束時間早於開始時間。',
-    unsupportedFile: name => `${name} 不是 MIDI、音訊或設定檔。`,
+    unsupportedFile: name => `${name} 不是 MIDI、音訊、圖片或設定檔。`,
     invalidConfig: name => `${name} 不是 MIDIVFX 設定檔。`,
     newerConfig: name => `${name} 是由較新版本的 MIDIVFX 儲存的。請重新整理頁面以更新。`,
     boundary: {
@@ -55,7 +57,7 @@ const zhTW: Messages = {
   import: {
     drop: {
       title: '放開以匯入',
-      desc: 'MIDI（.mid、.midi）、音訊（.mp3、.wav、.ogg）與設定檔（.json）',
+      desc: 'MIDI（.mid、.midi）、音訊（.mp3、.wav、.ogg）、圖片（.png、.jpg、.webp 等）與設定檔（.json）',
     },
     midi: {
       name: 'MIDI 檔案',
@@ -64,6 +66,10 @@ const zhTW: Messages = {
     audio: {
       name: '音訊檔案',
       desc: '選用的 .mp3、.wav 或 .ogg 檔案，會與音符同步播放並包含在匯出影片中。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
+    },
+    image: {
+      name: '背景圖片',
+      desc: '選用的圖片，畫在音符與拍線後方，會出現在預覽與匯出影片中，且不會經過色調映射或光暈。圖片的尺寸與不透明度在「顯示」中設定。GIF 只會顯示第一格。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
     },
     config: {
       name: '設定檔',
@@ -145,6 +151,23 @@ const zhTW: Messages = {
     bloomRadius: {
       name: '光暈半徑',
       desc: '光暈擴散的範圍。',
+    },
+    backgroundColor: {
+      name: '背景顏色',
+      desc: '所有內容後方的顏色。在「匯出」中開啟透明背景時不會使用。',
+    },
+    backgroundSize: {
+      name: '圖片尺寸',
+      desc: '「包含」會將整張圖片放進畫面內，周圍顯示背景顏色。「覆蓋」會填滿畫面並裁掉超出的部分。「延展」會填滿畫面，不保留圖片的長寬比。圖片在「匯入」中選擇。',
+    },
+    backgroundSizes: {
+      contain: '包含',
+      cover: '覆蓋',
+      stretch: '延展',
+    },
+    backgroundOpacity: {
+      name: '圖片不透明度',
+      desc: '圖片蓋在背景顏色上的不透明度，範圍為 0 到 1。開啟透明背景時，即為匯出影片中的不透明度。圖片在「匯入」中選擇。',
     },
   },
   export: {
@@ -362,14 +385,14 @@ const zhTW: Messages = {
       stepCounter: (current, total) => `${current} / ${total}`,
     },
     steps: {
-      Import: '從這裡開始。選擇一個 MIDI 檔案，也可以再選擇一個音訊檔案一起播放，或直接將檔案拖放到頁面上的任意位置。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
+      Import: '從這裡開始。選擇一個 MIDI 檔案，也可以再選擇一個音訊檔案一起播放，以及一張背景圖片，或直接將檔案拖放到頁面上的任意位置。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
       Main: '預覽畫面，與匯出的影片完全相同。拖曳可旋轉攝影機，右鍵拖曳可平移，滾動滑鼠滾輪可縮放。按空白鍵可播放或暫停。',
       Navigator: '整首曲子的概覽，音符後方是音訊波形。點擊可跳到該位置，拖曳方框或其邊緣可設定播放與匯出的開始和結束位置。',
       Tracks: 'MIDI 檔案中的音軌，顏色來自套用到它們的樣式。展開音軌可查看每個頻道的顏色。點選音軌或頻道可以顯示/隱藏該音軌或頻道。',
       Styles: '樣式決定音符的外觀。每個樣式套用到它所符合的音軌與頻道，後面的樣式會覆寫前面的樣式。樣式中未設定的選項會沿用前面樣式的設定。',
       Playback: '精確的開始與結束時間，以及讓音訊與音符對齊的偏移量。',
       Camera: '精確的攝影機位置與目標。在預覽畫面中拖曳也會改變這些數值，按 R 可重設。',
-      Display: '預覽畫面與匯出影片的尺寸、音符捲動的速度、節拍線與光暈。',
+      Display: '預覽畫面與匯出影片的尺寸、音符捲動的速度、節拍線、光暈與背景。',
       Export: '逐格算繪影片並下載。開啟透明背景會匯出 WebM 而非 MP4。',
       Miscellaneous: '可在這裡切換語言、重新開始這個導覽、查看每個版本的變更，或找到原始碼。',
     },

@@ -1,6 +1,9 @@
 /** `fill`: solid, `decay`: fades over time, `CC`: opacity follows the `cc` controller. */
 export type NoteMode = 'fill' | 'decay' | 'CC'
 
+/** How the background image fits the frame, as in CSS `background-size`. */
+export type BackgroundSize = 'contain' | 'cover' | 'stretch'
+
 export interface PlaybackConfig {
   /** Start of playback and export (ms); negative = blank time before the song. */
   startTime: number
@@ -36,6 +39,11 @@ export interface DisplayConfig {
   /** Minimum luminance (0-1) that glows; note colors stop at 1, so at 1 nothing does. */
   bloomThreshold: number
   bloomRadius: number
+  /** Drawn under everything; skipped on transparent exports. */
+  backgroundColor: string
+  backgroundSize: BackgroundSize
+  /** Opacity (0-1) of the background image over the background color. */
+  backgroundOpacity: number
 }
 
 export interface Remap {
@@ -132,6 +140,9 @@ export const defaultConfig: Config = {
     bloomIntensity: 1,
     bloomThreshold: 0,
     bloomRadius: 0.85,
+    backgroundColor: '#000000',
+    backgroundSize: 'cover',
+    backgroundOpacity: 1,
   },
   styles: [{
     id: 'default',
