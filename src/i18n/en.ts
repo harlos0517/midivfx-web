@@ -28,6 +28,25 @@ const en = {
     invalidConfig: (name: string) => `${name} is not a MIDIVFX config file.`,
     newerConfig: (name: string) =>
       `${name} was saved by a newer version of MIDIVFX. Reload the page to update.`,
+    boundary: {
+      title: 'Something went wrong',
+      desc: 'Try again, or reload the page if it keeps happening. Reloading keeps your settings but clears imported files.',
+      retry: 'Try again',
+      reload: 'Reload page',
+      showDetails: 'Show details',
+      hideDetails: 'Hide details',
+    },
+    unexpected: {
+      title: 'Unexpected error',
+      desc: 'Something failed in the background. The app may still work, but reload the page if it misbehaves.',
+      repeated: (count: number) => `x${count}`,
+      dismiss: 'Dismiss',
+    },
+    report: {
+      copy: 'Copy error',
+      copied: 'Copied',
+      report: 'Report issue',
+    },
   },
   main: {
     empty: {

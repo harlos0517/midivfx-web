@@ -5,13 +5,14 @@ import {
   RouterProvider,
 } from 'react-router-dom'
 
+import ErrorBoundary from '@/components/ErrorBoundary'
 import Index from '@/pages/Index'
 
 const router = () => createHashRouter(
   createRoutesFromElements(
     <>
       <Route path="/">
-        <Route path="/" element={<Index />} />
+        <Route path="/" element={<ErrorBoundary><Index /></ErrorBoundary>} />
       </Route>
     </>,
   ),

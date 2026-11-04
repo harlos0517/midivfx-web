@@ -26,6 +26,25 @@ const zhTW: Messages = {
     unsupportedFile: name => `${name} 不是 MIDI、音訊或設定檔。`,
     invalidConfig: name => `${name} 不是 MIDIVFX 設定檔。`,
     newerConfig: name => `${name} 是由較新版本的 MIDIVFX 儲存的。請重新整理頁面以更新。`,
+    boundary: {
+      title: '發生錯誤',
+      desc: '請再試一次；若問題持續發生，請重新整理頁面。重新整理會保留設定，但會清除已匯入的檔案。',
+      retry: '再試一次',
+      reload: '重新整理頁面',
+      showDetails: '顯示詳細資訊',
+      hideDetails: '隱藏詳細資訊',
+    },
+    unexpected: {
+      title: '未預期的錯誤',
+      desc: '背景作業發生錯誤。應用程式可能仍可使用，但若運作異常，請重新整理頁面。',
+      repeated: count => `×${count}`,
+      dismiss: '關閉',
+    },
+    report: {
+      copy: '複製錯誤',
+      copied: '已複製',
+      report: '回報問題',
+    },
   },
   main: {
     empty: {

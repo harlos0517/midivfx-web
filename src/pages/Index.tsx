@@ -9,10 +9,11 @@ import {
   type IDockviewPanelHeaderProps,
   type SerializedDockview,
 } from 'dockview-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type FunctionComponent } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import ChangelogModal from '@/components/ChangelogModal'
+import ErrorBoundary from '@/components/ErrorBoundary'
 import GuidedTour from '@/components/GuidedTour'
 import MidiFileContext from '@/context/MidiFileContext'
 import type { Messages } from '@/i18n/en'
@@ -75,6 +76,12 @@ const panels: AddPanelOptions[] = [
   },
 ].map(p => ({ ...p, component: p.id.toLowerCase() }))
 
+const withErrorBoundary = <P extends object>(Panel: FunctionComponent<P>) => {
+  const Wrapped = (props: P) => <ErrorBoundary><Panel {...props} /></ErrorBoundary>
+  Wrapped.displayName = `WithErrorBoundary(${Panel.name})`
+  return Wrapped
+}
+
 const NonClosableTab = (props: IDockviewPanelHeaderProps) =>
   <DockviewDefaultTab {...props} hideClose />
 
@@ -101,6 +108,12 @@ const Index = () => {
     tracks: TracksPanel,
     miscellaneous: MiscellaneousPanel,
   }), [])
+  // One boundary per panel, so a crash in one panel leaves the others usable
+  const componentsWithErrorBoundary = useMemo(
+    () => Object.fromEntries(Object.entries(components)
+      .map(([id, panel]) => [id, withErrorBoundary(panel)]),
+    ), [components],
+  )
 
   const addMissingPanels = (api: DockviewApi) => {
     if (!api) return
@@ -204,7 +217,7 @@ const Index = () => {
     <Box h="100dvh" style={{ overflow: 'hidden' }}>
       <DockviewReact
         theme={themeDark}
-        components={components}
+        components={componentsWithErrorBoundary}
         defaultTabComponent={NonClosableTab}
         onReady={onReady}
       />
