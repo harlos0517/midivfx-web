@@ -89,6 +89,14 @@ const en = {
       name: 'End time',
       desc: 'Where playback and export end, in seconds. Values past the end of the song add blank time after it. Clear the field to use the song length.',
     },
+    fadeIn: {
+      name: 'Fade in',
+      desc: 'How long the picture and audio take to fade in from the start time, in seconds. The picture fades in from black, or from transparent when the background is transparent. 0 turns it off.',
+    },
+    fadeOut: {
+      name: 'Fade out',
+      desc: 'How long the picture and audio take to fade out before the end time, in seconds. The picture fades to black, or to transparent when the background is transparent. 0 turns it off.',
+    },
   },
   camera: {
     x: {
@@ -390,7 +398,7 @@ const en = {
       Navigator: 'An overview of the whole song, with the audio waveform behind the notes. Click to seek, or drag the box and its edges to set where playback and export start and end.',
       Tracks: 'The tracks in the MIDI file, colored by the styles that apply to them. Expand a track to see the color of each channel. Click the track/channel to toggle visiblity for it.',
       Styles: 'Styles decide how notes look. Each one applies to the tracks and channels it matches, and later styles override earlier ones. An option that is not set in a style is inherited from the styles before it.',
-      Playback: 'Exact start and end times, and an offset to line the audio up with the notes.',
+      Playback: 'Exact start and end times, fades at either end, and an offset to line the audio up with the notes.',
       Camera: 'Exact camera position and target. Dragging in the preview changes these too, and pressing R resets them.',
       Display: 'The size of the preview and the exported video, how fast the notes scroll, beat lines, bloom and the background.',
       Export: 'Renders the video frame by frame and downloads it. Turn on the transparent background to export WebM instead of MP4.',

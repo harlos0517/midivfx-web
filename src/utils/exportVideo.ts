@@ -12,6 +12,7 @@ import {
 import { getMessages } from '@/store/localeStore'
 import type { RendererHandle } from '@/store/rendererStore'
 import { decodeAudio } from '@/utils/audio'
+import { getFadeGain, type Fade } from '@/utils/fade'
 import type { MidiData } from '@/utils/midi'
 import type Playback from '@/utils/Playback'
 import { getLength } from '@/utils/timeline'
@@ -26,6 +27,9 @@ export interface ExportOptions {
   startTime: number
   /** ms; defaults to the end of the audio or the last MIDI note, whichever is later. */
   endTime?: number | undefined
+  /** ms; 0 = off */
+  fadeIn: number
+  fadeOut: number
   onProgress?: (progress: number) => void
   signal?: AbortSignal
 }
@@ -51,10 +55,22 @@ const sliceAudio = (buffer: AudioBuffer, startMs: number, endMs: number) => {
   return sliced
 }
 
+/** Applies the fade to audio that starts at timeline time `startMs`, in place. */
+const fadeAudio = (buffer: AudioBuffer, startMs: number, fade: Fade) => {
+  if (fade.fadeIn <= 0 && fade.fadeOut <= 0) return
+  const gains = new Float32Array(buffer.length)
+  for (let i = 0; i < buffer.length; i++)
+    gains[i] = getFadeGain(startMs + i / buffer.sampleRate * 1000, fade)
+  for (let c = 0; c < buffer.numberOfChannels; c++) {
+    const data = buffer.getChannelData(c)
+    for (let i = 0; i < data.length; i++) data[i]! *= gains[i]!
+  }
+}
+
 const yieldToEventLoop = () => new Promise(resolve => setTimeout(resolve, 0))
 
 export const exportVideo = async({
-  renderer, playback, midiData, fps, alpha, startTime, endTime, onProgress, signal,
+  renderer, playback, midiData, fps, alpha, startTime, endTime, fadeIn, fadeOut, onProgress, signal,
 }: ExportOptions): Promise<ExportResult> => {
   const canvas = renderer.gl.domElement
   const { errors } = getMessages()
@@ -82,6 +98,7 @@ export const exportVideo = async({
       end - playback.audioOffset,
     )
     : null
+  if (audioBuffer) fadeAudio(audioBuffer, startTime, { start: startTime, end, fadeIn, fadeOut })
   let audio: AudioBufferSource | null = null
   if (audioBuffer) {
     const codec = await getFirstEncodableAudioCodec(

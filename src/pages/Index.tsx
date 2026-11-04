@@ -94,7 +94,9 @@ const Index = () => {
     playback.seek(useConfigStore.getState().config.playback.startTime)
     return playback
   }, [])
-  const { startTime, endTime, audioOffset } = useConfigStore(s => s.config.playback)
+  const {
+    startTime, endTime, audioOffset, fadeIn, fadeOut,
+  } = useConfigStore(s => s.config.playback)
 
   const [api, setApi] = useState<DockviewApi>()
   const components = useMemo(() => ({
@@ -168,6 +170,10 @@ const Index = () => {
   useEffect(() => {
     playback.setRange(startTime, endTime ?? getLength(midiData, playback))
   }, [playback, startTime, endTime, midiData])
+
+  useEffect(() => {
+    playback.setFade(fadeIn, fadeOut)
+  }, [playback, fadeIn, fadeOut])
 
   const length = () => getLength(midiData, playback)
 

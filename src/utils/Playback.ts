@@ -1,5 +1,7 @@
 import { Howl } from 'howler'
 
+import { getFadeGain, getFadeKnots, type Fade } from '@/utils/fade'
+
 /**
  * Timeline clock in ms (MIDI time). It can run outside the audio, e.g. at negative times;
  * the audio is started whenever the clock reaches it, shifted by `audioOffset`.
@@ -11,9 +13,12 @@ export default class Playback {
   private soundId: number | undefined
   private audioTimer: ReturnType<typeof setTimeout> | undefined
   private stopTimer: ReturnType<typeof setTimeout> | undefined
+  private fadeTimer: ReturnType<typeof setTimeout> | undefined
   private _audioOffset: number = 0
   private startTime: number = 0
   private endTime: number | null = null
+  private fadeIn: number = 0
+  private fadeOut: number = 0
   public playing: boolean = false
   public audioSrc: string | null = null
 
@@ -64,6 +69,22 @@ export default class Playback {
     if (this.playing) this.sync(this.currentTime)
   }
 
+  /** Fade durations (ms) from `startTime` and to `endTime`; 0 = off. */
+  setFade(fadeIn: number, fadeOut: number) {
+    this.fadeIn = fadeIn
+    this.fadeOut = fadeOut
+    if (this.playing) this.sync(this.currentTime)
+  }
+
+  private get fade(): Fade {
+    return { start: this.startTime, end: this.endTime, fadeIn: this.fadeIn, fadeOut: this.fadeOut }
+  }
+
+  /** Picture and audio gain (0-1) at timeline time `t` (ms). */
+  fadeGain(t: number) {
+    return getFadeGain(t, this.fade)
+  }
+
   get currentTime() {
     if (!this.playing) return this.offset
     if (this.audio && this.soundId !== undefined && this.audio.playing(this.soundId)) {
@@ -99,6 +120,7 @@ export default class Playback {
   dispose() {
     clearTimeout(this.audioTimer)
     clearTimeout(this.stopTimer)
+    clearTimeout(this.fadeTimer)
     this.audio?.unload()
   }
 
@@ -110,6 +132,7 @@ export default class Playback {
   private sync(time: number) {
     clearTimeout(this.audioTimer)
     clearTimeout(this.stopTimer)
+    clearTimeout(this.fadeTimer)
     this.audio?.pause()
     this.offset = time
     this.startedAt = Playback.now()
@@ -138,5 +161,24 @@ export default class Playback {
     // Play by id, then seek: playing without an id after the sound ended resets its position
     this.soundId = this.audio.play(this.soundId)
     this.audio.seek(ms / 1000, this.soundId)
+    this.applyFade(ms + this._audioOffset)
+  }
+
+  /**
+   * Ramps the volume from timeline time `t` to the next fade knot, then schedules the next ramp.
+   * Howler ramps on the audio clock, which is smoother than setting the volume each frame.
+   */
+  private applyFade(t: number) {
+    if (!this.audio || this.soundId === undefined) return
+    const next = getFadeKnots(this.fade).find(k => k > t)
+    const from = this.fadeGain(t)
+    if (next === undefined) {
+      this.audio.volume(from, this.soundId)
+      return
+    }
+    const to = this.fadeGain(next)
+    if (from === to) this.audio.volume(from, this.soundId)
+    else this.audio.fade(from, to, next - t, this.soundId)
+    this.fadeTimer = setTimeout(() => this.applyFade(next), next - t)
   }
 }

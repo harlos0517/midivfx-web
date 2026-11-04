@@ -174,7 +174,7 @@ class BackgroundEffectImpl extends Effect {
 
 /**
  * Composited under the scene after the other effects, so the image is never tone mapped or bloomed.
- * Must come last in the `EffectComposer`.
+ * Must come after the other effects except `FadeEffect`.
  */
 export const BackgroundEffect = () => {
   const uniforms = useBackgroundUniforms()

@@ -11,6 +11,9 @@ export interface PlaybackConfig {
   endTime?: number
   /** Audio delay relative to visual (ms); positive = audio starts later. */
   audioOffset: number
+  /** Picture and audio fade from `startTime` and to `endTime` (ms); 0 = off. */
+  fadeIn: number
+  fadeOut: number
 }
 
 export interface ExportConfig {
@@ -118,6 +121,8 @@ export const defaultConfig: Config = {
   playback: {
     startTime: -3000,
     audioOffset: 0,
+    fadeIn: 0,
+    fadeOut: 0,
   },
   export: {
     width: 1920,

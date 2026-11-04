@@ -15,6 +15,7 @@ import usePlaybackConfig from '@/hooks/usePlaybackConfig'
 import useConfigStore from '@/store/configStore'
 import useVisibilityStore, { isHidden } from '@/store/visibilityStore'
 import { drawNotes, drawWaveform, type TimeRange } from '@/utils/drawNavigator'
+import { getFadeGain, getFadeKnots, type Fade } from '@/utils/fade'
 import { DEFAULT_PADDING, getLength } from '@/utils/timeline'
 
 /** Shortest range the box can be resized to (ms). */
@@ -33,6 +34,18 @@ interface Drag {
 
 const formatTime = (ms: number) => `${(ms / 1000).toFixed(2)}s`
 
+/**
+ * SVG path of the gain over the range box, in a 1×1 box with y down: the area above the curve is
+ * shaded, as it is what the fades take away.
+ */
+const getFadePath = (fade: Fade & { end: number }) => {
+  const length = fade.end - fade.start
+  const points = getFadeKnots(fade)
+    .filter(k => k >= fade.start && k <= fade.end)
+    .map(k => `L${(k - fade.start) / length},${1 - getFadeGain(k, fade)}`)
+  return `M0,0 ${points.join(' ')} L1,0 Z`
+}
+
 const canvasStyle = {
   position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none',
 } as const
@@ -48,6 +61,8 @@ const NavigatorPanel = () => {
   const [audioOffset] = usePlaybackConfig('audioOffset')
   const [startTime] = usePlaybackConfig('startTime')
   const [endTime] = usePlaybackConfig('endTime')
+  const [fadeIn] = usePlaybackConfig('fadeIn')
+  const [fadeOut] = usePlaybackConfig('fadeOut')
   const hiddenTracks = useVisibilityStore(s => s.hiddenTracks)
   const hiddenChannels = useVisibilityStore(s => s.hiddenChannels)
 
@@ -183,6 +198,19 @@ const NavigatorPanel = () => {
           cursor: draft ? 'grabbing' : 'grab',
         }}
       >
+        {(fadeIn > 0 || fadeOut > 0) && range.end > range.start && <svg
+          viewBox="0 0 1 1"
+          preserveAspectRatio="none"
+          style={{ ...canvasStyle, overflow: 'visible' }}
+        >
+          <path
+            d={getFadePath({ start: range.start, end: range.end, fadeIn, fadeOut })}
+            fill="rgba(0, 0, 0, 0.5)"
+            stroke="var(--mantine-color-blue-4)"
+            strokeWidth={1}
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>}
         <Box
           data-drag="start"
           pos="absolute" top={0} bottom={0} left={0} w={8} bg="transparent"

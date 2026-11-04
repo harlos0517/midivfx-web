@@ -33,8 +33,8 @@ const ExportConfigPanel = () => {
 
   const onExport = () => {
     if (!renderer || !playback) return
-    const { startTime, endTime } = useConfigStore.getState().config.playback
-    void start({ renderer, playback, midiData, fps, alpha, startTime, endTime })
+    const { startTime, endTime, fadeIn, fadeOut } = useConfigStore.getState().config.playback
+    void start({ renderer, playback, midiData, fps, alpha, startTime, endTime, fadeIn, fadeOut })
   }
 
   const exporting = progress !== null

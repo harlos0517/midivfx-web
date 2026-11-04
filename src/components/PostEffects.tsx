@@ -2,6 +2,7 @@ import { Bloom, EffectComposer, ToneMapping } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
 
 import { BackgroundEffect } from '@/components/Background'
+import { FadeEffect } from '@/components/Fade'
 import useConfigStore from '@/store/configStore'
 
 const PostEffects = () => {
@@ -19,6 +20,7 @@ const PostEffects = () => {
     <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
     <Bloom intensity={intensity} luminanceThreshold={threshold} radius={radius} />
     <BackgroundEffect />
+    <FadeEffect />
   </EffectComposer>
 }
 
