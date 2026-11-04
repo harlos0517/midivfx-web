@@ -18,7 +18,7 @@ const PanelWrapper = ({
 
   return <Stack
     p={withPadding ? 'md' : 0} h="100%"
-    pos="relative" style={{ overflowY: 'auto' }} gap="xs"
+    pos="relative" style={{ overflowY: 'auto' }}
   >
     {children}
     {!isExportPanel && exporting && <Overlay color="#222" backgroundOpacity={0.75} />}

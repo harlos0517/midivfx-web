@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Button,
   ColorInput,
   createTheme,
   Group,
@@ -7,11 +8,22 @@ import {
   NumberInput,
   SegmentedControl,
   Slider,
+  Stack,
   Tooltip,
 } from '@mantine/core'
 
 export const theme = createTheme({
   components: {
+    Button: Button.extend({
+      styles: {
+        root: {
+          padding: '0 4px',
+          borderRadius: 4,
+          lineHeight: '1rem',
+          height: '2rem',
+        },
+      },
+    }),
     Input: Input.extend({
       defaultProps: { variant: 'filled', size: 'xs' },
       vars: () => ({ wrapper: {
@@ -46,6 +58,9 @@ export const theme = createTheme({
     }),
     Group: Group.extend({
       defaultProps: { gap: 'xs', wrap: 'nowrap' },
+    }),
+    Stack: Stack.extend({
+      defaultProps: { gap: 'xs' },
     }),
     Tooltip: Tooltip.extend({
       defaultProps: {

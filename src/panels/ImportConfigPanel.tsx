@@ -114,7 +114,7 @@ const ImportConfigPanel = () => {
     </ConfigOptionRow>
     <Dropzone.FullScreen active={!exporting} onDrop={onDrop}>
       <Stack
-        align="center" justify="center" gap="xs"
+        align="center" justify="center"
         mih="calc(100dvh - 4rem)" style={{ pointerEvents: 'none' }}
       >
         <MIDIIcon width={64} height={64} />

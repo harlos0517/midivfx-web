@@ -1,4 +1,4 @@
-import { ActionIcon, Center, Collapse, Group, Stack, Text } from '@mantine/core'
+import { ActionIcon, Button, Center, Collapse, Group, Stack, Text } from '@mantine/core'
 import { useDisclosure, useElementSize } from '@mantine/hooks'
 import { CaretDownIcon, CaretUpIcon } from '@phosphor-icons/react'
 import { useContext } from 'react'
@@ -21,11 +21,11 @@ interface ChannelBoxProps {
 const ChannelBox = ({ trackName, i, channel }: ChannelBoxProps) => {
   const style = useStyle(trackName, i, channel)
   const textColor = getTextColor(style.color)
-  return <Center
-    w="2rem" h="2rem" bdrs="sm" bd={`solid 1px ${textColor}`}
-    bg={style.color}
-    c={textColor}
-  >{channel}</Center>
+  return <Button
+    variant="subtle" c={textColor} w="2rem"
+    bg={style.color} bd={`solid 1px ${textColor}`}
+    className={classes['channel']}
+  >{channel}</Button>
 }
 
 interface TrackInfoProps {
@@ -44,32 +44,32 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     .map((_, r) => Array.from(Array<number>(cols)).map((_, c) => r * cols + c + 1))
 
   const [expanded, { toggle }] = useDisclosure(false)
+  const c = getTextColor(style.color)
 
-  return  <Stack ref={ref}
-    bg={style.color}
-    c={getTextColor(style.color)}
-    bdrs="sm" p="xs"
-  >
-    <Group>
-      <Text>{i}</Text>
+  return <Stack ref={ref} gap={0} bg={style.color} bdrs={4} c={c}>
+    <Group p={8}>
+      <Center>
+        <Button
+          variant="subtle" c={c} w="2rem"
+          bd={`solid 1px ${c}`}
+          className={classes['track-number']}
+        >{i}</Button>
+      </Center>
       <Text flex={1}>{trackName.replace(/\u00AD/g, '')}</Text>
       <OptionTooltip tip={m.tracks.expand}>
         <ActionIcon
           className={classes['collapse-icon']}
           onClick={toggle}
-          style={{ borderColor: getTextColor(style.color) }}
+          style={{ borderColor: c }}
           aria-label={m.tracks.expand.name}
           aria-expanded={expanded}
         >
-          {expanded
-            ? <CaretUpIcon color={getTextColor(style.color)} />
-            : <CaretDownIcon color={getTextColor(style.color)} />
-          }
+          {expanded ? <CaretUpIcon color={c} /> : <CaretDownIcon color={c} />}
         </ActionIcon>
       </OptionTooltip>
     </Group>
-    <Collapse expanded={expanded}>
-      <Stack gap={8}>
+    <Collapse expanded={expanded} p={8}>
+      <Stack>
         {channels.map((row, tr) => <Group key={tr} gap={8} justify="space-between">
           {row.map(ch => <ChannelBox key={ch} trackName={trackName} i={i} channel={ch} />)}
         </Group>)}

@@ -40,7 +40,7 @@ const MainPanel = () => {
     {!midiData && <Box bg="rgba(0, 0, 0, 0.5)" pos="absolute" inset="0">
       <Stack
         pos="absolute" inset="1rem"
-        align="center" justify="center" gap="xs" ta="center" p="md"
+        align="center" justify="center" ta="center" p="md"
         bd="dashed 2px var(--mantine-color-dark-3)" bdrs="md"
         c="dimmed"
         style={{ pointerEvents: 'none' }}

@@ -106,7 +106,7 @@ const RemapConfigBox = (props: RemapConfigBoxProps) => {
     </OptionTooltip>
     <OptionTooltip tip={m.remap.remove}>
       <ActionIcon
-        variant="subtle" c="red" onClick={onRemove}
+        variant="subtle" color="red" onClick={onRemove}
         aria-label={m.remap.remove.name}
       >
         <TrashIcon color="red" />
@@ -167,7 +167,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
     style={{ opacity: isDragging ? 0.5 : 1 }}
     data-no-dnd={String(id === 'default')}
   >
-    <Stack gap="xs">
+    <Stack>
       <Group gap="4px">
         {id === 'default'
           ? <OptionTooltip tip={m.style.locked}>
@@ -203,7 +203,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
             color="red"
             aria-label={m.style.delete.name}
           >
-            <TrashIcon color="red"/>
+            <TrashIcon color={id === 'default' ? 'gray' : 'red'}/>
           </ActionIcon>
         </OptionTooltip>
         <Group px={4} h={32} gap={4} flex={1} bdrs={4}
@@ -239,7 +239,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
         </Group>
       </Collapse>
       <Collapse expanded={isExpanded}>
-        <Stack gap="xs">
+        <Stack>
           <Group>
             <Group gap="2px" flex={2}>
               <OptionTooltip tip={m.style.track}><TrackIcon /></OptionTooltip>

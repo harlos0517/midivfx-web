@@ -17,7 +17,7 @@ const ChangelogModal = () => {
     size="lg"
   >
     <Stack gap="lg">
-      {entries?.map(entry => <Stack key={entry.version} gap="xs">
+      {entries?.map(entry => <Stack key={entry.version}>
         <Group gap="sm" align="baseline">
           <Title order={4}>v{entry.version}</Title>
           <Text size="sm" c="dimmed">{entry.date}</Text>
