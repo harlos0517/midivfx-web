@@ -259,8 +259,16 @@ const en = {
   },
   tracks: {
     expand: {
-      name: 'Show or hide channels',
+      name: 'Expand or collapse channels',
       desc: 'Shows the color each channel of this track gets from the styles.',
+    },
+    track: {
+      name: 'Show or hide track',
+      desc: 'Hides or shows every note of this track in the preview and the exported video. Channels hidden on their own stay hidden when the track is shown again.',
+    },
+    channel: {
+      name: 'Show or hide channel',
+      desc: 'Hides or shows the notes of this channel in the preview and the exported video.',
     },
   },
   miscellaneous: {
@@ -306,7 +314,7 @@ const en = {
       Import: 'Start here. Choose a MIDI file, and optionally an audio file to play along with it, or drop them anywhere on the page. Imports are not saved, so choose them again after reloading the page.',
       Main: 'The preview, which looks exactly like the exported video. Drag to orbit the camera, right-drag to pan and scroll to zoom. Press Space to play or pause.',
       Navigator: 'An overview of the whole song, with the audio waveform behind the notes. Click to seek, or drag the box and its edges to set where playback and export start and end.',
-      Tracks: 'The tracks in the MIDI file, colored by the styles that apply to them. Expand a track to see the color of each channel.',
+      Tracks: 'The tracks in the MIDI file, colored by the styles that apply to them. Expand a track to see the color of each channel. Click the track/channel to toggle visiblity for it.',
       Styles: 'Styles decide how notes look. Each one applies to the tracks and channels it matches, and later styles override earlier ones. An option that is not set in a style is inherited from the styles before it.',
       Playback: 'Exact start and end times, and an offset to line the audio up with the notes.',
       Camera: 'Exact camera position and target. Dragging in the preview changes these too, and pressing R resets them.',

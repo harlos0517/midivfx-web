@@ -13,6 +13,7 @@ import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import usePlaybackConfig from '@/hooks/usePlaybackConfig'
 import useConfigStore from '@/store/configStore'
+import useVisibilityStore, { isHidden } from '@/store/visibilityStore'
 import { drawNotes, drawWaveform, type TimeRange } from '@/utils/drawNavigator'
 import { DEFAULT_PADDING, getLength } from '@/utils/timeline'
 
@@ -47,6 +48,8 @@ const NavigatorPanel = () => {
   const [audioOffset] = usePlaybackConfig('audioOffset')
   const [startTime] = usePlaybackConfig('startTime')
   const [endTime] = usePlaybackConfig('endTime')
+  const hiddenTracks = useVisibilityStore(s => s.hiddenTracks)
+  const hiddenChannels = useVisibilityStore(s => s.hiddenChannels)
 
   // audioPeaks stands in for the audio changing, which Playback can't signal to React
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,8 +80,9 @@ const NavigatorPanel = () => {
 
   useEffect(() => {
     if (!width || !notesRef.current) return
-    drawNotes(notesRef.current, width, height, domain, midiData)
-  }, [width, height, domain, midiData])
+    drawNotes(notesRef.current, width, height, domain, midiData,
+      (track, channel) => isHidden({ hiddenTracks, hiddenChannels }, track, channel))
+  }, [width, height, domain, midiData, hiddenTracks, hiddenChannels])
 
   useEffect(() => {
     let frame: number

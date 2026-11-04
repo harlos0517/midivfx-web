@@ -8,6 +8,7 @@ import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import { useIsExporting } from '@/store/exportStore'
 import { useMessages } from '@/store/localeStore'
+import useVisibilityStore from '@/store/visibilityStore'
 import { computePeaks, decodeAudio } from '@/utils/audio'
 import { parseMidiFile } from '@/utils/midi'
 import { resetPlaybackRange } from '@/utils/timeline'
@@ -36,6 +37,8 @@ const ImportConfigPanel = () => {
       const midiData = parseMidiFile(new Uint8Array(await file.arrayBuffer()))
       setMidiFile(file)
       setMidiError(null)
+      // Track and channel numbers refer to the new file now
+      useVisibilityStore.getState().reset()
       context.setMidiData(midiData)
       resetPlaybackRange(midiData, context.playback)
     } catch(err) {

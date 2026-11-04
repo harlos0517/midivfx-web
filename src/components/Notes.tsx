@@ -135,9 +135,11 @@ interface NotesProps {
   notes: MidiChannelEventData[]
   /** End of the song (ms), where a pedal that is never released stops holding notes. */
   songEnd: number
+  /** Hidden rather than unmounted, so showing it again doesn't rebuild the mesh. */
+  visible?: boolean
 }
 
-const Notes = ({ notes, style, songEnd }: NotesProps) => {
+const Notes = ({ notes, style, songEnd, visible = true }: NotesProps) => {
   const {
     mode, cc, velocity, color, z, decayRate, thickness, radius, remaps, showPedal, pedalColor,
   } = style
@@ -217,7 +219,7 @@ const Notes = ({ notes, style, songEnd }: NotesProps) => {
 
   // Depth testing is off, so draw order decides what covers what; derive it from z so the
   // layering matches the position
-  return <primitive object={mesh} position-z={z} renderOrder={z} />
+  return <primitive object={mesh} position-z={z} renderOrder={z} visible={visible} />
 }
 
 export default Notes

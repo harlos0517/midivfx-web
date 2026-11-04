@@ -8,6 +8,7 @@ import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
 import useTimeScale from '@/hooks/useTimeScale'
 import useConfigStore from '@/store/configStore'
+import { useIsHidden } from '@/store/visibilityStore'
 import { type StyleRuntime } from '@/utils/config'
 import type { MidiChannelEventData, TrackData } from '@/utils/midi'
 import { getMidiDuration } from '@/utils/timeline'
@@ -41,7 +42,8 @@ type NoteChannelProps = {
 
 const NoteChannel = ({ notes, trackName, trackNum, channel, songEnd }: NoteChannelProps) => {
   const style: StyleRuntime = useStyle(trackName || '', trackNum, channel)
-  return <Notes notes={notes} style={style} songEnd={songEnd} />
+  const hidden = useIsHidden(trackNum, channel)
+  return <Notes notes={notes} style={style} songEnd={songEnd} visible={!hidden} />
 }
 
 const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {

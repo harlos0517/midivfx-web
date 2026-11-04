@@ -8,6 +8,7 @@ import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
 import { useMessages } from '@/store/localeStore'
+import useVisibilityStore, { useIsTrackHidden } from '@/store/visibilityStore'
 import { getTextColor } from '@/utils/colors'
 
 import classes from './TracksPanel.module.sass'
@@ -16,16 +17,27 @@ interface ChannelBoxProps {
   trackName: string
   i: number
   channel: number
+  trackHidden: boolean
 }
 
-const ChannelBox = ({ trackName, i, channel }: ChannelBoxProps) => {
+const ChannelBox = ({ trackName, i, channel, trackHidden }: ChannelBoxProps) => {
+  const m = useMessages()
   const style = useStyle(trackName, i, channel)
-  const textColor = getTextColor(style.color)
-  return <Button
-    variant="subtle" c={textColor} w="2rem"
-    bg={style.color} bd={`solid 1px ${textColor}`}
-    className={classes['channel']}
-  >{channel}</Button>
+  const channelHidden = useVisibilityStore(s => s.hiddenChannels.has(`${i}:${channel}`))
+  const toggleChannel = useVisibilityStore(s => s.toggleChannel)
+  const c = getTextColor(style.color)
+
+  return <OptionTooltip tip={m.tracks.channel}>
+    <Button variant="subtle"
+      c={c} w="2rem" bd={`solid 1px ${c}`}
+      opacity={channelHidden ? 0.25 : 1}
+      bg={style.color}
+      className={classes['channel']}
+      onClick={() => toggleChannel(i, channel)}
+      aria-label={`${m.tracks.channel.name} ${channel}`}
+      aria-pressed={!channelHidden}
+    >{channel}</Button>
+  </OptionTooltip>
 }
 
 interface TrackInfoProps {
@@ -44,16 +56,26 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     .map((_, r) => Array.from(Array<number>(cols)).map((_, c) => r * cols + c + 1))
 
   const [expanded, { toggle }] = useDisclosure(false)
-  const c = getTextColor(style.color)
+  const hidden = useIsTrackHidden(i)
+  const toggleTrack = useVisibilityStore(s => s.toggleTrack)
+  const c = hidden ? 'white' : getTextColor(style.color)
 
-  return <Stack ref={ref} gap={0} bg={style.color} bdrs={4} c={c}>
+  return <Stack ref={ref} gap={0} bdrs={4} c={c}
+    bg={hidden ? 'transparent' : style.color}
+    opacity={hidden ? 0.25 : 1}
+  >
     <Group p={8}>
       <Center>
-        <Button
-          variant="subtle" c={c} w="2rem"
-          bd={`solid 1px ${c}`}
-          className={classes['track-number']}
-        >{i}</Button>
+        <OptionTooltip tip={m.tracks.track}>
+          <Button
+            variant="subtle" c={c} w="2rem"
+            bd={`solid 1px ${c}`}
+            className={`${classes['track-number']} ${hidden ? classes['hidden'] : ''}`}
+            onClick={() => toggleTrack(i)}
+            aria-label={`${m.tracks.track.name} ${i}`}
+            aria-pressed={!hidden}
+          >{i}</Button>
+        </OptionTooltip>
       </Center>
       <Text flex={1}>{trackName.replace(/\u00AD/g, '')}</Text>
       <OptionTooltip tip={m.tracks.expand}>
@@ -71,7 +93,10 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     <Collapse expanded={expanded} p={8}>
       <Stack>
         {channels.map((row, tr) => <Group key={tr} gap={8} justify="space-between">
-          {row.map(ch => <ChannelBox key={ch} trackName={trackName} i={i} channel={ch} />)}
+          {row.map(ch => <ChannelBox key={ch}
+            trackName={trackName} i={i} channel={ch}
+            trackHidden={hidden}
+          />)}
         </Group>)}
       </Stack>
     </Collapse>

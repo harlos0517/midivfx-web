@@ -57,14 +57,21 @@ export const drawNotes = (
   height: number,
   domain: TimeRange,
   midiData: MidiData | null,
+  /** 1-based track and channel numbers. */
+  isHidden: (track: number, channel: number) => boolean,
 ) => {
   const ctx = prepareCanvas(canvas, width, height)
 
   let low = Infinity
   let high = -Infinity
-  const forEachNote = (draw: (noteNumber: number, start: number, end: number) => void) => {
-    for (const track of midiData?.tracks ?? []) {
-      for (const channel of track.channels) {
+  // The pitch range counts hidden notes too, so the strip doesn't rescale as tracks are toggled
+  const forEachNote = (
+    draw: (noteNumber: number, start: number, end: number) => void,
+    skipHidden = false,
+  ) => {
+    for (const [t, track] of (midiData?.tracks ?? []).entries()) {
+      for (const [c, channel] of track.channels.entries()) {
+        if (skipHidden && isHidden(t + 1, c + 1)) continue
         for (const e of channel) {
           if (e.type !== 'noteOn' || e.velocity === 0) continue
           draw(e.noteNumber, e.time, e.endEvent?.time ?? e.time)
@@ -88,5 +95,5 @@ export const drawNotes = (
       Math.max(1, (end - start) * pixelsPerMs),
       Math.max(1, rowHeight),
     )
-  })
+  }, true)
 }
