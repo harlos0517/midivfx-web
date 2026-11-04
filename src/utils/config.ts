@@ -11,6 +11,9 @@ export interface PlaybackConfig {
 }
 
 export interface ExportConfig {
+  /** Canvas size in pixels; also the preview's, since canvas pixels are output pixels. */
+  width: number
+  height: number
   fps: number
   alpha: boolean
 }
@@ -25,8 +28,6 @@ export interface CameraConfig {
 }
 
 export interface DisplayConfig {
-  width: number
-  height: number
   /** Time-axis scale in world units per second; one pitch is 1 unit tall. */
   unitsPerSecond: number
   beat: boolean
@@ -101,6 +102,8 @@ export const defaultConfig: Config = {
     audioOffset: 0,
   },
   export: {
+    width: 1920,
+    height: 1080,
     fps: 60,
     alpha: false,
   },
@@ -113,8 +116,6 @@ export const defaultConfig: Config = {
     targetZ: 0.0,
   },
   display: {
-    width: 1920,
-    height: 1080,
     unitsPerSecond: 20,
     beat: false,
     bloom: false,
@@ -127,4 +128,27 @@ export const defaultConfig: Config = {
     order: 1,
     ...defaultStyleRuntime,
   }],
+}
+
+/**
+ * Fills in defaults per section, so options added since a config was saved get their defaults,
+ * and moves keys that changed section in older configs.
+ */
+export const mergeConfig = (saved: Partial<Config>): Config => {
+  // Width and height lived in `display` before they moved to `export`
+  type LegacyDisplay = Partial<DisplayConfig & Pick<ExportConfig, 'width' | 'height'>>
+  const { width, height, ...display } = (saved.display ?? {}) as LegacyDisplay
+  return {
+    ...defaultConfig,
+    ...saved,
+    playback: { ...defaultConfig.playback, ...saved.playback },
+    export: {
+      ...defaultConfig.export,
+      ...(width !== undefined && { width }),
+      ...(height !== undefined && { height }),
+      ...saved.export,
+    },
+    camera: { ...defaultConfig.camera, ...saved.camera },
+    display: { ...defaultConfig.display, ...display },
+  }
 }

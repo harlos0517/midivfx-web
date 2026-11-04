@@ -21,7 +21,7 @@ const zhTW: Messages = {
   },
   errors: {
     readFile: name => `無法讀取 ${name}。`,
-    oddSize: (width, height) => `顯示尺寸必須是偶數（目前為 ${width}×${height}）。`,
+    oddSize: (width, height) => `影片尺寸必須是偶數（目前為 ${width}×${height}）。`,
     emptyRange: '沒有可匯出的內容：結束時間早於開始時間。',
     unsupportedFile: name => `${name} 不是 MIDI 或音訊檔案。`,
   },
@@ -86,14 +86,6 @@ const zhTW: Messages = {
     },
   },
   display: {
-    width: {
-      name: '寬度',
-      desc: '預覽畫面與匯出影片的寬度，單位為像素。匯出時必須是偶數。',
-    },
-    height: {
-      name: '高度',
-      desc: '預覽畫面與匯出影片的高度，單位為像素。匯出時必須是偶數。',
-    },
     speed: {
       name: '捲動速度',
       desc: '音符移動的速度，單位為每秒單位數。數值越大，音符也會越長。一單位等於一個半音的高度。',
@@ -120,6 +112,14 @@ const zhTW: Messages = {
     },
   },
   export: {
+    width: {
+      name: '寬度',
+      desc: '預覽畫面與匯出影片的寬度，單位為像素。匯出時必須是偶數。',
+    },
+    height: {
+      name: '高度',
+      desc: '預覽畫面與匯出影片的高度，單位為像素。匯出時必須是偶數。',
+    },
     fps: {
       name: '影格率',
       desc: '匯出影片每秒的影格數。',

@@ -16,14 +16,10 @@ import { useMessages } from '@/store/localeStore'
 import { getNumberInputProps } from '@/utils/input'
 import { roundTo } from '@/utils/round'
 
-import HeightIcon from '@/assets/icons/height.svg?react'
 import SpeedIcon from '@/assets/icons/speed.svg?react'
-import WidthIcon from '@/assets/icons/width.svg?react'
 
 const DisplayConfigPanel = () => {
   const m = useMessages()
-  const [width, setWidth] = useDisplayConfig('width')
-  const [height, setHeight] = useDisplayConfig('height')
   const [unitsPerSecond, setUnitsPerSecond] = useDisplayConfig('unitsPerSecond')
   const [beat, setBeat] = useDisplayConfig('beat')
   const [bloom, setBloom] = useDisplayConfig('bloom')
@@ -32,24 +28,6 @@ const DisplayConfigPanel = () => {
   const [bloomRadius, setBloomRadius] = useDisplayConfig('bloomRadius')
 
   return <PanelWrapper>
-    <ConfigOptionNumberInputRow
-      label={<WidthIcon />}
-      tooltip={m.display.width}
-      value={width}
-      {...getNumberInputProps(640, 3840, 20, [1280, 1920, 2560], true)}
-      onChange={setWidth}
-      rightSection="px"
-      rightSectionWidth={32}
-    />
-    <ConfigOptionNumberInputRow
-      label={<HeightIcon />}
-      tooltip={m.display.height}
-      value={height}
-      {...getNumberInputProps(360, 2160, 20, [720, 1080, 1440], true)}
-      onChange={setHeight}
-      rightSection="px"
-      rightSectionWidth={32}
-    />
     <ConfigOptionNumberInputRow
       label={<SpeedIcon />}
       tooltip={m.display.speed}

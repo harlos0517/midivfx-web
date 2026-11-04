@@ -15,8 +15,8 @@ import MIDIIcon from '@/assets/icons/midi.svg?react'
 const MainPanel = () => {
   const m = useMessages()
   const { midiData } = useContext(MidiFileContext)
-  const width = useConfigStore(s => s.config.display.width)
-  const height = useConfigStore(s => s.config.display.height)
+  const width = useConfigStore(s => s.config.export.width)
+  const height = useConfigStore(s => s.config.export.height)
   const { ref: panelRef, width: panelWidth, height: panelHeight } = useElementSize()
   const scale = panelWidth && panelHeight ? Math.min(panelWidth / width, panelHeight / height) : 0
 

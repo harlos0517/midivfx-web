@@ -22,7 +22,7 @@ const en = {
   errors: {
     readFile: (name: string) => `Could not read ${name}.`,
     oddSize: (width: number, height: number) =>
-      `Display size must be even (got ${width}×${height}).`,
+      `Video size must be even (got ${width}×${height}).`,
     emptyRange: 'Nothing to export: end time is before start time.',
     unsupportedFile: (name: string) => `${name} is not a MIDI or audio file.`,
   },
@@ -87,14 +87,6 @@ const en = {
     },
   },
   display: {
-    width: {
-      name: 'Width',
-      desc: 'Width of the preview and the exported video, in pixels. Export needs an even number.',
-    },
-    height: {
-      name: 'Height',
-      desc: 'Height of the preview and the exported video, in pixels. Export needs an even number.',
-    },
     speed: {
       name: 'Scroll speed',
       desc: 'How fast the notes move, in units per second. Higher values also make notes longer. One unit is the height of one semitone.',
@@ -121,6 +113,14 @@ const en = {
     },
   },
   export: {
+    width: {
+      name: 'Width',
+      desc: 'Width of the preview and the exported video, in pixels. Export needs an even number.',
+    },
+    height: {
+      name: 'Height',
+      desc: 'Height of the preview and the exported video, in pixels. Export needs an even number.',
+    },
     fps: {
       name: 'Frame rate',
       desc: 'Frames per second of the exported video.',

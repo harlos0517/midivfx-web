@@ -1,6 +1,8 @@
 import { Button, Group, Progress, Select, Switch, Text } from '@mantine/core'
 import { useContext } from 'react'
 
+import ConfigOptionNumberInputRow from '@/components/ConfigOptionNumberInputRow'
+import ConfigOptionRow from '@/components/ConfigOptionRow'
 import PanelWrapper from '@/components/PanelWrapper'
 import MidiFileContext from '@/context/MidiFileContext'
 import useExportConfig from '@/hooks/useExportConfig'
@@ -8,13 +10,17 @@ import useConfigStore from '@/store/configStore'
 import useExportStore from '@/store/exportStore'
 import { useMessages } from '@/store/localeStore'
 import useRendererStore from '@/store/rendererStore'
+import { getNumberInputProps } from '@/utils/input'
 
 import AlphaIcon from '@/assets/icons/alpha.svg?react'
 import FPSIcon from '@/assets/icons/fps.svg?react'
-import ConfigOptionRow from '@/components/ConfigOptionRow'
+import HeightIcon from '@/assets/icons/height.svg?react'
+import WidthIcon from '@/assets/icons/width.svg?react'
 
 const ExportConfigPanel = () => {
   const m = useMessages()
+  const [width, setWidth] = useExportConfig('width')
+  const [height, setHeight] = useExportConfig('height')
   const [fps, setFps] = useExportConfig('fps')
   const [alpha, setAlpha] = useExportConfig('alpha')
   const { midiData, playback } = useContext(MidiFileContext)
@@ -34,6 +40,26 @@ const ExportConfigPanel = () => {
   const exporting = progress !== null
 
   return <PanelWrapper isExportPanel>
+    <ConfigOptionNumberInputRow
+      label={<WidthIcon />}
+      tooltip={m.export.width}
+      value={width}
+      {...getNumberInputProps(640, 3840, 20, [1280, 1920, 2560], true)}
+      onChange={setWidth}
+      rightSection="px"
+      rightSectionWidth={32}
+      disabled={exporting}
+    />
+    <ConfigOptionNumberInputRow
+      label={<HeightIcon />}
+      tooltip={m.export.height}
+      value={height}
+      {...getNumberInputProps(360, 2160, 20, [720, 1080, 1440], true)}
+      onChange={setHeight}
+      rightSection="px"
+      rightSectionWidth={32}
+      disabled={exporting}
+    />
     <Group>
       <ConfigOptionRow label={<FPSIcon />} tooltip={m.export.fps}>
         <Select

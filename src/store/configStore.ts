@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-import { defaultConfig, type Config } from '@/utils/config'
+import { defaultConfig, mergeConfig, type Config } from '@/utils/config'
 
 interface ConfigStore {
   config: Config
@@ -11,18 +11,7 @@ const useConfigStore = create<ConfigStore>(set => ({
   config: (() => {
     try {
       const saved = localStorage.getItem('config')
-      if (saved) {
-        // Merge each section so options added since the config was saved get their defaults
-        const parsed = JSON.parse(saved) as Partial<Config>
-        return {
-          ...defaultConfig,
-          ...parsed,
-          playback: { ...defaultConfig.playback, ...parsed.playback },
-          export: { ...defaultConfig.export, ...parsed.export },
-          camera: { ...defaultConfig.camera, ...parsed.camera },
-          display: { ...defaultConfig.display, ...parsed.display },
-        }
-      }
+      if (saved) return mergeConfig(JSON.parse(saved) as Partial<Config>)
     } catch {
       // corrupted JSON or storage unavailable: fall back to defaults
     }

@@ -45,7 +45,7 @@ The scene never re-renders on time. `NoteRenderer` reads `playback.currentTime` 
 
 - Anything animated must derive from `playback.currentTime` inside `useFrame`. Anything based on wall-clock time or timers will be wrong in exported video.
 - Alpha on exports VP9/WebM. Alpha off exports H.264/MP4.
-- The canvas uses `dpr={1}` at exactly `display.width` × `display.height` and is scaled down with CSS to fit the panel, so canvas pixels equal output pixels. Export requires even dimensions.
+- The canvas uses `dpr={1}` at exactly `export.width` × `export.height` and is scaled down with CSS to fit the panel, so canvas pixels equal output pixels. Export requires even dimensions.
 - While exporting, user input must not touch the clock or camera: gate hotkeys and controls on `useIsExporting()`. `PanelWrapper` overlays every panel except Export.
 
 ### Styles cascade like CSS
@@ -66,7 +66,7 @@ MIDI ticks are converted to ms in `src/utils/midi.ts` via `tempoMap`. Note and e
 
 ## When changing things
 
-- **New config section:** add it to the per-section merge in `configStore`, or configs saved before the change will be missing its defaults.
+- **New config section:** add it to the per-section merge in `mergeConfig` (`src/utils/config.ts`), or configs saved before the change will be missing its defaults.
 - **New option:** add a tooltip to `src/i18n/en.ts` and `zh-TW.ts` and describe what the code actually does. `ConfigOptionNumberInputRow` requires `tooltip`, and `OverridableInput` finds its tip by `styleKey`.
 - **New style option:** add it to `StyleRuntime` and `defaultStyleRuntime`. If it affects note geometry or uniforms, also add it to the `useMemo` dependency list in `Notes.tsx`.
 - **New panel:** wrap it in `PanelWrapper`, register it in both `components` and `panels` in `Index.tsx`, and add its tab title to `panels` in the dictionaries. `addMissingPanels` adds it to saved layouts too. Its `position` must reference a panel listed before it.
