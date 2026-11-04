@@ -24,7 +24,10 @@ const en = {
     oddSize: (width: number, height: number) =>
       `Video size must be even (got ${width}×${height}).`,
     emptyRange: 'Nothing to export: end time is before start time.',
-    unsupportedFile: (name: string) => `${name} is not a MIDI or audio file.`,
+    unsupportedFile: (name: string) => `${name} is not a MIDI, audio or config file.`,
+    invalidConfig: (name: string) => `${name} is not a MIDIVFX config file.`,
+    newerConfig: (name: string) =>
+      `${name} was saved by a newer version of MIDIVFX. Reload the page to update.`,
   },
   main: {
     empty: {
@@ -35,7 +38,7 @@ const en = {
   import: {
     drop: {
       title: 'Drop to import',
-      desc: 'MIDI (.mid, .midi) and audio (.mp3, .wav, .ogg) files',
+      desc: 'MIDI (.mid, .midi), audio (.mp3, .wav, .ogg) and config (.json) files',
     },
     midi: {
       name: 'MIDI file',
@@ -44,6 +47,10 @@ const en = {
     audio: {
       name: 'Audio file',
       desc: 'Optional .mp3, .wav or .ogg file that plays with the notes and is included in the export. Imports are not saved, so choose it again after reloading the page.',
+    },
+    config: {
+      name: 'Config file',
+      desc: 'Saves the camera, display and style settings to a .json file, or loads them from one, so a look can be reused on another song. You choose which of the three to include.',
     },
   },
   playback: {
@@ -85,6 +92,17 @@ const en = {
       name: 'Target Z',
       desc: `Position the camera looks at along the depth axis. 0 is the plane of the notes. ${cameraHint}`,
     },
+  },
+  configFile: {
+    importTitle: 'Import config',
+    exportTitle: 'Export config',
+    import: 'Import',
+    export: 'Export',
+    cancel: 'Cancel',
+    replaceStyles: 'Replaces all current styles.',
+    resolution: (width: number, height: number) => `Also set resolution to ${width}×${height}`,
+    resolutionDesc: 'The camera was set up at this resolution. A different aspect ratio frames the shot differently.',
+    excluded: 'Playback times and export settings are not included. The camera\'s resolution is saved with it.',
   },
   display: {
     speed: {

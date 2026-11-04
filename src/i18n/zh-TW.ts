@@ -23,7 +23,9 @@ const zhTW: Messages = {
     readFile: name => `無法讀取 ${name}。`,
     oddSize: (width, height) => `影片尺寸必須是偶數（目前為 ${width}×${height}）。`,
     emptyRange: '沒有可匯出的內容：結束時間早於開始時間。',
-    unsupportedFile: name => `${name} 不是 MIDI 或音訊檔案。`,
+    unsupportedFile: name => `${name} 不是 MIDI、音訊或設定檔。`,
+    invalidConfig: name => `${name} 不是 MIDIVFX 設定檔。`,
+    newerConfig: name => `${name} 是由較新版本的 MIDIVFX 儲存的。請重新整理頁面以更新。`,
   },
   main: {
     empty: {
@@ -34,7 +36,7 @@ const zhTW: Messages = {
   import: {
     drop: {
       title: '放開以匯入',
-      desc: 'MIDI（.mid、.midi）與音訊（.mp3、.wav、.ogg）檔案',
+      desc: 'MIDI（.mid、.midi）、音訊（.mp3、.wav、.ogg）與設定檔（.json）',
     },
     midi: {
       name: 'MIDI 檔案',
@@ -43,6 +45,10 @@ const zhTW: Messages = {
     audio: {
       name: '音訊檔案',
       desc: '選用的 .mp3、.wav 或 .ogg 檔案，會與音符同步播放並包含在匯出影片中。匯入的檔案不會保存，重新整理頁面後需要再次選擇。',
+    },
+    config: {
+      name: '設定檔',
+      desc: '將攝影機、顯示與樣式設定儲存為 .json 檔案，或從檔案載入，以便在其他歌曲重複使用相同外觀。可選擇要包含哪些項目。',
     },
   },
   playback: {
@@ -84,6 +90,17 @@ const zhTW: Messages = {
       name: '目標 Z',
       desc: `攝影機注視點在深度軸上的位置。0 為音符所在的平面。${cameraHint}`,
     },
+  },
+  configFile: {
+    importTitle: '匯入設定',
+    exportTitle: '匯出設定',
+    import: '匯入',
+    export: '匯出',
+    cancel: '取消',
+    replaceStyles: '會取代目前所有樣式。',
+    resolution: (width, height) => `同時將解析度設為 ${width}×${height}`,
+    resolutionDesc: '攝影機是在此解析度下設定的。不同的長寬比會讓畫面構圖不同。',
+    excluded: '不包含播放時間與匯出設定。攝影機的解析度會一併儲存。',
   },
   display: {
     speed: {

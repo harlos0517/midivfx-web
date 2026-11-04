@@ -16,7 +16,7 @@ pnpm lint                # Lint (pnpm lint:fix to autofix)
 ```
 
 - **There are no tests.** To run a single file, use `pnpm exec tsx path/to/file.ts`. Verify behavior by running the app.
-- `example/` is gitignored and holds a sample `.mid` and `.mp3` for manual testing. Its `config.json` is from an older schema (`startPadding`, `speed`) and does not match `Config`. Config import/export isn't implemented yet, so leave the file as is until it is.
+- `example/` is gitignored and holds a sample `.mid` and `.mp3` for manual testing.
 
 ## Architecture
 
@@ -67,6 +67,7 @@ MIDI ticks are converted to ms in `src/utils/midi.ts` via `tempoMap`. Note and e
 ## When changing things
 
 - **New config section:** add it to the per-section merge in `mergeConfig` (`src/utils/config.ts`), or configs saved before the change will be missing its defaults.
+- **Config files:** `src/utils/configFile.ts` imports and exports only the camera, display and styles sections. If you change the shape of those sections, bump `CONFIG_FILE_VERSION` and migrate older files in `parseConfigFile`.
 - **New option:** add a tooltip to `src/i18n/en.ts` and `zh-TW.ts` and describe what the code actually does. `ConfigOptionNumberInputRow` requires `tooltip`, and `OverridableInput` finds its tip by `styleKey`.
 - **New style option:** add it to `StyleRuntime` and `defaultStyleRuntime`. If it affects note geometry or uniforms, also add it to the `useMemo` dependency list in `Notes.tsx`.
 - **New panel:** wrap it in `PanelWrapper`, register it in both `components` and `panels` in `Index.tsx`, and add its tab title to `panels` in the dictionaries. `addMissingPanels` adds it to saved layouts too. Its `position` must reference a panel listed before it.
