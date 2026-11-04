@@ -17,10 +17,9 @@ interface ChannelBoxProps {
   trackName: string
   i: number
   channel: number
-  trackHidden: boolean
 }
 
-const ChannelBox = ({ trackName, i, channel, trackHidden }: ChannelBoxProps) => {
+const ChannelBox = ({ trackName, i, channel }: ChannelBoxProps) => {
   const m = useMessages()
   const style = useStyle(trackName, i, channel)
   const channelHidden = useVisibilityStore(s => s.hiddenChannels.has(`${i}:${channel}`))
@@ -93,10 +92,7 @@ const TrackInfo = ({ trackName, i }: TrackInfoProps) => {
     <Collapse expanded={expanded} p={8}>
       <Stack>
         {channels.map((row, tr) => <Group key={tr} gap={8} justify="space-between">
-          {row.map(ch => <ChannelBox key={ch}
-            trackName={trackName} i={i} channel={ch}
-            trackHidden={hidden}
-          />)}
+          {row.map(ch => <ChannelBox key={ch} trackName={trackName} i={i} channel={ch} />)}
         </Group>)}
       </Stack>
     </Collapse>
