@@ -40,11 +40,15 @@ const SUSTAIN_THRESHOLD = 64
  * at the next pedal release, or earlier if the same pitch is struck again. A pedal that is never
  * released holds until `songEnd`. The pedal can come from another channel's `pedalEvents`, but
  * restrikes always come from the notes' own `events`.
+ *
+ * A note cut by a restrike runs `overlap` ms past it, under the new note, so the two connect
+ * without a notch between their rounded corners.
  */
 export const sustainEnd = (
   events: MidiChannelEventData[],
   pedalEvents: MidiChannelEventData[],
   songEnd: number,
+  overlap = 0,
 ) => {
   const pedal = getControllerTrack(pedalEvents, SUSTAIN_CC)
 
@@ -70,6 +74,9 @@ export const sustainEnd = (
     const times = strikes.get(pitch) ?? []
     // First strike at or after the release, other than the note's own (for zero-length notes)
     const restrike = times[countBefore(times, offTime, onTime < offTime)] ?? Infinity
-    return Math.max(offTime, Math.min(nextRelease[i]!, restrike))
+    const release = nextRelease[i]!
+    // Capped at the release, where a short restruck note's own hold may end
+    if (restrike < release) return Math.min(restrike + overlap, release)
+    return Math.max(offTime, release)
   }
 }

@@ -80,19 +80,29 @@ const fragmentShader = /* glsl */ `
     return lo == 0 ? 1.0 : ccEvent(lo - 1).y;
   }
 
-  void main() {
-    // Rounded-rectangle distance in world units, centered on the note
-    vec2 halfSize = vSize * 0.5;
-    vec2 p = (vUv - 0.5) * vSize;
+  // Signed distance (world units) to a rounded rectangle centered at the origin
+  float roundedRect(vec2 p, vec2 halfSize) {
     float r = min(uRadius, min(halfSize.x, halfSize.y));
     vec2 q = abs(p) - halfSize + r;
-    float d = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+    return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+  }
+
+  void main() {
+    vec2 halfSize = vSize * 0.5;
+    vec2 p = (vUv - 0.5) * vSize;
+    float d = roundedRect(p, halfSize);
     float edge = clamp(0.5 - d / fwidth(d), 0.0, 1.0);
 
     float decay = pow(uDecayPerUnit, vUv.x * vSize.x);
 
-    // Past the split the note is only held by the pedal
-    vec3 color = vUv.x > vSplit ? uPedalColor : vColor;
+    // The played part is its own rounded rectangle up to the split, drawn over the pedal-held
+    // band, so its end is rounded too
+    vec2 bodyHalf = vec2(halfSize.x * vSplit, halfSize.y);
+    float db = roundedRect(p - vec2(bodyHalf.x - halfSize.x, 0.0), bodyHalf);
+    float body = clamp(0.5 - db / fwidth(db), 0.0, 1.0);
+    // Relative to the outer coverage, so where both outlines coincide (every edge of a note with
+    // no held part) the anti-aliased edge stays the note color
+    vec3 color = mix(uPedalColor, vColor, clamp(body / max(edge, 1e-4), 0.0, 1.0));
 
     float cc = uUseCC ? ccValue(vX / uTimeScale) : 1.0;
 
@@ -156,7 +166,11 @@ const Notes = (props: NotesProps) => {
     const toColor = (c: string, fallback = defaultStyleRuntime.color) =>
       new ThreeColor(fixColorHex(c, fallback))
     const baseColor = toColor(color)
-    const heldUntil = showPedal ? sustainEnd(notes, pedalEvents, songEnd) : null
+    // Twice the radius: the held part's rounded end then sits where the restruck note is already
+    // full height, so no notch shows between them
+    const heldUntil = showPedal
+      ? sustainEnd(notes, pedalEvents, songEnd, 2 * radius / timeScale)
+      : null
     const ccTrack = getControllerTrack(mode === 'CC' ? ccEvents : [], cc)
 
     const material = new ShaderMaterial({
