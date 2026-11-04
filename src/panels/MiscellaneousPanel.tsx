@@ -1,9 +1,10 @@
-import { ActionIcon, Group, Select } from '@mantine/core'
+import { ActionIcon, CheckIcon, ColorSwatch, Group, Select } from '@mantine/core'
 import {
   ClockCounterClockwiseIcon,
   GithubLogoIcon,
   GlobeIcon,
   HeartIcon,
+  PaletteIcon,
   SignpostIcon,
   TranslateIcon,
 } from '@phosphor-icons/react'
@@ -13,6 +14,7 @@ import OptionTooltip from '@/components/OptionTooltip'
 import PanelWrapper from '@/components/PanelWrapper'
 import useChangelogStore from '@/store/changelogStore'
 import useLocaleStore, { localeNames, useMessages, type Locale } from '@/store/localeStore'
+import useThemeStore, { themeColors } from '@/store/themeStore'
 import useTourStore from '@/store/tourStore'
 import { getSupportUrl, REPO_URL, WEBSITE_URL } from '@/utils/const'
 
@@ -22,6 +24,8 @@ const MiscellaneousPanel = () => {
   const setLocale = useLocaleStore(s => s.setLocale)
   const startTour = useTourStore(s => s.start)
   const openHistory = useChangelogStore(s => s.openHistory)
+  const themeColor = useThemeStore(s => s.themeColor)
+  const setThemeColor = useThemeStore(s => s.setThemeColor)
 
   return <PanelWrapper>
     <ConfigOptionRow label={<TranslateIcon />} tooltip={m.miscellaneous.language}>
@@ -33,6 +37,28 @@ const MiscellaneousPanel = () => {
         data={Object.entries(localeNames).map(([value, label]) => ({ value, label }))}
         allowDeselect={false}
       />
+    </ConfigOptionRow>
+    <ConfigOptionRow label={<PaletteIcon />} tooltip={m.miscellaneous.themeColor}>
+      <Group
+        flex="1" gap={4} wrap="wrap"
+        role="radiogroup" aria-label={m.miscellaneous.themeColor.name}
+      >
+        {themeColors.map(color => <ColorSwatch
+          key={color}
+          component="button"
+          role="radio"
+          aria-label={color}
+          aria-checked={color === themeColor}
+          color={`var(--mantine-color-${color}-filled)`}
+          size="1.5rem"
+          radius="sm"
+          c="white"
+          style={{ cursor: 'pointer' }}
+          onClick={() => setThemeColor(color)}
+        >
+          {color === themeColor && <CheckIcon size={12} />}
+        </ColorSwatch>)}
+      </Group>
     </ConfigOptionRow>
     <Group>
       <OptionTooltip tip={m.miscellaneous.tour}>

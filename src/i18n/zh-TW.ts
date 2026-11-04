@@ -358,6 +358,10 @@ const zhTW: Messages = {
       name: '語言',
       desc: '介面的語言。',
     },
+    themeColor: {
+      name: '主題色',
+      desc: '介面的強調色，導覽列中的音符與方框也會使用此顏色。',
+    },
     tour: {
       name: '導覽',
       desc: '逐一介紹每個面板與其功能。',

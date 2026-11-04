@@ -1,4 +1,4 @@
-import { Box, Text } from '@mantine/core'
+import { Box, Text, useMantineTheme } from '@mantine/core'
 import { clamp, useElementSize } from '@mantine/hooks'
 import {
   useContext,
@@ -65,6 +65,9 @@ const NavigatorPanel = () => {
   const [fadeOut] = usePlaybackConfig('fadeOut')
   const hiddenTracks = useVisibilityStore(s => s.hiddenTracks)
   const hiddenChannels = useVisibilityStore(s => s.hiddenChannels)
+  // A canvas can't read CSS variables, so the shade is resolved here
+  const mantineTheme = useMantineTheme()
+  const noteColor = mantineTheme.colors[mantineTheme.primaryColor]![4]!
 
   // audioPeaks stands in for the audio changing, which Playback can't signal to React
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -96,8 +99,9 @@ const NavigatorPanel = () => {
   useEffect(() => {
     if (!width || !notesRef.current) return
     drawNotes(notesRef.current, width, height, domain, midiData,
-      (track, channel) => isHidden({ hiddenTracks, hiddenChannels }, track, channel))
-  }, [width, height, domain, midiData, hiddenTracks, hiddenChannels])
+      (track, channel) => isHidden({ hiddenTracks, hiddenChannels }, track, channel),
+      noteColor)
+  }, [width, height, domain, midiData, hiddenTracks, hiddenChannels, noteColor])
 
   useEffect(() => {
     let frame: number
@@ -190,7 +194,7 @@ const NavigatorPanel = () => {
       {hasContent ? <Box
         data-drag="move"
         pos="absolute" top={0} bottom={0}
-        bd="1px solid blue.4"
+        bd="1px solid var(--mantine-primary-color-4)"
         style={{
           left: `calc(${(range.start - domain.start) / span * 100}% + 1px)`,
           width: `calc(${Math.max(0, range.end - range.start) / span * 100}% - 1px)`,
@@ -206,7 +210,7 @@ const NavigatorPanel = () => {
           <path
             d={getFadePath({ start: range.start, end: range.end, fadeIn, fadeOut })}
             fill="rgba(0, 0, 0, 0.5)"
-            stroke="var(--mantine-color-blue-4)"
+            stroke="var(--mantine-primary-color-4)"
             strokeWidth={1}
             vectorEffect="non-scaling-stroke"
           />

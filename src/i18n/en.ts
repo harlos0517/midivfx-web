@@ -358,6 +358,10 @@ const en = {
       name: 'Language',
       desc: 'Language of the interface.',
     },
+    themeColor: {
+      name: 'Theme color',
+      desc: 'Accent color of the interface, also used for the notes and box in the navigator.',
+    },
     tour: {
       name: 'Tour',
       desc: 'Walks through each panel and what it does.',

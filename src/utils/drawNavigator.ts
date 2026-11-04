@@ -2,7 +2,6 @@ import type { AudioPeaks } from '@/utils/audio'
 import type { MidiData } from '@/utils/midi'
 
 const WAVEFORM_COLOR = '#5c5f66'
-const NOTE_COLOR = '#74c0fc'
 
 export interface TimeRange {
   /** ms */
@@ -59,6 +58,7 @@ export const drawNotes = (
   midiData: MidiData | null,
   /** 1-based track and channel numbers. */
   isHidden: (track: number, channel: number) => boolean,
+  color: string,
 ) => {
   const ctx = prepareCanvas(canvas, width, height)
 
@@ -87,7 +87,7 @@ export const drawNotes = (
 
   const pixelsPerMs = canvas.width / (domain.end - domain.start)
   const rowHeight = canvas.height / (high - low + 1)
-  ctx.fillStyle = NOTE_COLOR
+  ctx.fillStyle = color
   forEachNote((noteNumber, start, end) => {
     ctx.fillRect(
       (start - domain.start) * pixelsPerMs,
