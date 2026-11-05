@@ -1,28 +1,21 @@
 import { useEffect, useMemo } from 'react'
 import {
-  DataTexture,
+  type DataTexture,
   DoubleSide,
-  FloatType,
   InstancedBufferAttribute,
   InstancedMesh,
   Matrix4,
   PlaneGeometry,
-  RGFormat,
   ShaderMaterial,
   Color as ThreeColor,
 } from 'three'
 
 import useTimeScale from '@/hooks/useTimeScale'
 import { fixColorHex } from '@/utils/colors'
-import { defaultStyleRuntime, type Remap, type StyleRuntime } from '@/utils/config'
-import { type ControllerTrack, getControllerTrack, sustainEnd } from '@/utils/controllers'
+import { defaultStyleRuntime, type StyleRuntime } from '@/utils/config'
+import { getControllerTrack, sustainEnd } from '@/utils/controllers'
 import type { MidiChannelEventData } from '@/utils/midi'
-import { parseRange } from '@/utils/range'
-
-/** `decayRate` is the fraction of opacity lost per this many ms, whatever `unitsPerSecond` is. */
-const DECAY_MS = 25
-/** Row width of the CC event texture; rows wrap so long songs fit the max texture size. */
-const CC_TEXTURE_WIDTH = 1024
+import { ccTexture, ccValueGlsl, DECAY_MS, pitchBand, remapMatcher } from '@/utils/noteShading'
 
 // Unit quad stretched per instance via instanceMatrix; corners and decay are drawn in the shader
 // so every note of a channel shares one draw call
@@ -52,8 +45,6 @@ const fragmentShader = /* glsl */ `
   uniform float uDecayPerUnit;
   uniform vec3 uPedalColor;
   uniform bool uUseCC;
-  uniform sampler2D uCC;
-  uniform int uCCCount;
   uniform float uTimeScale;
   uniform float uRadius;
   varying vec2 vUv;
@@ -63,22 +54,7 @@ const fragmentShader = /* glsl */ `
   varying float vSplit;
   varying float vX;
 
-  vec2 ccEvent(int i) {
-    return texelFetch(uCC, ivec2(i % ${CC_TEXTURE_WIDTH}, i / ${CC_TEXTURE_WIDTH}), 0).rg;
-  }
-
-  // Value (0-1) of the last CC event at or before time t; full before the first event
-  float ccValue(float t) {
-    int lo = 0;
-    int hi = uCCCount;
-    for (int k = 0; k < 24; k++) {
-      if (lo >= hi) break;
-      int mid = (lo + hi) / 2;
-      if (ccEvent(mid).x <= t) lo = mid + 1;
-      else hi = mid;
-    }
-    return lo == 0 ? 1.0 : ccEvent(lo - 1).y;
-  }
+  ${ccValueGlsl}
 
   // Signed distance (world units) to a rounded rectangle centered at the origin
   float roundedRect(vec2 p, vec2 halfSize) {
@@ -113,32 +89,6 @@ const fragmentShader = /* glsl */ `
 `
 
 type NoteOn = Extract<MidiChannelEventData, { type: 'noteOn' }>
-
-/**
- * Last remap whose `originalPitch` matches, so later remaps override earlier ones like styles do.
- * An empty `originalPitch` matches every pitch.
- */
-const remapMatcher = (remaps: Remap[]) => {
-  const matchers = remaps.map(remap => ({
-    remap,
-    pitches: remap.originalPitch?.trim() ? new Set(parseRange(remap.originalPitch, 0, 127)) : null,
-  }))
-  return (pitch: number) => matchers.findLast(m => !m.pitches || m.pitches.has(pitch))?.remap
-}
-
-/** Packs (time, value / 127) pairs into a float texture for lookup in the shader. */
-const ccTexture = ({ times, values }: ControllerTrack) => {
-  const width = CC_TEXTURE_WIDTH
-  const height = Math.max(1, Math.ceil(times.length / width))
-  const data = new Float32Array(width * height * 2)
-  times.forEach((t, i) => {
-    data[i * 2] = t
-    data[i * 2 + 1] = values[i]! / 127
-  })
-  const texture = new DataTexture(data, width, height, RGFormat, FloatType)
-  texture.needsUpdate = true
-  return texture
-}
 
 interface NotesProps {
   style: StyleRuntime
@@ -202,8 +152,7 @@ const Notes = (props: NotesProps) => {
     noteOns.forEach((note, i) => {
       // A remapped note covers the whole mapped pitch range as one band
       const remap = findRemap(note.noteNumber)
-      const bottom = remap ? Math.min(...remap.mappedPitch) : note.noteNumber
-      const top = (remap ? Math.max(...remap.mappedPitch) : note.noteNumber) + 1
+      const { bottom, top } = pitchBand(note.noteNumber, remap)
       // `thickness` is the filled part of one pitch, so 1 leaves no space between adjacent pitches
       const h = Math.max(0, top - bottom - (1 - thickness))
 

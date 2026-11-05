@@ -3,6 +3,7 @@ import { useContext, useMemo, useRef } from 'react'
 import type { Group } from 'three'
 
 import BeatLines from '@/components/BeatLines'
+import NoteIndicators from '@/components/NoteIndicators'
 import Notes from '@/components/Notes'
 import MidiFileContext from '@/context/MidiFileContext'
 import useStyle from '@/hooks/useStyle'
@@ -51,14 +52,18 @@ const NoteChannel = (props: NoteChannelProps) => {
   // that doesn't exist in this file falls back to the note's own channel.
   const source = (t: number, c: number) =>
     tracks[(t || trackNum) - 1]?.channels[(c || channel) - 1] ?? notes
-  return <Notes
-    notes={notes}
-    pedalEvents={source(style.pedalTrack, style.pedalChannel)}
-    ccEvents={source(style.ccTrack, style.ccChannel)}
-    style={style}
-    songEnd={songEnd}
-    visible={!hidden}
-  />
+  const ccEvents = source(style.ccTrack, style.ccChannel)
+  return <>
+    <Notes
+      notes={notes}
+      pedalEvents={source(style.pedalTrack, style.pedalChannel)}
+      ccEvents={ccEvents}
+      style={style}
+      songEnd={songEnd}
+      visible={!hidden}
+    />
+    <NoteIndicators notes={notes} ccEvents={ccEvents} style={style} visible={!hidden} />
+  </>
 }
 
 const NoteRenderer = ({ tracks }: { tracks: TrackData[] }) => {

@@ -206,7 +206,7 @@ const zhTW: Messages = {
       },
       velocity: {
         name: '力度透明度',
-        desc: '依 MIDI 力度讓較弱的音符更透明。',
+        desc: '依 MIDI 力度讓較弱的音符更透明。游標指示器也可改為以大小反映力度。',
       },
       mode: {
         name: '音符模式',
@@ -256,7 +256,62 @@ const zhTW: Messages = {
         name: '圖層',
         desc: '在深度軸上的位置。數值較高者較靠近攝影機，並會蓋住數值較低者。',
       },
+      indicator: {
+        name: '游標指示器',
+        desc: '在游標線上正在發聲的音高處顯示圓形，顏色與音符相同。按下音符時放大，接著稍微縮小並維持，放開音符時縮小消失。會像音符一樣以透明度或大小跟隨衰減或 CC。',
+      },
+      indicatorSize: {
+        name: '指示器大小',
+        desc: '音符持續時圓形的直徑。一個單位為一個半音的高度。',
+      },
+      indicatorPeak: {
+        name: '指示器峰值',
+        desc: '按下音符時圓形放大的程度，相對於持續時的大小，之後再回落。',
+      },
+      indicatorAttack: {
+        name: '指示器起音',
+        desc: '按下音符後，圓形從無放大到峰值所需的時間（毫秒）。',
+      },
+      indicatorSettle: {
+        name: '指示器回落',
+        desc: '圓形從峰值縮小到持續大小所需的時間（毫秒）。',
+      },
+      indicatorRelease: {
+        name: '指示器釋音',
+        desc: '放開音符後，圓形縮小消失所需的時間（毫秒）。延音踏板不會延長它。',
+      },
+      indicatorFollow: {
+        name: '指示器跟隨方式',
+        desc: '圓形以透明度或大小來跟隨力度（開啟時）與音符模式。衰減與 CC 只影響圓形；漣漪只跟隨力度。',
+      },
+      ripple: {
+        name: '漣漪',
+        desc: '每次按下音符時，從游標線向外擴散一個圓環，並在擴大時淡出。不受衰減或 CC 影響。',
+      },
+      rippleScale: {
+        name: '漣漪大小',
+        desc: '圓環最終的直徑，相對於指示器大小。',
+      },
+      rippleDuration: {
+        name: '漣漪時長',
+        desc: '圓環擴大到最大並淡出所需的時間（毫秒）。即使音符提早放開也會播放到結束。',
+      },
+      rippleWidth: {
+        name: '漣漪粗細',
+        desc: '圓環的線條粗細。一個單位為一個半音的高度。',
+      },
     },
+    indicatorFollows: {
+      opacity: {
+        name: '透明度',
+        desc: '較弱、已衰減或被 CC 調低的音符讓圓形更透明。較弱的音符讓漣漪更透明。',
+      },
+      size: {
+        name: '大小',
+        desc: '較弱、已衰減或被 CC 調低的音符讓圓形更小。較弱的音符讓漣漪更小。',
+      },
+    },
+    indicatorHeading: '游標指示器',
     modes: {
       fill: {
         name: '填滿',

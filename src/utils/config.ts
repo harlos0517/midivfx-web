@@ -1,6 +1,9 @@
 /** `fill`: solid, `decay`: fades over time, `CC`: opacity follows the `cc` controller. */
 export type NoteMode = 'fill' | 'decay' | 'CC'
 
+/** How velocity and the fill mode (decay, CC) show on the cursor indicators. */
+export type IndicatorFollow = 'opacity' | 'size'
+
 /** How the background image fits the frame, as in CSS `background-size`. */
 export type BackgroundSize = 'contain' | 'cover' | 'stretch'
 
@@ -74,6 +77,26 @@ export interface StyleRuntime {
   ccTrack: number
   ccChannel: number
   remaps: Remap[]
+  /** Circle on the cursor line while a note sounds. */
+  indicator: boolean
+  /** Held diameter of the circle, in pitch units. */
+  indicatorSize: number
+  /** Size reached at the end of the attack, relative to `indicatorSize`. */
+  indicatorPeak: number
+  /** Growth from nothing to the peak after a note on (ms). */
+  indicatorAttack: number
+  /** Shrink from the peak to the held size (ms). */
+  indicatorSettle: number
+  /** Shrink to nothing after the note off (ms). */
+  indicatorRelease: number
+  indicatorFollow: IndicatorFollow
+  /** Ring that expands from the circle at each note on. */
+  ripple: boolean
+  /** Final ring diameter, relative to `indicatorSize`. */
+  rippleScale: number
+  rippleDuration: number
+  /** Ring line width, in pitch units. */
+  rippleWidth: number
 }
 
 export type StyleConfig = Partial<StyleRuntime> & {
@@ -108,6 +131,17 @@ export const defaultStyleRuntime: Omit<StyleRuntime, 'id' | 'order'> = {
   ccTrack: 0,
   ccChannel: 0,
   remaps: [],
+  indicator: false,
+  indicatorSize: 1.5,
+  indicatorPeak: 1.6,
+  indicatorAttack: 60,
+  indicatorSettle: 150,
+  indicatorRelease: 120,
+  indicatorFollow: 'opacity',
+  ripple: false,
+  rippleScale: 10,
+  rippleDuration: 500,
+  rippleWidth: 0.15,
 }
 
 export const defaultStyleConfig = {
@@ -176,5 +210,9 @@ export const mergeConfig = (saved: Partial<Config>): Config => {
     },
     camera: { ...defaultConfig.camera, ...saved.camera },
     display: { ...defaultConfig.display, ...display },
+    // The default style sets every option, including ones added since it was saved
+    ...(saved.styles && {
+      styles: saved.styles.map(s => s.id === 'default' ? { ...defaultStyleRuntime, ...s } : s),
+    }),
   }
 }

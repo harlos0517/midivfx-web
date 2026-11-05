@@ -206,7 +206,7 @@ const en = {
       },
       velocity: {
         name: 'Velocity opacity',
-        desc: 'Makes softer notes more transparent, based on their MIDI velocity.',
+        desc: 'Makes softer notes more transparent, based on their MIDI velocity. Cursor indicators can follow it with their size instead.',
       },
       mode: {
         name: 'Note mode',
@@ -256,7 +256,62 @@ const en = {
         name: 'Layer',
         desc: 'Position along the depth axis. Higher values are closer to the camera and draw over lower ones.',
       },
+      indicator: {
+        name: 'Cursor indicator',
+        desc: 'Shows a circle on the cursor line at each sounding pitch, in the note color. It grows at the note on, settles, and shrinks away at the note off. It follows decay or CC like the notes do, by opacity or size.',
+      },
+      indicatorSize: {
+        name: 'Indicator size',
+        desc: 'Diameter of the circle while the note is held. One unit is the height of one semitone.',
+      },
+      indicatorPeak: {
+        name: 'Indicator peak',
+        desc: 'How large the circle grows at the note on, relative to its held size, before it settles.',
+      },
+      indicatorAttack: {
+        name: 'Indicator attack',
+        desc: 'Time in ms for the circle to grow from nothing to its peak after a note on.',
+      },
+      indicatorSettle: {
+        name: 'Indicator settle',
+        desc: 'Time in ms for the circle to shrink from its peak to its held size.',
+      },
+      indicatorRelease: {
+        name: 'Indicator release',
+        desc: 'Time in ms for the circle to shrink away after the note off. The sustain pedal does not extend it.',
+      },
+      indicatorFollow: {
+        name: 'Indicator follows by',
+        desc: 'How the circles follow velocity (when it is on) and the note mode: by opacity or by size. Decay and CC affect only the circles; ripples follow velocity only.',
+      },
+      ripple: {
+        name: 'Ripple',
+        desc: 'Sends a ring outward from the cursor line at each note on, fading as it grows. Decay and CC do not affect it.',
+      },
+      rippleScale: {
+        name: 'Ripple size',
+        desc: 'Final diameter of the ring, relative to the indicator size.',
+      },
+      rippleDuration: {
+        name: 'Ripple duration',
+        desc: 'Time in ms for the ring to grow to full size and fade out. It plays to the end even if the note is released earlier.',
+      },
+      rippleWidth: {
+        name: 'Ripple width',
+        desc: 'Line width of the ring. One unit is the height of one semitone.',
+      },
     },
+    indicatorFollows: {
+      opacity: {
+        name: 'Opacity',
+        desc: 'Softer, decayed or CC-lowered notes make more transparent circles. Softer notes make more transparent ripples.',
+      },
+      size: {
+        name: 'Size',
+        desc: 'Softer, decayed or CC-lowered notes make smaller circles. Softer notes make smaller ripples.',
+      },
+    },
+    indicatorHeading: 'Cursor Indicator',
     modes: {
       fill: {
         name: 'Fill',

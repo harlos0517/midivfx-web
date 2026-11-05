@@ -15,10 +15,12 @@ import {
 import {
   ArrowBendDownRightIcon,
   ArrowRightIcon,
+  ArrowsOutIcon,
   CaretDownIcon,
   CaretUpIcon,
   CopyIcon,
   DotsSixVerticalIcon,
+  DropHalfIcon,
   HashIcon,
   LockIcon,
   MusicNotesIcon,
@@ -127,6 +129,8 @@ const StyleConfigBox = ({ id }: { id: string }) => {
   const [color] = useStyleConfig(id, 'color', true)
   const [showPedal] = useStyleConfig(id, 'showPedal', true)
   const [remaps, setRemaps] = useStyleConfig(id, 'remaps')
+  const [indicator] = useStyleConfig(id, 'indicator', true)
+  const [ripple] = useStyleConfig(id, 'ripple', true)
 
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -236,6 +240,8 @@ const StyleConfigBox = ({ id }: { id: string }) => {
           <Overridable id={id} styleKey="thickness" />
           <Overridable id={id} styleKey="radius" />
           <Overridable id={id} styleKey="z" />
+          <Overridable id={id} styleKey="indicator" />
+          <Overridable id={id} styleKey="ripple" />
         </Group>
       </Collapse>
       <Collapse expanded={isExpanded}>
@@ -415,6 +421,104 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               inputProps={getSliderProps(-10, 10, 0.1, [0])}
             />
           </Group>
+          <Text>{m.style.indicatorHeading}</Text>
+          <Group>
+            <OverridableInput
+              id={id}
+              styleKey="indicator"
+              inputType="switch"
+            />
+            {indicator ? <>
+              <OverridableInput
+                id={id}
+                styleKey="indicatorSize"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, step: 0.1 }}
+              />
+              <OverridableInput
+                id={id}
+                styleKey="indicatorPeak"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, step: 0.1 }}
+              />
+            </> : <Space flex={2} />}
+          </Group>
+          {indicator && <Group>
+            <OverridableInput
+              id={id}
+              styleKey="indicatorAttack"
+              inputType="number"
+              wrapperProps={{ flex: 1 }}
+              inputProps={{ min: 0, step: 10, allowDecimal: false }}
+            />
+            <OverridableInput
+              id={id}
+              styleKey="indicatorSettle"
+              inputType="number"
+              wrapperProps={{ flex: 1 }}
+              inputProps={{ min: 0, step: 10, allowDecimal: false }}
+            />
+            <OverridableInput
+              id={id}
+              styleKey="indicatorRelease"
+              inputType="number"
+              wrapperProps={{ flex: 1 }}
+              inputProps={{ min: 0, step: 10, allowDecimal: false }}
+            />
+          </Group>}
+          <Group>
+            <OverridableInput
+              id={id}
+              styleKey="ripple"
+              inputType="switch"
+            />
+            {ripple ? <>
+              <OverridableInput
+                id={id}
+                styleKey="rippleScale"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, step: 0.1 }}
+              />
+              <OverridableInput
+                id={id}
+                styleKey="rippleDuration"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, step: 50, allowDecimal: false }}
+              />
+              <OverridableInput
+                id={id}
+                styleKey="rippleWidth"
+                inputType="number"
+                wrapperProps={{ flex: 1 }}
+                inputProps={{ min: 0, step: 0.05 }}
+              />
+            </> : <Space flex={3} />}
+          </Group>
+          {(indicator || ripple) && <Group>
+            <OverridableInput
+              id={id}
+              styleKey="indicatorFollow"
+              inputType="segmented"
+              data={[
+                {
+                  value: 'opacity',
+                  label: <OptionTooltip tip={m.style.indicatorFollows.opacity}>
+                    <DropHalfIcon size={16} aria-label={m.style.indicatorFollows.opacity.name} />
+                  </OptionTooltip>,
+                },
+                {
+                  value: 'size',
+                  label: <OptionTooltip tip={m.style.indicatorFollows.size}>
+                    <ArrowsOutIcon size={16} aria-label={m.style.indicatorFollows.size.name} />
+                  </OptionTooltip>,
+                },
+              ]}
+            />
+          </Group>}
           <Group>
             <Text flex={1}>{m.remap.heading}</Text>
             <OptionTooltip tip={m.remap.add}>
