@@ -11,6 +11,33 @@ export interface ChangelogEntry {
 /** Newest first. The first entry is the current version, so add one to release an update. */
 const changelog: ChangelogEntry[] = [
   {
+    version: '1.2.0',
+    date: '2026-11-05',
+    changes: {
+      en: [
+        'Cursor indicators show a circle on the cursor line at each sounding pitch. It pops in at the note on, settles, and shrinks away at the note off, and follows velocity, decay and CC by opacity or size.',
+        'Ripples send a ring outward from the cursor line at each note on.',
+        'Indicators and ripples are on by default. Turn them off in the default style to keep the previous look.',
+        'A fade color for styles: notes blend toward it as velocity, decay or CC lowers them, instead of only fading out.',
+        'The Styles panel is wider, and its inputs are laid out more evenly.',
+      ],
+      'zh-TW': [
+        '游標指示器會在游標線上每個發聲的音高顯示圓形。圓形在音符開始時彈出、回穩，並在音符結束時縮小消失，且可依透明度或大小跟隨力度、衰減與 CC。',
+        '漣漪會在每個音符開始時，從游標線向外擴散出圓環。',
+        '游標指示器與漣漪預設為開啟。若要維持先前的外觀，請在預設樣式中關閉。',
+        '樣式新增淡出顏色：音符因力度、衰減或 CC 而變淡時，會漸變為該顏色，而不只是淡出。',
+        '樣式面板加寬，輸入欄位的排列也更加整齊。',
+      ],
+      ja: [
+        'カーソルインジケーターが、カーソル線上の発音中の各音高に円を表示します。ノートオンで現れて落ち着き、ノートオフで縮んで消えます。ベロシティ、減衰、CC に不透明度またはサイズで追従します。',
+        '波紋が、ノートオンごとにカーソル線から外側へリングを広げます。',
+        'カーソルインジケーターと波紋は初期状態でオンです。以前の見た目にするには、デフォルトスタイルでオフにしてください。',
+        'スタイルにフェード色を追加しました。ベロシティ、減衰、CC で音符が薄くなるとき、単にフェードアウトするのではなくその色へ変化します。',
+        'スタイルパネルが広くなり、入力欄の配置が整いました。',
+      ],
+    },
+  },
+  {
     version: '1.1.0',
     date: '2026-11-05',
     changes: {
