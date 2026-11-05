@@ -31,7 +31,7 @@ The stack is React 19, react-three-fiber, Zustand, Mantine (UI), and dockview (d
 
 ### Text and tooltips
 
-All UI text lives in `src/i18n/`. `en.ts` is the source of truth and `zh-TW.ts` is typed against it, so `tsc` fails on a missing translation. The UI is mostly icons, so a tooltip is what names an option: each one is a `{ name, desc }` entry, rendered by `OptionTooltip`. Icon-only controls also take `name` as their `aria-label`.
+All UI text lives in `src/i18n/`. `en.ts` is the source of truth and `zh-TW.ts` and `ja.ts` are typed against it, so `tsc` fails on a missing translation. The UI is mostly icons, so a tooltip is what names an option: each one is a `{ name, desc }` entry, rendered by `OptionTooltip`. Icon-only controls also take `name` as their `aria-label`.
 
 ### The clock drives everything
 
@@ -62,6 +62,10 @@ Pitch remaps within a style follow the same rule, last match wins. A remapped no
 
 `Notes.tsx` builds one `InstancedMesh` with a custom `ShaderMaterial` per track/channel, inside a `useMemo`. Rounded corners, decay, the pedal-held tail color, and CC opacity are all computed in the fragment shader. CC events are stored in a float texture and binary-searched in GLSL. Depth test and depth write are off, so `renderOrder` (derived from `z`) determines layering.
 
+`secondaryColor` ("fade color") is what notes blend toward as velocity, decay or CC lowers them. The blend is straight, not premultiplied, so a transparent fade color still tints. `''` means the note's own color at alpha 0, a plain fade-out.
+
+`NoteIndicators.tsx` draws the cursor indicators (a circle per sounding pitch at x = 0) and ripples (a ring at each note on), as instanced meshes rendered above all notes. Every size and opacity derives from `uTime` in the shader, so seeking and export need no per-note state. Shader helpers shared with `Notes.tsx` (CC texture and GLSL lookup, remap matching, pitch bands, fade color) live in `src/utils/noteShading.ts`.
+
 MIDI ticks are converted to ms in `src/utils/midi.ts` via `tempoMap`. Note and event durations come from `endEvent`. Sustain pedal hold is computed in `src/utils/controllers.ts`.
 
 ## When changing things
@@ -69,8 +73,8 @@ MIDI ticks are converted to ms in `src/utils/midi.ts` via `tempoMap`. Note and e
 - **New config section:** add it to the per-section merge in `mergeConfig` (`src/utils/config.ts`), or configs saved before the change will be missing its defaults.
 - **Config files:** `src/utils/configFile.ts` imports and exports only the camera, display and styles sections. If you change the shape of those sections, bump `CONFIG_FILE_VERSION` and migrate older files in `parseConfigFile`.
 - **New option:** add a tooltip to `src/i18n/en.ts` and `zh-TW.ts` and describe what the code actually does. `ConfigOptionNumberInputRow` requires `tooltip`, and `OverridableInput` finds its tip by `styleKey`.
-- **New style option:** add it to `StyleRuntime` and `defaultStyleRuntime`. If it affects note geometry or uniforms, also add it to the `useMemo` dependency list in `Notes.tsx`.
-- **New panel:** wrap it in `PanelWrapper`, register it in both `components` and `panels` in `Index.tsx`, and add its tab title to `panels` in the dictionaries. `addMissingPanels` adds it to saved layouts too. Its `position` must reference a panel listed before it.
+- **New style option:** add it to `StyleRuntime` and `defaultStyleRuntime`. `mergeConfig` fills the saved `default` style from `defaultStyleRuntime`, so existing users get the new default. If it affects note geometry or uniforms, also add it to the `useMemo` dependency list in `Notes.tsx` (or `NoteIndicators.tsx` for indicators and ripples).
+- **New panel:** wrap it in `PanelWrapper`, register it in both `components` and `panels` in `Index.tsx`, and add its tab title to `panels` in the dictionaries. `addMissingPanels` adds it to saved layouts too. Its `position` must reference a panel listed before it. Size constraints (`minimumWidth` and so on) are synced into saved layouts on load, so changing them takes effect for existing users.
 - **New hotkey:** pass `enabled: !exporting`.
 - **`getLength` vs `getMidiDuration`:** `getLength` (`src/utils/timeline.ts`) includes audio and is the song length used for playback and export. `getMidiDuration` is MIDI only.
 
@@ -81,3 +85,5 @@ ESLint comes from `@harlos/eslint-config`: 2 spaces, no semicolons, single quote
 ## Deployment
 
 The built site is committed to `docs/` and served by GitHub Pages on the custom domain. `public/CNAME` is copied into each build. By repo convention, rebuild and commit `docs/` as a separate `build` commit on `main` after merging; don't rebuild as part of a feature change.
+
+To release a version, add an entry to the top of `src/i18n/changelog.ts` with its changes in every locale. The first entry is the current version: users see an update notice for it, and error reports include it. It goes in the `build` commit for that version.

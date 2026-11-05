@@ -8,16 +8,19 @@ A MIDI file visualizer that runs in the browser. Import a MIDI file and optional
 
 - Piano-roll rendering in WebGL
 - Audio playback synced to the MIDI, with an adjustable offset
-- Per-track and per-channel styles, including color, decay, velocity, CC opacity, sustain pedal, and pitch remapping
+- Per-track and per-channel styles, including color, fade color, decay, velocity, CC opacity, sustain pedal, and pitch remapping
+- Cursor indicators and ripples that pulse on the cursor line as notes play
+- Background color or image, and fade-in/fade-out at the start and end
+- Save and load camera, display, and style settings as a config file to reuse a look
 - Video export to MP4, or WebM with transparency
 - Dockable panels
-- Interface in English and Traditional Chinese, with a tooltip on every option
+- Interface in English, Traditional Chinese, and Japanese, with a tooltip on every option
 
 ## Usage
 
-1. Import a MIDI file and, optionally, an audio file in the **Import** panel.
+1. Import a MIDI file and, optionally, an audio file in the **Import** panel, or drop them anywhere on the page.
 2. Adjust the look in the **Styles**, **Camera**, and **Display** panels.
-3. Set the time range in the **Playback** panel.
+3. Set the time range and fades in the **Playback** panel, or drag a range in the **Navigator**. Click a track or channel in the **Tracks** panel to hide it.
 4. Export the video from the **Export** panel.
 
 ### Shortcuts
