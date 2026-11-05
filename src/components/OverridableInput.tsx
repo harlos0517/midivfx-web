@@ -14,9 +14,11 @@ import {
   type SliderProps,
   type SwitchProps,
 } from '@mantine/core'
+import { LinkIcon } from '@phosphor-icons/react'
 import { useEffect, useRef } from 'react'
 
 import OptionTooltip from '@/components/OptionTooltip'
+import type { Tip } from '@/i18n/en'
 import styleIcons, { type OverridableStyleKey } from '@/components/styleIcons'
 import useStyleConfig from '@/hooks/useStyleConfig'
 import { useMessages } from '@/store/localeStore'
@@ -33,7 +35,12 @@ interface CommonProps {
 
 type OverridableInputProps = CommonProps & (
   | { inputType: 'number', inputProps?: NumberInputProps }
-  | { inputType: 'color', inputProps?: ColorInputProps }
+  | {
+    inputType: 'color'
+    inputProps?: ColorInputProps
+    /** Labels an empty value as automatic, with a button that resets to it. */
+    auto?: { label: string, tip: Tip }
+  }
   | { inputType: 'slider', inputProps?: SliderProps }
   | { inputType: 'switch', inputProps?: SwitchProps }
   | {
@@ -98,6 +105,18 @@ const OverridableInput = (props: OverridableInputProps) => {
     />}
     {props.inputType === 'color' && <ColorInput
       {...commonProps}
+      {...(props.auto && value && {
+        rightSection: <OptionTooltip tip={props.auto.tip}>
+          <ActionIcon
+            variant="subtle" c={DIMMED} disabled={!isOverride}
+            aria-label={props.auto.tip.name}
+            onClick={() => setValue('')}
+          >
+            <LinkIcon />
+          </ActionIcon>
+        </OptionTooltip>,
+      })}
+      {...(props.auto && value === '' && { placeholder: props.auto.label })}
       {...props.inputProps}
       value={value as string}
       onChange={setValue}

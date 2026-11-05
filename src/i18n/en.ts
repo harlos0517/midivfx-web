@@ -199,10 +199,20 @@ const en = {
     cancel: 'Cancel',
   },
   style: {
+    /** Shown in place of a color that follows the note color. */
+    auto: '(auto)',
+    followNoteColor: {
+      name: 'Follow note color',
+      desc: 'Resets the fade color to the note color at opacity 0, so it follows the note color.',
+    },
     options: {
       color: {
         name: 'Note color',
         desc: 'Color of the notes.',
+      },
+      secondaryColor: {
+        name: 'Fade color',
+        desc: 'Color that notes blend toward as they fade from low velocity, decay or a low CC, with its own opacity. Cursor indicators blend toward it too, in color only when they follow by size. By default it is the note color at opacity 0, which is a plain fade-out.',
       },
       velocity: {
         name: 'Velocity opacity',

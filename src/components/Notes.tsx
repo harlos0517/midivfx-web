@@ -15,18 +15,22 @@ import { fixColorHex } from '@/utils/colors'
 import { defaultStyleRuntime, type StyleRuntime } from '@/utils/config'
 import { getControllerTrack, sustainEnd } from '@/utils/controllers'
 import type { MidiChannelEventData } from '@/utils/midi'
-import { ccTexture, ccValueGlsl, DECAY_MS, pitchBand, remapMatcher } from '@/utils/noteShading'
+import {
+  ccTexture, ccValueGlsl, DECAY_MS, pitchBand, remapMatcher, secondaryWriter,
+} from '@/utils/noteShading'
 
 // Unit quad stretched per instance via instanceMatrix; corners and decay are drawn in the shader
 // so every note of a channel shares one draw call
 const vertexShader = /* glsl */ `
   attribute float aAlpha;
   attribute vec3 aColor;
+  attribute vec4 aSecondary;
   attribute float aSplit;
   varying vec2 vUv;
   varying vec2 vSize;
   varying float vAlpha;
   varying vec3 vColor;
+  varying vec4 vSecondary;
   varying float vSplit;
   varying float vX;
 
@@ -35,6 +39,7 @@ const vertexShader = /* glsl */ `
     vX = (instanceMatrix * vec4(position, 1.0)).x;
     vAlpha = aAlpha;
     vColor = aColor;
+    vSecondary = aSecondary;
     vSplit = aSplit;
     vSize = vec2(length(instanceMatrix[0].xyz), length(instanceMatrix[1].xyz));
     gl_Position = projectionMatrix * modelViewMatrix * instanceMatrix * vec4(position, 1.0);
@@ -51,6 +56,7 @@ const fragmentShader = /* glsl */ `
   varying vec2 vSize;
   varying float vAlpha;
   varying vec3 vColor;
+  varying vec4 vSecondary;
   varying float vSplit;
   varying float vX;
 
@@ -82,7 +88,9 @@ const fragmentShader = /* glsl */ `
 
     float cc = uUseCC ? ccValue(vX / uTimeScale) : 1.0;
 
-    gl_FragColor = vec4(color, vAlpha * decay * cc * edge);
+    // Straight (not premultiplied) blend, so a transparent secondary color still tints the fade
+    vec4 faded = mix(vSecondary, vec4(color, 1.0), vAlpha * decay * cc);
+    gl_FragColor = vec4(faded.rgb, faded.a * edge);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
   }
@@ -106,7 +114,8 @@ interface NotesProps {
 const Notes = (props: NotesProps) => {
   const { notes, pedalEvents, ccEvents, style, songEnd, visible = true } = props
   const {
-    mode, cc, velocity, color, z, decayRate, thickness, radius, remaps, showPedal, pedalColor,
+    mode, cc, velocity, color, secondaryColor, z, decayRate, thickness, radius, remaps, showPedal,
+    pedalColor,
   } = style
   const timeScale = useTimeScale()
 
@@ -116,6 +125,7 @@ const Notes = (props: NotesProps) => {
     const toColor = (c: string, fallback = defaultStyleRuntime.color) =>
       new ThreeColor(fixColorHex(c, fallback))
     const baseColor = toColor(color)
+    const writeSecondary = secondaryWriter(secondaryColor)
     // Twice the radius: the held part's rounded end then sits where the restruck note is already
     // full height, so no notch shows between them
     const heldUntil = showPedal
@@ -146,6 +156,7 @@ const Notes = (props: NotesProps) => {
     const geometry = new PlaneGeometry(1, 1)
     const alphas = new Float32Array(noteOns.length)
     const colors = new Float32Array(noteOns.length * 3)
+    const secondaries = new Float32Array(noteOns.length * 4)
     const splits = new Float32Array(noteOns.length)
     const mesh = new InstancedMesh(geometry, material, noteOns.length)
     const matrix = new Matrix4()
@@ -164,17 +175,20 @@ const Notes = (props: NotesProps) => {
       matrix.makeScale(w, h, 1).setPosition(x + w / 2, (bottom + top) / 2, 0)
       mesh.setMatrixAt(i, matrix)
       alphas[i] = velocity ? note.velocity / 127 : 1
-      ;(remap ? toColor(remap.color) : baseColor).toArray(colors, i * 3)
+      const noteColor = remap ? toColor(remap.color) : baseColor
+      noteColor.toArray(colors, i * 3)
+      writeSecondary(noteColor, secondaries, i)
     })
     geometry.setAttribute('aAlpha', new InstancedBufferAttribute(alphas, 1))
     geometry.setAttribute('aColor', new InstancedBufferAttribute(colors, 3))
+    geometry.setAttribute('aSecondary', new InstancedBufferAttribute(secondaries, 4))
     geometry.setAttribute('aSplit', new InstancedBufferAttribute(splits, 1))
     mesh.instanceMatrix.needsUpdate = true
     mesh.computeBoundingSphere()
     return mesh
   }, [
-    notes, pedalEvents, ccEvents, mode, cc, velocity, color, decayRate, thickness, radius, remaps,
-    showPedal, pedalColor, timeScale, songEnd,
+    notes, pedalEvents, ccEvents, mode, cc, velocity, color, secondaryColor, decayRate, thickness,
+    radius, remaps, showPedal, pedalColor, timeScale, songEnd,
   ])
 
   useEffect(() => () => {

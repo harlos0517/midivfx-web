@@ -199,10 +199,20 @@ const zhTW: Messages = {
     cancel: '取消',
   },
   style: {
+    /** Shown in place of a color that follows the note color. */
+    auto: '（自動）',
+    followNoteColor: {
+      name: '跟隨音符顏色',
+      desc: '將淡出顏色重設為不透明度 0 的音符顏色，使其跟隨音符顏色。',
+    },
     options: {
       color: {
         name: '音符顏色',
         desc: '音符的顏色。',
+      },
+      secondaryColor: {
+        name: '淡出顏色',
+        desc: '音符因低力度、衰減或低 CC 而變淡時漸變過去的顏色，並有自己的不透明度。游標指示器也會漸變到此顏色；依大小跟隨時只改變顏色。預設為不透明度 0 的音符顏色，即單純淡出。',
       },
       velocity: {
         name: '力度透明度',

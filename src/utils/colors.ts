@@ -8,6 +8,16 @@ export const fixColorHex = (color: string, fallback: string) => {
   }
 }
 
+/** Opaque hex and alpha (0-1) of a color that may carry alpha; `null` if it doesn't parse. */
+export const parseColorAlpha = (color: string) => {
+  try {
+    const c = new Color(color)
+    return { hex: c.alpha(1).hex(), alpha: c.alpha() }
+  } catch {
+    return null
+  }
+}
+
 export const getTextColor = (hex: string) => {
   const r = parseInt(hex.slice(1, 3), 16)
   const g = parseInt(hex.slice(3, 5), 16)

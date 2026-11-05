@@ -226,6 +226,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
       <Collapse expanded={!isExpanded}>
         <Group justify="space-between">
           <Overridable id={id} styleKey="color" />
+          <Overridable id={id} styleKey="secondaryColor" />
           <Overridable id={id} styleKey="velocity" />
           <Overridable id={id} styleKey="mode" />
           {mode === 'CC'
@@ -301,6 +302,14 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               styleKey="color"
               inputType="color"
               wrapperProps={{ w: 180, flex: 1 }}
+            />
+            <OverridableInput
+              id={id}
+              styleKey="secondaryColor"
+              inputType="color"
+              wrapperProps={{ w: 180, flex: 1 }}
+              inputProps={{ format: 'hexa' }}
+              auto={{ label: m.style.auto, tip: m.style.followNoteColor }}
             />
             <OverridableInput
               id={id}

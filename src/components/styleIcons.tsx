@@ -16,6 +16,7 @@ import {
   ArrowLineUpIcon,
   ArrowsOutIcon,
   CircleIcon,
+  GradientIcon,
   PaletteIcon,
   TargetIcon,
   TimerIcon,
@@ -28,6 +29,7 @@ export type OverridableStyleKey =
 
 export const styleIcons: Record<OverridableStyleKey, ReactNode> = {
   color: <PaletteIcon />,
+  secondaryColor: <GradientIcon />,
   velocity: <VelocityIcon />,
   mode: <ModeIcon />,
   cc: <CCIcon />,

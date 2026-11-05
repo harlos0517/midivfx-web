@@ -64,6 +64,11 @@ export interface StyleRuntime {
   cc: number
   velocity: boolean
   color: string
+  /**
+   * Color (with alpha) that notes blend toward as velocity, decay or CC lowers them.
+   * `''` is the note's own color at alpha 0, a plain fade-out.
+   */
+  secondaryColor: string
   thickness: number
   radius: number
   z: number
@@ -120,6 +125,7 @@ export const defaultStyleRuntime: Omit<StyleRuntime, 'id' | 'order'> = {
   isRegex: true,
   velocity: false,
   color: '#ffffff',
+  secondaryColor: '',
   thickness: 1,
   radius: 0.33,
   z: 0.00,

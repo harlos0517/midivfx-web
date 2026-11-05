@@ -15,7 +15,9 @@ import { fixColorHex } from '@/utils/colors'
 import { defaultStyleRuntime, type StyleRuntime } from '@/utils/config'
 import { getControllerTrack } from '@/utils/controllers'
 import type { MidiChannelEventData } from '@/utils/midi'
-import { ccTexture, ccValueGlsl, DECAY_MS, pitchBand, remapMatcher } from '@/utils/noteShading'
+import {
+  ccTexture, ccValueGlsl, DECAY_MS, pitchBand, remapMatcher, secondaryWriter,
+} from '@/utils/noteShading'
 
 /** Above every note, whatever its layer; ripples under circles. Fade draws over all of it. */
 const RIPPLE_RENDER_ORDER = 1000
@@ -35,6 +37,7 @@ const vertexShader = /* glsl */ `
   attribute float aOff;
   attribute float aVelocity;
   attribute vec3 aColor;
+  attribute vec4 aSecondary;
   uniform float uTime;
   uniform float uSize;
   uniform float uPeak;
@@ -53,6 +56,8 @@ const vertexShader = /* glsl */ `
   varying float vShadow;
   varying float vAlpha;
   varying vec3 vColor;
+  varying vec4 vSecondary;
+  varying float vFollow;
 
   ${ccValueGlsl}
 
@@ -88,8 +93,11 @@ const vertexShader = /* glsl */ `
     follow *= pow(uDecayBase, max(t, 0.0) / ${DECAY_MS.toFixed(1)});
     if (uUseCC) follow *= ccValue(uTime);
   #endif
+    // The color blends toward the secondary color either way; its alpha only when following
+    // opacity, since size already carries the fade
     if (uFollowSize) scale *= follow;
-    else alpha *= follow;
+    vFollow = follow;
+    vSecondary = uFollowSize ? vec4(aSecondary.rgb, 1.0) : aSecondary;
 
     vUv = uv;
     vDiameter = uSize * scale;
@@ -117,6 +125,8 @@ const fragmentShader = /* glsl */ `
   varying float vShadow;
   varying float vAlpha;
   varying vec3 vColor;
+  varying vec4 vSecondary;
+  varying float vFollow;
 
   void main() {
     float radius = vDiameter * 0.5;
@@ -132,16 +142,17 @@ const fragmentShader = /* glsl */ `
 
     float falloff = 1.0 - clamp(max(d, 0.0) / max(vShadow, 1e-4), 0.0, 1.0);
     float shadow = ${SHADOW_OPACITY.toFixed(2)} * falloff * falloff;
+    vec4 faded = mix(vSecondary, vec4(vColor, 1.0), vFollow);
   #ifdef RIPPLE
-    vec3 color = mix(vColor, vec3(1.0), ${RIPPLE_BRIGHTNESS.toFixed(2)});
+    vec3 color = mix(faded.rgb, vec3(1.0), ${RIPPLE_BRIGHTNESS.toFixed(2)});
   #else
-    vec3 color = vColor;
+    vec3 color = faded.rgb;
   #endif
     // Shape over a black shadow: black adds coverage but no color
     float coverage = edge + shadow * (1.0 - edge);
     color *= edge / max(coverage, 1e-4);
 
-    gl_FragColor = vec4(color, vAlpha * coverage);
+    gl_FragColor = vec4(color, vAlpha * faded.a * coverage);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
   }
@@ -161,9 +172,9 @@ interface NoteIndicatorsProps {
 const NoteIndicators = (props: NoteIndicatorsProps) => {
   const { notes, ccEvents, style, visible = true } = props
   const {
-    mode, cc, velocity, color, z, decayRate, remaps, indicator, indicatorSize, indicatorPeak,
-    indicatorAttack, indicatorSettle, indicatorRelease, indicatorFollow, ripple, rippleScale,
-    rippleDuration, rippleWidth,
+    mode, cc, velocity, color, secondaryColor, z, decayRate, remaps, indicator, indicatorSize,
+    indicatorPeak, indicatorAttack, indicatorSettle, indicatorRelease, indicatorFollow, ripple,
+    rippleScale, rippleDuration, rippleWidth,
   } = style
   const { playback } = useContext(MidiFileContext)
 
@@ -174,12 +185,14 @@ const NoteIndicators = (props: NoteIndicatorsProps) => {
     const findRemap = remapMatcher(remaps)
     const toColor = (c: string) => new ThreeColor(fixColorHex(c, defaultStyleRuntime.color))
     const baseColor = toColor(color)
+    const writeSecondary = secondaryWriter(secondaryColor)
 
     const ys = new Float32Array(noteOns.length)
     const ons = new Float32Array(noteOns.length)
     const offs = new Float32Array(noteOns.length)
     const velocities = new Float32Array(noteOns.length)
     const colors = new Float32Array(noteOns.length * 3)
+    const secondaries = new Float32Array(noteOns.length * 4)
     noteOns.forEach((note, i) => {
       const remap = findRemap(note.noteNumber)
       const { bottom, top } = pitchBand(note.noteNumber, remap)
@@ -187,7 +200,9 @@ const NoteIndicators = (props: NoteIndicatorsProps) => {
       ons[i] = note.time
       offs[i] = note.endEvent?.time ?? note.time
       velocities[i] = note.velocity / 127
-      ;(remap ? toColor(remap.color) : baseColor).toArray(colors, i * 3)
+      const noteColor = remap ? toColor(remap.color) : baseColor
+      noteColor.toArray(colors, i * 3)
+      writeSecondary(noteColor, secondaries, i)
     })
 
     const quad = new PlaneGeometry(1, 1)
@@ -201,8 +216,9 @@ const NoteIndicators = (props: NoteIndicatorsProps) => {
     geometry.setAttribute('aOff', new InstancedBufferAttribute(offs, 1))
     geometry.setAttribute('aVelocity', new InstancedBufferAttribute(velocities, 1))
     geometry.setAttribute('aColor', new InstancedBufferAttribute(colors, 3))
+    geometry.setAttribute('aSecondary', new InstancedBufferAttribute(secondaries, 4))
     return geometry
-  }, [notes, remaps, color, indicator, ripple])
+  }, [notes, remaps, color, secondaryColor, indicator, ripple])
 
   const ccMap = useMemo(() => {
     const track = getControllerTrack(mode === 'CC' ? ccEvents : [], cc)

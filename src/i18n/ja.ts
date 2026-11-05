@@ -201,10 +201,20 @@ const ja: Messages = {
     cancel: 'キャンセル',
   },
   style: {
+    /** Shown in place of a color that follows the note color. */
+    auto: '（自動）',
+    followNoteColor: {
+      name: '音符の色に追従',
+      desc: 'フェード色を不透明度 0 の音符の色に戻し、音符の色に追従させます。',
+    },
     options: {
       color: {
         name: '音符の色',
         desc: '音符の色。',
+      },
+      secondaryColor: {
+        name: 'フェード色',
+        desc: '低いベロシティ、減衰、低い CC で音符が薄くなるときに移り変わる先の色で、独自の不透明度を持ちます。カーソルインジケーターもこの色に移り変わります。サイズで追従する場合は色だけが変わります。既定では不透明度 0 の音符の色で、単純なフェードアウトになります。',
       },
       velocity: {
         name: 'ベロシティ不透明度',

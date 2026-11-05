@@ -1,5 +1,6 @@
-import { DataTexture, FloatType, RGFormat } from 'three'
+import { DataTexture, FloatType, RGFormat, Color as ThreeColor } from 'three'
 
+import { parseColorAlpha } from '@/utils/colors'
 import type { Remap } from '@/utils/config'
 import type { ControllerTrack } from '@/utils/controllers'
 import { parseRange } from '@/utils/range'
@@ -63,3 +64,16 @@ export const pitchBand = (pitch: number, remap: Remap | undefined) => ({
   bottom: remap ? Math.min(...remap.mappedPitch) : pitch,
   top: (remap ? Math.max(...remap.mappedPitch) : pitch) + 1,
 })
+
+/**
+ * Writes the RGBA a note fades toward into `out` at instance `i`: `secondaryColor`, or the note's
+ * own color at alpha 0 when it is empty (or doesn't parse), which is a plain fade-out.
+ */
+export const secondaryWriter = (secondaryColor: string) => {
+  const parsed = secondaryColor ? parseColorAlpha(secondaryColor) : null
+  const color = parsed && new ThreeColor(parsed.hex)
+  return (noteColor: ThreeColor, out: Float32Array, i: number) => {
+    ;(color ?? noteColor).toArray(out, i * 4)
+    out[i * 4 + 3] = parsed?.alpha ?? 0
+  }
+}
