@@ -49,7 +49,7 @@ const panels: AddPanelOptions[] = [
   {
     id: 'Styles',
     position: { referencePanel: 'Main', direction: 'right' },
-    minimumWidth: 320, maximumWidth: 500, initialWidth: 330,
+    minimumWidth: 360, maximumWidth: 720, initialWidth: 400,
   },
   {
     id: 'Import',
@@ -75,6 +75,25 @@ const panels: AddPanelOptions[] = [
     minimumHeight: 56, maximumHeight: 280, initialHeight: 152,
   },
 ].map(p => ({ ...p, component: p.id.toLowerCase() }))
+
+const constraintKeys = ['minimumWidth', 'minimumHeight', 'maximumWidth', 'maximumHeight'] as const
+
+// Saved layouts keep the constraints they were saved with, so sync them to the definitions above
+const syncPanelConstraints = (layout: SerializedDockview) => {
+  let changed = false
+  for (const panel of panels) {
+    const saved = layout.panels[panel.id]
+    if (!saved) continue
+    for (const key of constraintKeys) {
+      const value = panel[key]
+      if (saved[key] === value) continue
+      if (value === undefined) delete saved[key]
+      else saved[key] = value
+      changed = true
+    }
+  }
+  return changed
+}
 
 const withErrorBoundary = <P extends object>(Panel: FunctionComponent<P>) => {
   const Wrapped = (props: P) => <ErrorBoundary><Panel {...props} /></ErrorBoundary>
@@ -142,7 +161,8 @@ const Index = () => {
     const mySerializedLayout = localStorage.getItem('layout')
     if (mySerializedLayout) {
       try {
-        const layout = JSON.parse(mySerializedLayout)
+        const layout: SerializedDockview = JSON.parse(mySerializedLayout)
+        if (syncPanelConstraints(layout)) localStorage.setItem('layout', JSON.stringify(layout))
         event.api.fromJSON(layout)
       } catch(err) {
         console.error(err)

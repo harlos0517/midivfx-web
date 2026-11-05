@@ -28,7 +28,7 @@ const PAD = 1.1
 const SHADOW_SIZE = 0.25
 const SHADOW_OPACITY = 0.25
 /** How far ripple rings are blended from the note color toward white. */
-const RIPPLE_BRIGHTNESS = 0.25
+const RIPPLE_BRIGHTNESS = 0.15
 
 // Every size and opacity is derived from uTime, so seeking and export need no per-note state.
 const vertexShader = /* glsl */ `

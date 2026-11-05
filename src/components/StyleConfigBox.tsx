@@ -48,6 +48,14 @@ import CCIcon from '@/assets/icons/cc.svg?react'
 import ChannelIcon from '@/assets/icons/channel.svg?react'
 import TrackIcon from '@/assets/icons/track.svg?react'
 
+const timeOptionInputProps = {
+  min: 0,
+  step: 10,
+  max: 10000,
+  rightSection: 'ms',
+  rightSectionWidth: 24,
+}
+
 interface RemapConfigBoxProps extends Remap {
   setRemap: (remap: Remap) => void
   onRemove: () => void
@@ -307,7 +315,7 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               id={id}
               styleKey="secondaryColor"
               inputType="color"
-              wrapperProps={{ w: 180, flex: 1 }}
+              wrapperProps={{ w: 180, flex: '1 0 2.5rem' }}
               inputProps={{ format: 'hexa' }}
               auto={{ label: m.style.auto, tip: m.style.followNoteColor }}
             />
@@ -364,14 +372,14 @@ const StyleConfigBox = ({ id }: { id: string }) => {
                 id={id}
                 styleKey="ccTrack"
                 inputType="number"
-                wrapperProps={{ flex: 1 }}
+                wrapperProps={{ w: 88 }}
                 inputProps={{ min: 0, max: 256, step: 1, allowDecimal: false }}
               />
               <OverridableInput
                 id={id}
                 styleKey="ccChannel"
                 inputType="number"
-                wrapperProps={{ flex: 1 }}
+                wrapperProps={{ w: 80 }}
                 inputProps={{ min: 0, max: 16, step: 1, allowDecimal: false }}
               />
             </>}
@@ -386,21 +394,21 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               id={id}
               styleKey="pedalColor"
               inputType="color"
-              wrapperProps={{ w: 132 }}
+              wrapperProps={{ flex: 1 }}
             /> : <Space w={132} />}
             {showPedal && <>
               <OverridableInput
                 id={id}
                 styleKey="pedalTrack"
                 inputType="number"
-                wrapperProps={{ flex: 1 }}
+                wrapperProps={{ w: 88 }}
                 inputProps={{ min: 0, max: 256, step: 1, allowDecimal: false }}
               />
               <OverridableInput
                 id={id}
                 styleKey="pedalChannel"
                 inputType="number"
-                wrapperProps={{ flex: 1 }}
+                wrapperProps={{ w: 80 }}
                 inputProps={{ min: 0, max: 16, step: 1, allowDecimal: false }}
               />
             </>}
@@ -441,16 +449,16 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               <OverridableInput
                 id={id}
                 styleKey="indicatorSize"
-                inputType="number"
+                inputType="slider"
                 wrapperProps={{ flex: 1 }}
-                inputProps={{ min: 0, step: 0.1 }}
+                inputProps={getSliderProps(0, 5, 0.1)}
               />
               <OverridableInput
                 id={id}
                 styleKey="indicatorPeak"
-                inputType="number"
+                inputType="slider"
                 wrapperProps={{ flex: 1 }}
-                inputProps={{ min: 0, step: 0.1 }}
+                inputProps={getSliderProps(0, 5, 0.1)}
               />
             </> : <Space flex={2} />}
           </Group>
@@ -460,21 +468,21 @@ const StyleConfigBox = ({ id }: { id: string }) => {
               styleKey="indicatorAttack"
               inputType="number"
               wrapperProps={{ flex: 1 }}
-              inputProps={{ min: 0, step: 10, allowDecimal: false }}
+              inputProps={timeOptionInputProps}
             />
             <OverridableInput
               id={id}
               styleKey="indicatorSettle"
               inputType="number"
               wrapperProps={{ flex: 1 }}
-              inputProps={{ min: 0, step: 10, allowDecimal: false }}
+              inputProps={timeOptionInputProps}
             />
             <OverridableInput
               id={id}
               styleKey="indicatorRelease"
               inputType="number"
               wrapperProps={{ flex: 1 }}
-              inputProps={{ min: 0, step: 10, allowDecimal: false }}
+              inputProps={timeOptionInputProps}
             />
           </Group>}
           <Group>
@@ -489,21 +497,21 @@ const StyleConfigBox = ({ id }: { id: string }) => {
                 styleKey="rippleScale"
                 inputType="number"
                 wrapperProps={{ flex: 1 }}
-                inputProps={{ min: 0, step: 0.1 }}
+                inputProps={{ min: 0, max: 50, step: 0.5 }}
               />
               <OverridableInput
                 id={id}
                 styleKey="rippleDuration"
                 inputType="number"
                 wrapperProps={{ flex: 1 }}
-                inputProps={{ min: 0, step: 50, allowDecimal: false }}
+                inputProps={timeOptionInputProps}
               />
               <OverridableInput
                 id={id}
                 styleKey="rippleWidth"
                 inputType="number"
                 wrapperProps={{ flex: 1 }}
-                inputProps={{ min: 0, step: 0.05 }}
+                inputProps={{ min: 0, max: 10, step: 0.1 }}
               />
             </> : <Space flex={3} />}
           </Group>
